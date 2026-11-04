@@ -44,3 +44,15 @@ Each accepted change links to an immutable intent event.
 >
 > For example, a synthetic arithmetic invariant passes kernel checking and a contradictory obligation produces a non-passing report. For example, a theorem with sorry or an imported axiom is rejected by strict mode even if Lean returns zero. For example, recursive review skips a symlink to a credential file and leaves the input tree unchanged. For example, a private canary cannot enter the staged public archive, Docker context, or exported image. For example, an off-by-one business rule has a concrete failing source test, a checked model/counterexample for the stated semantics, and a repaired proof/test. For example, an optimization suggested from mathematics reports a checked equivalence claim and independently measured runtime/memory rather than claiming performance from a proof alone.
 <!-- pdd-intent-entry:lean-agent-privacy-preserving-proof-checking-and-b87acccd:end -->
+
+<!-- pdd-intent-entry:build-and-validate-local-docker-images-for-the-e-ed75a262:start -->
+## Build and validate local Docker images for the existing Lean mathlib...
+
+- Intent event: [`docs/intents/intent__build-and-validate-local-docker-images-for-the-e-ed75a262.md`](intents/intent__build-and-validate-local-docker-images-for-the-e-ed75a262.md)
+- Change kind: `add`
+- Supersedes: none
+- Scope: `existing_pdd_subproject_change`
+- Technology: `docker`
+
+> Build and validate local Docker images for the existing Lean mathlib checker and the separate public Lean source checkout. Provide reproducible setup, safe shell tools, workflows and discoverable skills for Claude Code, Codex, Grok Build, Hermes Agent and Pi. Install the shared tools and skills locally without overwriting unrelated configuration. Preserve offline checking, privacy boundaries and independent proof trust checks.
+<!-- pdd-intent-entry:build-and-validate-local-docker-images-for-the-e-ed75a262:end -->

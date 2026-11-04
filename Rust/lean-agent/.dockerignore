@@ -3,5 +3,6 @@
 !Dockerfile.source
 !.dockerignore
 !docker/pins.json
+!docker/pins-arm64.json
 !docker/entrypoint.sh
 !docker/primitives.txt

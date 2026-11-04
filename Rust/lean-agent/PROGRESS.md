@@ -27,3 +27,22 @@ See VERIFICATION.md for exact image identities, measurements, evidence and limit
 No automated PDD sync/semantic validation, native harness-loader certification,
 source-code refinement proof, remote CI run, push or image publication is claimed.
 Human publication review remains required. Existing unrelated PDD adoption work is preserved.
+
+## Local five-harness deployment follow-up
+
+The new accepted deployment intent is `ed75a262`. Planning and durable intent
+capture completed in this subproject; the incremental architecture backend was
+interrupted at a 30-second bound before generated prompts/sync/story validation.
+The invoking harness maintained the affected prompts/story/architecture/tests.
+
+Added native ARM64 stable-profile pins alongside AMD64, explicit image/build and
+no-overwrite installation tooling, a bounded raw Lean/LSP launcher, self-contained
+`lean-proof` and `lean-review` skills, and five-harness setup documentation.
+The supplied public source revision is built separately as a native ARM64 core-only
+image, not substituted into the stable mathlib checker. All global installation
+here is covered by the user's explicit local deployment request; no existing
+harness/provider/permission configuration is modified.
+
+See docs/LOCAL_SETUP_EVIDENCE.md for current actual tests, image identities,
+discovery observations and memory limits. The earlier VERIFICATION.md is historical
+Linux x86-64 evidence, not a claim that this follow-up reran those tests remotely.

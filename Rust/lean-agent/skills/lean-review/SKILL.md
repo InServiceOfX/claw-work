@@ -5,9 +5,11 @@ description: Privately review selected local code against independent mathematic
 
 # Local Lean review
 
-Read ../../README.md, ../../docs/WORKFLOWS.md and ../../docs/SECURITY.md relative
-to this skill directory. Use the repository-built `claw-lean` CLI; do not install
-a global skill, hook, provider, MCP server, or editor plugin without permission.
+Read [the review runbook](references/workflows.md) relative to this skill directory.
+Tools: `claw-lean` (strict JSON checker), `claw-lean-container` (raw Lean/LSP feedback),
+and `claw-lean-setup` (explicit deployment/status). Run `claw-lean doctor` first.
+If missing, locate the claw-work checkout and read Rust/lean-agent/docs/SETUP.md.
+Do not install skills, hooks, providers or plugins without permission.
 
 ## Required sequence
 1. Obtain the selected local clone/file/directory and intended behavior, assumptions,
@@ -21,10 +23,11 @@ a global skill, hook, provider, MCP server, or editor plugin without permission.
 4. Select obligations from independent desired behavior, not just current code.
    Model state, transitions, domains/representation, assumptions, normal and boundary
    cases. Record source snapshot hashes and manual source/model mappings.
-5. Write an independent `Challenge.lean` (expected named statements; challenge-only
+5. Use the `lean-proof` skill for a bounded draft/debug loop (default five attempts,
+   120 seconds per attempt). Write an independent `Challenge.lean` (expected named statements; challenge-only
    admissions allowed) and `Solution.lean`. Keep challenge definitions independent
    from the implementation. Review challenge meaning; attestation is not verification.
-6. Write schema-1 manifest using ../../examples/identity/manifest.json as the minimal
+6. Write schema-1 manifest using references/manifest.json as the minimal
    example. Run `claw-lean check --manifest MANIFEST --output NEW_PRIVATE_REPORT_DIR`.
    Zero-exit elaboration and LSP diagnostics are feedback, NOT proof acceptance.
    Only the independent exported-statement/primitive/axiom/kernel gate can report checked.
@@ -42,10 +45,11 @@ Start with the desired relation/recurrence and derive an implementation mathemat
 Prove equivalence/refinement in its explicitly bounded model; handle machine arithmetic
 and effects separately. Reproduce the original bug if present, test the proposal and
 benchmark representative workloads with compiler/OS/resource context. Proof is not
-speed evidence, and measurements are not a correctness proof. See the authored
+speed evidence, and measurements are not a correctness proof. See the claw-work repository's authored
 withdrawal/summation examples and their explicit source-correspondence limitations.
 
 ## Interactive feedback
-Use the image's `server` entrypoint over stdin/stdout LSP. Initialize, open/change
+Use `claw-lean-container --input-dir PRIVATE_DIR --timeout-seconds 3600 server`
+over stdin/stdout LSP. Initialize, open/change
 a Lean document, consume diagnostics and request `$/lean/plainGoal`. Do not equate
 an empty diagnostic list with a strict audit. No custom global harness adapter is needed.

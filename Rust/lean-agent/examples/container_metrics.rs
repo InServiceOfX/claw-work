@@ -2,7 +2,7 @@
 use claw_lean_agent::{
     Result,
     process::{run_bounded, run_cleanup},
-    proof::{DEFAULT_IMAGE, Limits, docker_args, resolve_image},
+    proof::{DEFAULT_IMAGE, Limits, docker_args, image_metadata, resolve_image},
 };
 use serde_json::json;
 use std::{fs, process::Command, time::Duration};
@@ -14,6 +14,7 @@ impl Drop for Own {
 }
 fn main() -> Result<()> {
     let id = resolve_image(DEFAULT_IMAGE)?;
+    let pins = image_metadata(&id)?;
     let temp = tempfile::tempdir()?;
     fs::write(
         temp.path().join("Bench.lean"),
@@ -103,7 +104,9 @@ fn main() -> Result<()> {
             "schema_version":1,"image_id":id,"version_startup_wall_ms":startup,
             "fresh_container_proof":fresh,"persistent_container_exec_proof":warm,
             "idle_docker_cpu_memory":String::from_utf8(stats.stdout)?.trim(),
-            "context":"Linux x86_64; 2 CPU/4096MiB limits; five descriptive samples; uncontrolled warm host page cache; not a cold boot or a persistent elaborator; raw Lean elaboration, not strict proof-pipeline timing"
+            "host_os":std::env::consts::OS,"host_arch":std::env::consts::ARCH,
+            "image_platform":pins["platform"],
+            "context":"2 CPU/4096MiB limits; five descriptive samples; uncontrolled warm host page cache; not a cold boot or a persistent elaborator; raw Lean elaboration, not strict proof-pipeline timing"
         }))?
     );
     Ok(())

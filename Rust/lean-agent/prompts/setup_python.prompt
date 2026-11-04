@@ -1,0 +1,20 @@
+% Reproducible local deployment for the Lean toolkit.
+Outputs: scripts/setup.py, scripts/lean-container.py, self-contained skill bundles,
+setup documentation and independent accumulated deployment/feedback tests.
+<vocabulary>
+authorized: the human requested local installation or explicitly chose the apply switch.
+local: a Unix-socket Docker endpoint, never a remote daemon.
+feedback: Lean elaboration or LSP output, not independent proof acceptance.
+</vocabulary>
+<contract_rules>
+R-601 (MUST): expose explicit image-build, dry-run/install, status and public synthetic smoke operations using Python standard library and the existing Rust checker.
+R-602 (MUST): install self-contained skills for Claude Code, Codex, Grok Build, Hermes and Pi with shared shell tools; dry-run is the default.
+R-603 (MUST NOT): overwrite conflicting files/directories/symlinks or change existing harness configuration, credentials, provider policy, hooks or permission bypasses.
+R-604 (MUST): make identical installs idempotent, preflight all conflicts before writing and roll back newly installed payloads on failure.
+R-605 (MUST): build the stable native amd64 or arm64 Lean/mathlib image explicitly; build the separate source profile from a selected clean public checkout git archive in a temporary named context. Report revision and archive hash outside image context.
+R-606 (MUST NOT): send Git metadata, untracked checkout content, private host paths or review artifacts into either image build context.
+R-607 (MUST): raw Lean feedback tools select an already-local immutable image and constrain network, UID, capabilities, rootfs, scratch, memory, CPU, PIDs and wall time; propagate failure and clean only their own container.
+R-608 (MUST NOT): pull/build at review runtime, mount home/credentials/socket, accept remote Docker endpoints or turn raw feedback into strict proof success.
+R-609 (MUST): support framed LSP via inherited stdin/stdout without a TTY or protocol-stdout logging.
+R-610 (MUST): document macOS canonical temporary paths and emulation costs, separate core-only source compatibility, explicit model consent and loader-verification limits.
+</contract_rules>

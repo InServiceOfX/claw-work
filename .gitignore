@@ -34,3 +34,5 @@ litellm_cache.sqlite/
 *.olean
 *.ilean
 *.ir
+__pycache__/
+*.py[cod]

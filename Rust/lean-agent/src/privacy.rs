@@ -96,6 +96,7 @@ pub const CONTEXT_FILES: &[&str] = &[
     "Dockerfile.source",
     "docker/entrypoint.sh",
     "docker/pins.json",
+    "docker/pins-arm64.json",
     "docker/primitives.txt",
 ];
 pub fn scan_context(root: &Path) -> Result<Vec<Violation>> {
@@ -106,6 +107,7 @@ pub fn scan_context(root: &Path) -> Result<Vec<Violation>> {
         "!Dockerfile.source",
         "!.dockerignore",
         "!docker/pins.json",
+        "!docker/pins-arm64.json",
         "!docker/entrypoint.sh",
         "!docker/primitives.txt",
     ];

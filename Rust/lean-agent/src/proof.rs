@@ -291,13 +291,22 @@ pub fn image_metadata(id: &str) -> Result<serde_json::Value> {
         return Err("Image metadata preflight failed".into());
     }
     let pins: serde_json::Value = serde_json::from_slice(&r.stdout)?;
-    let expected: serde_json::Value = serde_json::from_str(include_str!("../docker/pins.json"))?;
-    if pins != expected {
+    validate_image_pins(&pins)?;
+    Ok(pins)
+}
+pub fn validate_image_pins(pins: &serde_json::Value) -> Result<()> {
+    let profile = match pins.get("platform").and_then(serde_json::Value::as_str) {
+        Some("linux/amd64") => include_str!("../docker/pins.json"),
+        Some("linux/arm64") => include_str!("../docker/pins-arm64.json"),
+        _ => return Err("Unsupported pinned image platform".into()),
+    };
+    let expected: serde_json::Value = serde_json::from_str(profile)?;
+    if *pins != expected {
         return Err(
             "Image pins differ from this checker build; rebuild the compatible image/tool".into(),
         );
     }
-    Ok(pins)
+    Ok(())
 }
 fn snapshot_dir(out: &Path, name: &str) -> Result<PathBuf> {
     let dir = out.join(name);

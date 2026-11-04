@@ -3,7 +3,8 @@ use claw_lean_agent::{
     privacy::{scan_blob, scan_index},
 };
 use std::{fs, process::Command};
-use tempfile::tempdir;
+mod common;
+use common::tempdir;
 
 #[test]
 fn inventory_is_bounded_private_and_does_not_follow_links() {

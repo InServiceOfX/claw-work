@@ -1,6 +1,7 @@
 use claw_lean_agent::proof::{Limits, Manifest, check_proofs, validate_manifest};
 use std::{fs, path::Path};
-use tempfile::tempdir;
+mod common;
+use common::tempdir;
 
 fn live() -> bool {
     std::env::var("LEAN_AGENT_LIVE").as_deref() == Ok("1")

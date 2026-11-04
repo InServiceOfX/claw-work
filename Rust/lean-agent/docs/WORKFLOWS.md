@@ -1,5 +1,15 @@
 # Workflows
 
+## Theorem drafting across harnesses
+
+Install with [SETUP.md](SETUP.md), then invoke `lean-proof` from any of the five
+harnesses. Freeze independent challenge statements, use narrow mathlib imports,
+and bound drafting to five attempts at 120 seconds each before reporting unresolved
+goals. Use `claw-lean-container` for raw check/program/LSP feedback; submit the final
+manifest through `claw-lean check`. Only that independent statement/primitive/axiom/
+kernel gate may report a checked model. No hidden agent/model daemon is involved.
+
+
 ## Review a local input
 Build the public image and Rust binaries first. Use `claw-lean doctor` to resolve
 an already-local immutable image ID and verify its pin metadata; there is no auto-pull.

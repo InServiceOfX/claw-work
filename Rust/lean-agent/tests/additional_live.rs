@@ -1,3 +1,4 @@
+mod common;
 use claw_lean_agent::proof::{Limits, Manifest, check_proofs};
 use std::{
     fs,
@@ -7,7 +8,7 @@ use std::{
 };
 fn check(challenge: &str, solution: &str, limits: Limits) -> claw_lean_agent::proof::ProofReport {
     assert_eq!(std::env::var("LEAN_AGENT_LIVE").as_deref(), Ok("1"));
-    let t = tempfile::tempdir().unwrap();
+    let t = common::tempdir().unwrap();
     fs::write(t.path().join("Challenge.lean"), challenge).unwrap();
     fs::write(t.path().join("Solution.lean"), solution).unwrap();
     let mut m = Manifest::new("Challenge.lean", "Solution.lean", vec!["accepted".into()]);
@@ -30,11 +31,12 @@ fn changed_definition_is_rejected_even_with_reflexive_theorem() {
 #[ignore = "requires built image and LEAN_AGENT_LIVE=1"]
 fn native_oracle_is_not_a_permitted_proof() {
     let r = check(
-        "import Mathlib\ntheorem accepted : (List.range 10).sum = 45 := by sorry\n",
-        "import Mathlib\ntheorem accepted : (List.range 10).sum = 45 := by native_decide\n",
+        "import Mathlib.Tactic\ntheorem accepted : (List.range 10).sum = 45 := by sorry\n",
+        "import Mathlib.Tactic\ntheorem accepted : (List.range 10).sum = 45 := by native_decide\n",
         Limits::default(),
     );
     assert_eq!(r.model_proof_status, "rejected", "{r:#?}");
+    assert_eq!(r.phases.last().unwrap().name, "judge", "{r:#?}");
 }
 #[test]
 #[ignore = "requires built image and LEAN_AGENT_LIVE=1"]
@@ -61,7 +63,7 @@ impl Drop for Cleanup {
 #[ignore = "requires built image and LEAN_AGENT_LIVE=1"]
 fn sigterm_cancels_and_removes_own_container() {
     assert_eq!(std::env::var("LEAN_AGENT_LIVE").as_deref(), Ok("1"));
-    let t = tempfile::tempdir().unwrap();
+    let t = common::tempdir().unwrap();
     fs::write(
         t.path().join("Challenge.lean"),
         "theorem accepted : True := by sorry\n",

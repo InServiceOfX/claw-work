@@ -17,4 +17,6 @@ R-105 (MUST): provide export and independent judge operations; untrusted .olean 
 R-106 (MUST): use upstream Lean exporter/comparator/kernel rather than trusting user diagnostic text or process exit from elaboration.
 R-107 (MUST): source profile builds an explicitly sanitized Lean archive with GMP >=6.3.0 or built-in bignums, never FORCE_GMP.
 R-108 (MUST): document tested architectures, measure real resource use, preserve licenses and report profile limitations.
+R-109 (MUST): support linux/amd64 and linux/arm64 with separate official release archive checksums and exact per-platform metadata; fail unsupported architectures before fetching. Retain the pinned mathlib/toolchain agreement on both.
+R-110 (MUST): bundle the full mathlib cache but use a representative narrow mathlib import for default build/smoke acceptance; expose umbrella-import stress testing explicitly and do not imply it fits the default memory budget.
 </contract_rules>

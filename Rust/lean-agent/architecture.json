@@ -65,5 +65,14 @@
       "lean-agent",
       "public-safe"
     ]
+  },
+  {
+    "filename": "setup_python.prompt",
+    "filepath": "scripts/setup.py",
+    "dependencies": ["workflow_markdown.prompt", "container_shell.prompt"],
+    "priority": 6,
+    "reason": "Authorized local deployment across five harnesses",
+    "description": "Local setup and safe container feedback tools",
+    "tags": ["lean-agent", "public-safe", "deployment"]
   }
 ]

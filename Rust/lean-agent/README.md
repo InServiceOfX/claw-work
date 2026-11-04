@@ -5,6 +5,8 @@ container. It checks named model obligations against an independent challenge.
 It does **not** automatically translate arbitrary programs or verify that source
 implements a model.
 
+- [Install for Claude Code, Codex, Grok Build, Hermes and Pi](docs/SETUP.md)
+- [Current local setup evidence](docs/LOCAL_SETUP_EVIDENCE.md)
 - [Verification and measurements](VERIFICATION.md)
 - [Review and specification-derived improvement workflows](docs/WORKFLOWS.md)
 - [Security/trust boundaries](docs/SECURITY.md)
@@ -13,18 +15,22 @@ implements a model.
 - [PDD operational status](PROGRESS.md)
 
 ## Build once, check offline
-Requirements: native Linux x86_64, local Unix-socket Docker daemon/BuildKit, Rust
-(tested with 1.97.1), and substantial build/cache disk space. Other platforms are
-not accepted by the initial release recipe. Image and Rust dependencies are fetched
+Requirements: macOS/Linux, local Unix-socket Docker daemon/BuildKit, Rust
+(initially tested with 1.97.1), Python 3.9+ for deployment, and substantial build/cache
+disk space. The stable image supports linux/amd64 and linux/arm64 with separate
+checksum-pinned official archives; prefer native ARM64 on Apple Silicon. Full mathlib
+is bundled; narrow imports are the default smoke fixture. Umbrella `import Mathlib`
+can exceed the worker memory budget; `LEAN_AGENT_FULL_IMPORT=1 bash tests/container_smoke.sh`
+is a separate optional high-memory stress test. Image and Rust dependencies are fetched
 explicitly at build time; review commands never choose an AI provider or auto-pull.
 
 ```sh
 # From this directory, not the monorepo root.
-docker build --platform=linux/amd64 -t claw-work/lean-agent:lean4.35.0-mathlib .
+python3 scripts/setup.py build-image # host-native platform; explicit public downloads
 cargo build --release --locked
 target/release/claw-lean doctor
 target/release/claw-lean check --manifest examples/identity/manifest.json \
-  --output /tmp/lean-identity-report-new
+  --output "$(python3 -c 'import pathlib,tempfile; print(pathlib.Path(tempfile.gettempdir()).resolve())')/lean-identity-report-new"
 ```
 
 Choose a NEW private report path outside all Git trees. The examples are public
@@ -37,7 +43,7 @@ and per-phase diagnostics/status. Source mappings are caller-supplied, not valid
 ```sh
 target/release/claw-lean inventory /path/to/selected/input
 target/release/claw-lean prepare /path/to/selected/input \
-  --output /tmp/private-lean-review-new
+  --output "$(python3 -c 'import pathlib,tempfile; print(pathlib.Path(tempfile.gettempdir()).resolve())')/private-lean-review-new"
 ```
 Inventory accepts a clone, file or directory; it does not execute its Git/package/build
 instructions. See exclusions/limits in the output. An agent/human then chooses intended
@@ -75,14 +81,16 @@ proof REPL. No Lean Beam/MCP daemon is required or bundled in this profile.
 
 ## Build the separate public Lean source profile
 
-The supplied upstream source revision can be built without publishing its Git
+Prefer `python3 scripts/setup.py build-image --source /path/to/public/lean4`
+for the clean-checkout check, revision/hash output and automatic archive cleanup.
+The supplied upstream source revision can also be built manually without publishing its Git
 directory or unrelated host files. Use an audited public Lean checkout:
 
 ```sh
 source_context=$(mktemp -d)
 git -C /path/to/public/lean4 rev-parse HEAD
 git -C /path/to/public/lean4 archive HEAD | tar -x -C "$source_context"
-docker build --platform=linux/amd64 -f Dockerfile.source \
+docker build -f Dockerfile.source \
   --build-context source="$source_context" --build-arg JOBS=4 \
   -t claw-work/lean-agent:source-local .
 bash tests/source_smoke.sh claw-work/lean-agent:source-local
@@ -101,6 +109,7 @@ profile needs its own pins and acceptance evidence.
 ## Tests
 
 ```sh
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 cargo fmt --check
 cargo test --locked --all-targets
 cargo clippy --locked --all-targets -- -D warnings

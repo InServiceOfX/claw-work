@@ -5,14 +5,11 @@ work=$(mktemp -d)
 name="claw-lean-smoke-$$"
 trap 'docker rm -f "$name" >/dev/null 2>&1 || true; rm -rf "$work"' EXIT
 chmod 755 "$work"
-cat > "$work/Good.lean" <<'LEAN'
-import Mathlib
-example (x y : Nat) : x + y = y + x := by omega
-LEAN
-cat > "$work/Bad.lean" <<'LEAN'
-import Mathlib
-example : (1 : Nat) = 2 := by rfl
-LEAN
+module=Mathlib.Data.Nat.Basic
+# Importing the entire umbrella is a separate high-memory stress test.
+if test "${LEAN_AGENT_FULL_IMPORT:-0}" = 1; then module=Mathlib; fi
+printf 'import %s\nexample (x y : Nat) : x + y = y + x := by omega\n' "$module" > "$work/Good.lean"
+printf 'import %s\nexample : (1 : Nat) = 2 := by rfl\n' "$module" > "$work/Bad.lean"
 cat > "$work/Program.lean" <<'LEAN'
 def main : IO Unit := IO.println "lean-program-ok"
 LEAN

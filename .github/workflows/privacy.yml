@@ -21,6 +21,9 @@ jobs:
           cargo +1.97.1 fmt --check
           cargo +1.97.1 test --locked --all-targets
           cargo +1.97.1 clippy --locked --all-targets -- -D warnings
+      - name: Test no-overwrite local deployment and offline feedback policy
+        working-directory: Rust/lean-agent
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
       - name: Scan complete committed index and reviewed Docker context
         working-directory: Rust/lean-agent
         run: |

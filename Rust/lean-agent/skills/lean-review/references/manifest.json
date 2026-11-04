@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "challenge": "Challenge.lean",
+  "solution": "Solution.lean",
+  "theorems": [
+    "accepted"
+  ],
+  "intended_properties": [
+    "Adding zero preserves a natural number"
+  ],
+  "assumptions": [
+    "Lean Nat arithmetic; no source-code refinement claim"
+  ],
+  "source_mapping": [],
+  "specification_reviewed": false
+}

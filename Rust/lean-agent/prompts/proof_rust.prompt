@@ -22,4 +22,5 @@ R-308 (MUST): the challenge is an independent trusted specification boundary. Re
 R-309 (MUST): compare challenge primitives against an immutable export of pinned Init before comparing challenge/solution; do not use equality of two caller exports as the primitive baseline.
 R-310 (MUST): label caller-provided source mappings/hashes as unvalidated; only actual read model snapshots are authenticated by this checker.
 R-311 (MUST): handle SIGINT/SIGTERM as non-passing cancellation and provide an internal Docker timeout backstop. SIGKILL, daemon loss and host failure cannot guarantee immediate host-side cleanup.
+R-312 (MUST): accept only exact known amd64 or arm64 pinned-profile metadata, with independently pinned archive checksums; reject unknown platforms and any metadata drift.
 </contract_rules>

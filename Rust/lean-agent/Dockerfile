@@ -2,12 +2,16 @@
 ARG BASE_IMAGE=ubuntu@sha256:d1e2e92c075e5ca139d51a140fff46f84315c0fdce203eab2807c7e495eff4f9
 FROM ${BASE_IMAGE} AS builder
 ARG TARGETARCH
-RUN test "$TARGETARCH" = amd64
+RUN case "$TARGETARCH" in amd64|arm64) ;; *) echo 'Unsupported Lean release architecture' >&2; exit 1 ;; esac
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git zstd build-essential libgmp-dev libuv1-dev libssl-dev pkg-config && rm -rf /var/lib/apt/lists/*
 RUN pkg-config --atleast-version=6.3.0 gmp
 WORKDIR /opt
-RUN curl --fail --location --retry 3 --proto '=https' --tlsv1.2 https://github.com/leanprover/lean4/releases/download/v4.35.0/lean-4.35.0-linux.tar.zst -o lean.tar.zst \
- && echo '7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d  lean.tar.zst' | sha256sum -c - \
+RUN case "$TARGETARCH" in \
+      amd64) archive=lean-4.35.0-linux.tar.zst; sha=7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d ;; \
+      arm64) archive=lean-4.35.0-linux_aarch64.tar.zst; sha=c8f0f8a3920e839718b1343e6781fd80a3e9b1024fbcd7078eb30f54e806b028 ;; \
+    esac \
+ && curl --fail --location --retry 3 --proto '=https' --tlsv1.2 "https://github.com/leanprover/lean4/releases/download/v4.35.0/$archive" -o lean.tar.zst \
+ && echo "$sha  lean.tar.zst" | sha256sum -c - \
  && mkdir lean && tar --zstd -xf lean.tar.zst --strip-components=1 -C lean && rm lean.tar.zst
 ENV PATH="/opt/lean/bin:${PATH}"
 RUN git init mathlib && cd mathlib \
@@ -18,13 +22,14 @@ RUN git init mathlib && cd mathlib \
  && echo '6fcb8417bf0d6056cebf3c9f9bacd4569f21f3b9c571c60649150b9118b55147  lake-manifest.json' | sha256sum -c -
 WORKDIR /opt/mathlib
 RUN lake exe cache get
-RUN lake env printenv LEAN_PATH > /opt/mathlib-path \
- && printf 'import Mathlib\nexample (x y : Nat) : x + y = y + x := by omega\n' > /tmp/Smoke.lean \
+RUN set -eux; lake env printenv LEAN_PATH > /opt/mathlib-path \
+ && printf 'import Mathlib.Data.Nat.Basic\nexample (x y : Nat) : x + y = y + x := by omega\n' > /tmp/Smoke.lean \
  && lake env lean /tmp/Smoke.lean \
  && find /opt/mathlib -type d -name .git -prune -exec rm -rf '{}' + \
  && rm -rf /root/.cache /opt/mathlib/.lake/build/bin /opt/mathlib/.lake/build/ir \
  && find /opt/mathlib/.lake/packages -type d -path '*/.lake/build/ir' -prune -exec rm -rf '{}' + \
- && chmod -R a+rX /opt/lean /opt/mathlib
+ && find /opt/lean /opt/mathlib -type d ! -perm -005 -exec chmod a+rx '{}' + \
+ && find /opt/lean /opt/mathlib -type f ! -perm -004 -exec chmod a+r '{}' +
 COPY docker/primitives.txt /opt/lean-agent-primitives.txt
 RUN leanexport Init -- $(cat /opt/lean-agent-primitives.txt) > /opt/primitive-baseline.ndjson
 # The release statically bundles GMP. A system dpkg version check alone does not
@@ -45,7 +50,13 @@ COPY --from=builder /opt/mathlib-path /opt/mathlib-path
 COPY --from=builder /opt/primitive-baseline.ndjson /opt/primitive-baseline.ndjson
 COPY docker/primitives.txt /opt/lean-agent-primitives.txt
 RUN printf '%s\n' '{"challenge_module":"Init","solution_module":"Challenge","theorem_names":[],"definition_names":["Nat.add"],"permitted_axioms":["propext","Classical.choice","Quot.sound"]}' > /opt/primitive-guard.json
-COPY docker/pins.json /opt/lean-agent-pins.json
+ARG TARGETARCH
+COPY docker/pins.json docker/pins-arm64.json /opt/lean-agent-profiles/
+RUN case "$TARGETARCH" in \
+      amd64) cp /opt/lean-agent-profiles/pins.json /opt/lean-agent-pins.json ;; \
+      arm64) cp /opt/lean-agent-profiles/pins-arm64.json /opt/lean-agent-pins.json ;; \
+      *) exit 1 ;; \
+    esac && rm -r /opt/lean-agent-profiles
 COPY --chmod=755 docker/entrypoint.sh /usr/local/bin/lean-container
 RUN mkdir /work && chmod 1777 /work
 ENV PATH="/opt/lean/bin:${PATH}" HOME=/tmp

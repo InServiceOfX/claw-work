@@ -1,3 +1,4 @@
+mod common;
 use claw_lean_agent::{
     process::{run_cleanup, stop_child},
     proof::{Limits, docker_args, resolve_image},
@@ -44,7 +45,7 @@ fn wait(rx: &mpsc::Receiver<Value>, predicate: impl Fn(&Value) -> bool) -> Value
 #[ignore = "requires built Docker image and LEAN_AGENT_LIVE=1"]
 fn interactive_diagnostics_repair_and_goal_feedback() {
     assert_eq!(std::env::var("LEAN_AGENT_LIVE").as_deref(), Ok("1"));
-    let tmp = tempfile::tempdir().unwrap();
+    let tmp = common::tempdir().unwrap();
     let bad = "import Mathlib.Data.Nat.Basic\nexample : (1 : Nat) = 2 := by rfl\n";
     fs::write(tmp.path().join("Interactive.lean"), bad).unwrap();
     let limits = Limits::default();
