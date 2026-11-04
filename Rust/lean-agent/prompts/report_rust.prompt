@@ -1,0 +1,16 @@
+% Typed local JSON/Markdown results and CLI.
+Commands: inventory, prepare, check, doctor; JSON is stable schema version 1.
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+</vocabulary>
+<contract_rules>
+R-401 (MUST): separate model_proof_status, source_correspondence_status and specification_review_status. No universal verified badge.
+R-402 (MUST): distinguish rejected proof/export/kernel checks from timeout, output limit, malformed input, missing prerequisites and other errors; an unproved property is not a proven source bug.
+R-403 (MUST): include reproducible source snapshot hashes, source mappings, assumptions, expected obligations, image/toolchain identity, coverage and action-oriented findings.
+R-404 (MUST): write reports only to fresh private workspaces and fail on overwrite/symlink/public-tree output risks. Do not publish automatically.
+R-405 (MUST): expose library functions and stable CLI JSON without embedding a provider or claiming automatic source-to-Lean translation.
+</contract_rules>

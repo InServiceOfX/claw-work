@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "challenge": "Challenge.lean",
+  "solution": "Solution.lean",
+  "theorems": [
+    "sum_formula",
+    "modeled_cost_improves"
+  ],
+  "intended_properties": [
+    "Sum the natural numbers from one through n",
+    "Derive the triangular-number formula and state the unit-cost model explicitly"
+  ],
+  "assumptions": [
+    "Lean Nat model; source correspondence remains unproved",
+    "Rust fixture uses u64 inputs and u128 summation; representation and compilation are not mechanized"
+  ],
+  "source_mapping": [
+    {
+      "path": "examples/spec_derived.rs",
+      "sha256": "941e7a791d7158a9c901804325fcbdf6f784ee75a327b754b268089d775bec3e",
+      "model_symbols": [
+        "sum_formula",
+        "modeled_cost_improves"
+      ],
+      "correspondence": "manual mapping plus executable tests, not a refinement proof"
+    }
+  ],
+  "specification_reviewed": false
+}

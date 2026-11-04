@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+# source is a named BuildKit context containing ONLY a git-archive export.
+ARG BASE_IMAGE=ubuntu@sha256:d1e2e92c075e5ca139d51a140fff46f84315c0fdce203eab2807c7e495eff4f9
+FROM ${BASE_IMAGE} AS builder
+ARG JOBS=4
+RUN apt-get update && apt-get install -y --no-install-recommends cmake clang make git ca-certificates curl ccache libgmp-dev libuv1-dev libssl-dev pkg-config && rm -rf /var/lib/apt/lists/*
+RUN pkg-config --atleast-version=6.3.0 gmp
+COPY --from=source / /src/
+WORKDIR /src
+RUN cmake --preset release -DFORCE_GMP=OFF -DCHECK_OLEAN_VERSION=ON \
+ && make -C build/release -j"$JOBS"
+FROM ${BASE_IMAGE}
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libgmp10 libuv1t64 libssl3t64 time tzdata && rm -rf /var/lib/apt/lists/*
+# Copy the runtime/toolchain closure, not CMake caches or the stage build tree.
+COPY --from=builder /src/build/release/stage1/bin /opt/lean/bin
+COPY --from=builder /src/build/release/stage1/lib /opt/lean/lib
+COPY --from=builder /src/LICENSE /opt/lean/LICENSE
+COPY --from=builder /src/LICENSES /opt/lean/LICENSES
+RUN mkdir /work && chmod 1777 /work
+ENV PATH="/opt/lean/bin:${PATH}" HOME=/tmp
+USER 65532:65532
+WORKDIR /work
+CMD ["lean", "--version"]

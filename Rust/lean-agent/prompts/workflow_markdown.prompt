@@ -1,0 +1,16 @@
+% Portable skill and Lean-first mathematical review workflows.
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+</vocabulary>
+<contract_rules>
+R-501 (MUST): container acceptance precedes agent workflow delivery; reuse Lean LSP for interactive goals, do not mislabel a shell a proof REPL.
+R-502 (MUST): agent selects independent intended properties, models semantics/assumptions and creates challenge/solution files; obtain approval before remote processing of private code.
+R-503 (MUST): drive the deterministic Rust JSON interface from any shell-capable harness, with bounded proof iterations and no silent input rewrites.
+R-504 (MUST): demonstrate a source bug with reproducer and repaired property, and a specification-derived optimization with scoped equivalence proof and independent benchmarks.
+R-505 (MUST): explain Lean formal verification versus Lamport TLA+/PlusCal/TLC, and explicit limits on model checking, liveness/fairness and arbitrary source semantics.
+R-506 (MUST NOT): install global skills/configuration, publish outputs, or claim all named harnesses were live-tested merely from portable CLI compatibility.
+</contract_rules>

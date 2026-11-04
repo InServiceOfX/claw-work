@@ -1,0 +1,69 @@
+[
+  {
+    "filename": "container_shell.prompt",
+    "filepath": "Dockerfile",
+    "dependencies": [],
+    "priority": 1,
+    "reason": "Approved Lean-first product outcome",
+    "description": "container shell",
+    "tags": [
+      "lean-agent",
+      "public-safe"
+    ]
+  },
+  {
+    "filename": "input_rust.prompt",
+    "filepath": "src/input.rs",
+    "dependencies": [],
+    "priority": 2,
+    "reason": "Approved Lean-first product outcome",
+    "description": "input rust",
+    "tags": [
+      "lean-agent",
+      "public-safe"
+    ]
+  },
+  {
+    "filename": "proof_rust.prompt",
+    "filepath": "src/proof.rs",
+    "dependencies": [
+      "input_rust.prompt"
+    ],
+    "priority": 3,
+    "reason": "Approved Lean-first product outcome",
+    "description": "proof rust",
+    "tags": [
+      "lean-agent",
+      "public-safe"
+    ]
+  },
+  {
+    "filename": "report_rust.prompt",
+    "filepath": "src/main.rs",
+    "dependencies": [
+      "input_rust.prompt",
+      "proof_rust.prompt"
+    ],
+    "priority": 4,
+    "reason": "Approved Lean-first product outcome",
+    "description": "report rust",
+    "tags": [
+      "lean-agent",
+      "public-safe"
+    ]
+  },
+  {
+    "filename": "workflow_markdown.prompt",
+    "filepath": "skills/lean-review/SKILL.md",
+    "dependencies": [
+      "report_rust.prompt"
+    ],
+    "priority": 5,
+    "reason": "Approved Lean-first product outcome",
+    "description": "workflow markdown",
+    "tags": [
+      "lean-agent",
+      "public-safe"
+    ]
+  }
+]

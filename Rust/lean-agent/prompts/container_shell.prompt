@@ -1,0 +1,20 @@
+% Generate the Docker build/runtime artifact group; read the approved Product Intent.
+Inputs: pinned Ubuntu base, checksum-pinned Lean release, pinned mathlib revision and manifest.
+Outputs: Dockerfile, .dockerignore, docker/entrypoint.sh and source-build Dockerfile.
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+</vocabulary>
+<contract_rules>
+R-101 (MUST): default image includes Lean 4.35.0, Lake and precompiled mathlib at the pinned compatible revision, usable offline on first invocation.
+R-102 (MUST): verify the Lean archive checksum, mathlib manifest hash, and Lean/mathlib toolchain agreement.
+R-103 (MUST): use separate build/runtime layers, arbitrary non-root UID support, no toolchain install at startup, explicit minimal context allowlist.
+R-104 (MUST NOT): copy host credentials, Git metadata, caches, private source or reports into any image layer.
+R-105 (MUST): provide export and independent judge operations; untrusted .olean files may never be loaded into the trusted judging process.
+R-106 (MUST): use upstream Lean exporter/comparator/kernel rather than trusting user diagnostic text or process exit from elaboration.
+R-107 (MUST): source profile builds an explicitly sanitized Lean archive with GMP >=6.3.0 or built-in bignums, never FORCE_GMP.
+R-108 (MUST): document tested architectures, measure real resource use, preserve licenses and report profile limitations.
+</contract_rules>

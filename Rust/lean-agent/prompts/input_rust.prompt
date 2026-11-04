@@ -1,0 +1,17 @@
+% Rust safe local source inventory and private workspace construction.
+API: inventory_target(path, limits) -> Inventory; prepare_review(input, output) -> ReviewBundle.
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+</vocabulary>
+<contract_rules>
+R-201 (MUST): accept a local regular file or recursively inventoried directory; hash included files and report coverage/skips.
+R-202 (MUST NOT): follow symlinks, traverse Git/build/cache/credential directories, read credential/env files, execute input scripts or fetch anything.
+R-203 (MUST): bound total entries, included files, per-file bytes and total bytes; reject binary/invalid UTF-8 inputs and report exclusions.
+R-204 (MUST): keep input immutable and write only an explicitly selected new private output directory outside Git trees and outside the input scope.
+R-205 (MUST): create private artifacts with owner-only permissions; reject symlinked output paths and unsafe mount delimiters.
+R-206 (MUST NOT): invoke a model or upload source. Return agent-ready source/context locally; modeling is done by the authorized invoking agent.
+</contract_rules>

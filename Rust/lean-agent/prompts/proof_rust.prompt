@@ -1,0 +1,25 @@
+% Rust bounded Docker proof orchestration using independent exported statements.
+API: check_proofs(manifest, base_directory, output, limits) -> ProofReport.
+Manifest: challenge .lean path, solution .lean path, nonempty expected theorem names,
+source mappings, assumptions and intended-property text. Challenge statements are
+independent trusted acceptance input, normally admitted only in the challenge.
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+</vocabulary>
+<contract_rules>
+R-301 (MUST): compile/export challenge and solution in separate no-network, non-root, read-only containers from source snapshots containing no caller .olean/build files.
+R-302 (MUST): judge only the two NDJSON exports and a fixed permitted-axiom/theorem configuration in a third trusted container via upstream lake comparator and kernel replay.
+R-303 (MUST NOT): trust source-supplied diagnostics, admission warnings, elaborator exit zero, stale compiled artifacts or source-created success markers as proof acceptance.
+R-304 (MUST): reject missing obligations, changed statements/definitions, sorryAx, unexpected axioms and unapproved native-oracle axioms in the theorem dependency closure.
+R-305 (MUST): bound CPU, memory, process count, scratch, output bytes and deadline; kill/remove only own containers after completed, failed, timed-out and catchably cancelled runs, with R-311 exceptions.
+R-306 (MUST): record immutable image ID, pinned toolchain/dependencies, source hashes, theorem names, resource/diagnostic status and allowed axioms. Do not pull images automatically.
+R-307 (MUST NOT): label source as machine-verified merely because the model passed; this tool currently reports correspondence unproved, with provided mappings/assumptions retained.
+R-308 (MUST): the challenge is an independent trusted specification boundary. Report that its meaning is human-reviewed, not inferred from the solution.
+R-309 (MUST): compare challenge primitives against an immutable export of pinned Init before comparing challenge/solution; do not use equality of two caller exports as the primitive baseline.
+R-310 (MUST): label caller-provided source mappings/hashes as unvalidated; only actual read model snapshots are authenticated by this checker.
+R-311 (MUST): handle SIGINT/SIGTERM as non-passing cancellation and provide an internal Docker timeout backstop. SIGKILL, daemon loss and host failure cannot guarantee immediate host-side cleanup.
+</contract_rules>

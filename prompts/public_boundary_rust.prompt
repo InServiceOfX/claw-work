@@ -1,0 +1,32 @@
+% Repository-wide public boundary. Rust-first deterministic gate and thin shell/CI integration.
+
+Purpose: prevent known private artifacts from entering the public Git tree or Docker
+publication surface without reading private external data or echoing secret matches.
+
+Inputs: complete Git index (or committed index in CI); explicit Docker-context file list.
+Outputs: exit zero on allowed source, nonzero on violations; path/rule-only diagnostics.
+Read staged blobs by object ID, not working-tree contents. Handle unusual filenames,
+symlinks, unreadable/oversized blobs and subprocess errors by failing closed.
+
+<vocabulary>
+trusted: part of the immutable pinned image or an independently human-reviewed challenge specification.
+untrusted: caller-provided source, compiled data, logs or metaprograms, never authority for the verdict.
+invalid: bytes that fail UTF-8 decoding or a value failing the documented schema.
+unsafe: a path that contains Docker mount delimiters or resolves through symlinks.
+authorized: explicitly selected by the human in the invoking agent session.
+complete: every record returned by git ls-files --stage -z; unmerged stages and read/limit errors fail the gate.
+</vocabulary>
+<contract_rules>
+R-001 (MUST): inspect the complete selected index and actual staged blob content.
+R-002 (MUST NOT): accept private runtime artifacts, credential files, known tokens,
+private keys or personal absolute paths.
+R-003 (MUST NOT): print matching secret contents, read external symlink targets,
+upload data, mutate the index or publish anything.
+R-004 (MUST): use synthetic negative tests, index/worktree disagreement tests, authored public-source positive tests, and an independent Docker-context/image canary test.
+R-005 (MUST): document opt-in hooks, CI limitations and required human publication review.
+R-006 (MUST NOT): equate a pattern scan with proof that arbitrary private information is absent.
+</contract_rules>
+
+The Rust implementation belongs to Rust/lean-agent/src/privacy.rs and
+Rust/lean-agent/src/bin/claw-public-check.rs. Root .githooks/pre-commit and
+.github/workflows/privacy.yml are thin integrations. Preserve existing policy work.

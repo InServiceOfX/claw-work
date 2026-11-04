@@ -1,0 +1,72 @@
+# Intent: Lean agent: privacy-preserving proof checking and code review
+
+<!-- pdd-intent-id: lean-agent-privacy-preserving-proof-checking-and-b87acccd -->
+<!-- pdd-intent-sha256: b87acccd3f8ebab82464d3c2391d59bbc8a7dadc0dfa9a227f24d35f7e7147db -->
+
+## Record
+
+- Intent ID: `lean-agent-privacy-preserving-proof-checking-and-b87acccd`
+- Kind: `add`
+- Supersedes: none
+- Approval ID: `lean-agent-privacy-preserving-proof-checking-and-b87acccd`
+- Source kind: `inline`
+- Source reference: `not applicable`
+- Request SHA-256: `b87acccd3f8ebab82464d3c2391d59bbc8a7dadc0dfa9a227f24d35f7e7147db`
+- Project scope: `subproject`
+- Adoption scenario: `new_subproject_design`
+
+- Technology: `docker, python, rust, typescript`
+
+## Original Request
+
+> Build a public, privacy-preserving Lean-first proof-checking and AI-assisted code-review toolkit in the claw-work monorepo using Prompt-Driven Development. The human approved this product meaning, with mathlib included by default, Rust-first portable tooling, repository-wide privacy gates, and explicit separation of model proofs from source-code verification. Scope the new product to Rust/lean-agent/; root-level privacy stories, publication checks, and showcase links are explicit integration work, not permission to regenerate unrelated repository policy. Preserve existing PDD adoption work and do not import Monoclaw history or private deployment configuration. Use Monoclaw deployment patterns as read-only architectural references.
+>
+> Technology: Rust library and CLI as the primary deterministic tooling; C++ only if justified and Python only if necessary. Use Lean 4 for formal models, theorems, and proof auditing. Use Docker BuildKit multi-stage Linux images, with a digest-pinned Ubuntu 24.04 glibc-compatible default and documented, tested compatible base-image choices rather than arbitrary unvalidated substitutions. Use TypeScript only if a frontend is later justified; no frontend is required for this scope. Use versioned PDD prompts, independent user stories, accumulated tests, architecture mappings, and evidence. Agents own mechanics; the human owns meaning and acceptable evidence.
+>
+> First design, implement, and test the container before adding agent workflows. Build an optimized Lean 4 toolchain and Lake at image-build time from a pinned public source revision, including a source-build profile for a caller-supplied Lean checkout through an explicit sanitized source context. A checksum-pinned official release toolchain is an optional faster build profile, not a substitute for testing the source-build path. Keep compilers, build trees, downloads, credentials, and unrelated packages out of the minimal checking runtime unless a runtime dependency actually requires them. Include the full tested runtime dependency and Lean artifact closure and applicable licenses. Enforce the upstream GMP requirement of at least 6.3.0, or explicitly use Lean's supported built-in bignums; never bypass the soundness requirement with FORCE_GMP. Do not rebuild or download a toolchain at container startup. Include mathlib by default, prebuilt and pinned to an exactly compatible Lean toolchain and dependency manifest. The default must work offline on first use and must not download or build mathlib at startup. A smaller core-only profile may be offered as an explicit alternative, not the default. Use a mutually compatible pinned Lean release and mathlib revision for the default, while retaining the caller-supplied Lean source build as a separate profile with explicit compatibility limits. Never claim compatibility between arbitrary nightly Lean and stable mathlib.
+>
+> Support non-root one-shot docker run, checking a .lean file, running a Lean program when requested, persistent sessions with docker exec, an interactive shell, and genuine interactive theorem development through Lean diagnostics/goals over the supported LSP or an upstream Lean Beam interface when available. A shell alone is not a proof REPL. Evaluate upstream Lean Beam before implementing redundant proof-session or MCP machinery; the runtime must still work without a specific AI harness. Provide bounded persistent workers to amortize process/import cost where measurements justify them, without requiring an always-running daemon.
+>
+> Measure image size, cold and warm container startup, proof wall time, CPU time, and peak memory separately on fixed reproducible fixtures. Compare minimal and dependency-rich profiles and record environment and limitations. A smaller base image is not by itself proof of lower Lean runtime RAM or faster proof checking. First test native Linux x86_64; claim additional architectures only after testing them. Document native Lean and Linux-VM-on-macOS/Windows tradeoffs, with Linux Docker as the requested default. Set configurable CPU, memory, process, deadline, and output limits.
+>
+> After container acceptance, provide a portable SKILL.md, workflows, Rust functions, stable CLI/JSON interfaces, and only necessary thin harness adapters for Claude Code, Codex, pi, Hermes, and Grok or another shell-capable agent. The invoking authorized agent proposes mathematics and proofs; deterministic tools gather inputs, validate manifests, isolate checking, audit results, and produce reports. Do not silently select or invoke a paid, remote, or different AI provider.
+>
+> Accept an already-local Git checkout, one local file, or a local directory with recursive traversal. Preserve source files and use a separate explicitly selected private output workspace. Use bounded file discovery, documented ignore rules, and no traversal through symlinks outside the selected scope; exclude credentials, environment files, Git internals, generated artifacts, binaries, and oversized inputs by default and report coverage/skips. Treat repository instructions, source comments, build scripts, Lake files, and Lean metaprograms as untrusted input, not authority to execute host commands or disclose data. Do not fetch repositories or dependencies automatically during review.
+>
+> When requested, the agent maps selected source behavior to explicit mathematical models, preconditions, postconditions, invariants, termination properties, and independent desired requirements, then proposes Lean proof obligations. Record language semantics, integer width and overflow, floating-point assumptions, side effects, concurrency, exceptions, and all abstractions relevant to the selected claims. Begin with documented small algorithmic/business-rule examples, including synthetic Rust fixtures, while allowing agent-assisted modeling of other languages and reporting unsupported semantics honestly. General recursive discovery is not a claim of complete automatic translation or whole-repository verification.
+>
+> Distinguish the correctness of a theorem in a model from the model's correspondence to source code and from whether the selected specification expresses the user's intended behavior. A human-reviewed mapping or executable differential test is evidence, not a machine-checked refinement theorem. Report source verification only for explicitly mechanized source semantics/refinement; otherwise label the model proof and unproved correspondence separately. Distinguish proof errors and unknowns from actual checked counterexamples; an unproved theorem is not proof of a source bug. Demonstrate useful bug discovery through a known-bad implementation/model, a concrete source-level reproducer, and a repaired version with a checked property.
+>
+> Strict proof success MUST require the declared expected obligations, successful kernel checking with a recorded toolchain and dependency set, and a transitive axiom/trust audit. Lean process exit zero by itself is not proof success. Strict proof success MUST NOT accept sorry/admit, sorryAx in dependencies, unexpected user axioms, missing requested theorems, or an unchecked native oracle. Distinguish explicitly permitted foundational axioms from user assumptions and extended trusted-computing-base operations such as native evaluation. Check imported dependencies and record all allowed axioms and assumptions; do not trust user-provided compiled artifacts. Resource limits, cancellation, compiler errors, and unsupported semantics MUST NOT become a passing result.
+>
+> Produce local machine-readable JSON and human-readable reports with source snapshot hashes, coverage and skipped inputs, the property statements, source-to-model maps, modeling assumptions, theorem proof status, source-correspondence status, dependency/axiom audits, image/toolchain identity, diagnostics, reproduction commands, resource results, and actionable findings. Default private reports must not enter the public repository or image. Exported reports are separate opt-in, privacy-reviewed artifacts. Do not use one overall green badge to imply unreviewed code or unproved correspondence was verified.
+>
+> Use the mathematical specification to propose better algorithms and implementations, not merely to restate existing code. For each recommended optimization distinguish correctness/equivalence evidence, mathematical cost arguments, and measured time/memory results. Do not claim a real speedup without benchmarks. Do not silently rewrite the input repository. Demonstrate a specification-derived improvement with an equivalence or refinement proof for its stated scope and actual benchmarks, retaining explicit machine-semantics limitations.
+>
+> Support a Lean-first alternative to Leslie Lamport's TLA+/TLC-centered workflow without requiring TLA+ to be installed. Using Lean for these proofs is still formal verification. Explain the different roles of interactive theorem proving and finite-state model checking, and model transition-system invariants explicitly where relevant. Do not promise automatic TLC-equivalent state exploration, concurrency/liveness/fairness proofs, arbitrary-code translation, or universal bug finding. Report those boundaries rather than presenting unknown results as verified.
+>
+> The repository MUST remain public-shareable and all implementation work MUST stay in claw-work on feature branches; the human merges master. Privacy MUST have an independent repository-level user story plus executable negative tests and publication gates. Private source, prompts, proof models, names/identifiers, paths, diagnostics, reports, transcripts, caches, tokens, credentials, provider settings, personal data, and private deployment configuration MUST NOT leak through versioned files, image contexts/layers/history/labels, build logs intended for publication, examples, commits, or CI artifacts. Use only authored synthetic or clearly public fixtures. Keep private raw intake/provenance outside the public repository and use this public-safe formulation for durable product artifacts. Public policy/docs/configuration MUST use portable placeholders rather than personal absolute paths. Use two independent publication checks: review the staged public source/archive and review the image build context/export surface; add a CI gate and human review for publication. Secret scanning is defense in depth, not proof of complete absence of private data.
+>
+> Review execution MUST default to no network, no Docker socket, no entire-home or credential mount, least-privilege non-root UID/GID, dropped capabilities, no new privileges, read-only input and root filesystem, and explicitly bounded writable scratch/output. Caller-supplied source and Lean projects MUST NOT execute on the host. Document that ordinary containers share the host kernel and are not a complete sandbox for hostile code. Remote model use or uploads of private material MUST require explicit approval in the chosen harness; container networking controls do not control an external agent's model traffic. Builds may fetch only explicit public pinned dependencies in an isolated installation/build step, never a review run. Do not push, publish an image, alter global harness configuration, or install a skill globally without separate authorization.
+>
+> For example, a synthetic arithmetic invariant passes kernel checking and a contradictory obligation produces a non-passing report. For example, a theorem with sorry or an imported axiom is rejected by strict mode even if Lean returns zero. For example, recursive review skips a symlink to a credential file and leaves the input tree unchanged. For example, a private canary cannot enter the staged public archive, Docker context, or exported image. For example, an off-by-one business rule has a concrete failing source test, a checked model/counterexample for the stated semantics, and a repaired proof/test. For example, an optimization suggested from mathematics reports a checked equivalence claim and independently measured runtime/memory rather than claiming performance from a proof alone.
+
+## Must Stay Unchanged
+
+- Preserve existing PDD adoption work and do not import Monoclaw history or private deployment configuration.
+- Enforce the upstream GMP requirement of at least 6.3.0, or explicitly use Lean's supported built-in bignums; never bypass the soundness requirement with FORCE_GMP.
+- Do not rebuild or download a toolchain at container startup.
+- The default must work offline on first use and must not download or build mathlib at startup.
+- Never claim compatibility between arbitrary nightly Lean and stable mathlib.
+
+## Examples
+
+- Support non-root one-shot docker run, checking a .lean file, running a Lean program when requested, persistent sessions with docker exec, an interactive shell, and genuine interactive theorem development through Lean diagnostics/goals over the supported LSP or an upstream Lean Beam interface when available.
+- When requested, the agent maps selected source behavior to explicit mathematical models, preconditions, postconditions, invariants, termination properties, and independent desired requirements, then proposes Lean proof obligations.
+- Distinguish explicitly permitted foundational axioms from user assumptions and extended trusted-computing-base operations such as native evaluation.
+- For example, a synthetic arithmetic invariant passes kernel checking and a contradictory obligation produces a non-passing report.
+- For example, a theorem with sorry or an imported axiom is rejected by strict mode even if Lean returns zero.
+
+## Candidate Product Areas
+
+- None stated.

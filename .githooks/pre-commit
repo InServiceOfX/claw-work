@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+root=$(git rev-parse --show-toplevel)
+cd "$root"
+# Opt-in only. Offline/locked compilation fails closed if dependencies are absent;
+# it also avoids trusting an old binary after gate source changes.
+cargo run --offline --locked --quiet --manifest-path Rust/lean-agent/Cargo.toml \
+ --bin claw-public-check -- index .
+cargo run --offline --locked --quiet --manifest-path Rust/lean-agent/Cargo.toml \
+ --bin claw-public-check -- context Rust/lean-agent

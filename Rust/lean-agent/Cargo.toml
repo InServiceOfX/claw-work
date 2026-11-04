@@ -1,0 +1,36 @@
+[package]
+name = "claw-lean-agent"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+description = "Private local Lean/mathlib proof checking with explicit model/source boundaries"
+default-run = "claw-lean"
+
+[lib]
+name = "claw_lean_agent"
+
+[[bin]]
+name = "claw-lean"
+path = "src/main.rs"
+
+[[bin]]
+name = "claw-public-check"
+path = "src/bin/claw-public-check.rs"
+
+[dependencies]
+cap-std = "3.4"
+clap = { version = "4.5", features = ["derive"] }
+libc = "0.2"
+regex = "1.11"
+memchr = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+signal-hook = "0.3"
+tar = "0.4"
+flate2 = "1"
+zstd = "0.13"
+
+[dev-dependencies]
+tempfile = "3"
