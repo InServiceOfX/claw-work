@@ -3,6 +3,9 @@
 config.yml
 profiles/*.yml
 
+# Templates generated from a model's GGUF by patch-chat-template.py.
+templates/
+
 # Runtime state written by launch.sh.
 .llama-server.pid
 .llama-server.profile

@@ -36,6 +36,17 @@ where `<port>` is `server.port` in `config.yml` (8080 unless you change it).
 **Adding a new model?** Read [ADDING-A-MODEL.md](ADDING-A-MODEL.md) — the full
 runbook, including how to size context against unified memory.
 
+**Connecting an AI harness?** See [Client Integration](#client-integration). The
+whole workflow is also packaged as the `llama-cpp-macos` agent skill:
+
+```bash
+./install-skill.sh    # into ~/.claude/skills, ~/.agents/skills, ~/.hermes/skills
+```
+
+Then ask any Claude Code, Codex, Grok Build, pi or Hermes session to set up or
+connect a local model (or invoke `/llama-cpp-macos`, `$llama-cpp-macos`,
+`/skill:llama-cpp-macos`).
+
 ## Structure
 
 ```
@@ -43,6 +54,9 @@ llama-cpp-server-macos/
 ├── launch.sh                           # Launcher (runs binary directly)
 ├── fetch-model.sh                      # Download weights into the HF hub cache
 ├── hf_fetch.py                         # Python helper behind fetch-model.sh
+├── patch-chat-template.py              # Accept mid-conversation system messages
+├── install-skill.sh                    # Install the agent skill per harness
+├── skills/llama-cpp-macos/             # Portable agent skill + harness reference
 ├── config.yml.example                  # Global config template
 ├── .gitignore                          # Keeps machine-local config and state out of Git
 ├── profiles/
@@ -53,6 +67,7 @@ llama-cpp-server-macos/
 ```
 
 `*.yml` files are local and gitignored; `*.yml.example` files are committed.
+So is `templates/`, generated per machine by `patch-chat-template.py`.
 
 ## Requirements
 
@@ -70,16 +85,6 @@ llama-cpp-server-macos/
 - Model GGUF files downloaded locally — see `./fetch-model.sh`. It uses
   `huggingface_hub` from the local venv if present, otherwise an ephemeral
   `uv run --with` environment, so no extra setup is required.
-
-## Differences from Docker/CUDA version
-
-| | Docker (Linux) | Native (macOS) |
-|---|---|---|
-| GPU | NVIDIA CUDA | Apple Metal |
-| Runtime | Docker container | Direct binary |
-| Model paths | Container volume mounts | Absolute local paths |
-| Stop | `docker stop` | `kill` / `--stop` |
-| Default mode | Background (detached) | Foreground (exec) |
 
 ## Referencing models
 
@@ -223,47 +228,41 @@ curl -s http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/
 
 The server also hosts a browser chat UI at `http://127.0.0.1:<port>`.
 
-### pi
+### Agent harnesses
 
-Register the server as a custom provider in `~/.pi/agent/models.json`
-(see pi's `docs/models.md`). One entry per profile you use; `contextWindow` is
-the profile's `ctx_size / parallel`:
+Verified end to end with pi, Claude Code, Codex, Grok Build and Hermes Agent.
+Exact configuration for each, with measured first-turn times, is in
+[skills/llama-cpp-macos/references/harnesses.md](skills/llama-cpp-macos/references/harnesses.md):
 
-```json
-{
-  "providers": {
-    "llama-cpp-local": {
-      "name": "llama.cpp (local)",
-      "baseUrl": "http://127.0.0.1:8080/v1",
-      "api": "openai-completions",
-      "apiKey": "local",
-      "models": [
-        {
-          "id": "qwen38-9b-distill-q4-max",
-          "name": "Qwen3.8 9B Distill Q4_K_M (local)",
-          "reasoning": true,
-          "contextWindow": 262144,
-          "maxTokens": 32768,
-          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
-        }
-      ]
-    }
-  }
-}
+| Harness | API it uses | Configured in |
+|---|---|---|
+| pi | Chat Completions | `~/.pi/agent/models.json` |
+| Claude Code | Anthropic Messages (`/v1/messages`) | env vars + `--bare --strict-mcp-config` |
+| Codex | Responses (`/v1/responses`) | `~/.codex/<profile>.config.toml` |
+| Grok Build | Chat Completions | `[model.<name>]` in `~/.grok/config.toml` |
+| Hermes Agent | Chat Completions | `model_aliases` in `~/.hermes/config.yaml` |
+
+Harness system prompts and tool lists are 10–20K tokens, so the first turn
+spends 30–60s in prefill on a 9B; every configured MCP tool adds to that. Raise
+client request timeouts well beyond their defaults for deep-context work.
+
+### Mid-conversation system messages (Claude Code)
+
+Qwen3-family chat templates raise `System message must be at the beginning`
+when a system message follows a user turn, and Claude Code sends exactly that.
+Generate a tolerant copy of the profile's embedded template once:
+
+```bash
+uv run --no-project --with gguf --with pyyaml --with jinja2 \
+  python patch-chat-template.py qwen38-9b-distill-q4-max
 ```
 
-Then `pi --model llama-cpp-local/qwen38-9b-distill-q4-max`.
+It changes that one check to render the message as a system turn, writes
+`templates/<profile>.jinja`, and prints the line to add to the profile:
 
-pi's built-in `llama.cpp` provider (`/login llama.cpp`, `/llama`) targets
-llama.cpp's multi-model *router* (`llama serve`), not the single-model
-`llama-server` this directory launches; use the custom provider above.
-
-### Other harnesses
-
-OpenClaw, Hermes and similar clients take the same three values — base URL,
-placeholder key, model id. Raise the client's request timeout well beyond its
-default if you use deep context: prefill at 100K+ tokens takes many minutes
-(see Measured Throughput), and a default of 30 minutes or less will time out.
+```yaml
+chat_template_file: templates/qwen38-9b-distill-q4-max.jinja   # --chat-template-file
+```
 
 ### Only one profile is loaded at a time
 

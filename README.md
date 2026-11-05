@@ -11,7 +11,8 @@ and the [public/privacy boundary](PRIVACY.md).
   includes native ARM64/x86-64 images, shared CLI tools and two portable skills.
 - [llama.cpp server for macOS](Deployments/llama-cpp-server-macos/README.md): run
   local GGUF open-weight models natively on Apple Silicon (Metal), resolved from the
-  HuggingFace hub cache, behind an OpenAI-compatible API for agent harnesses such as pi.
+  HuggingFace hub cache, behind OpenAI- and Anthropic-compatible APIs. Includes the
+  `llama-cpp-macos` skill for connecting Claude Code, Codex, Grok Build, Hermes and pi.
 
 The Lean toolkit distinguishes proofs about mathematical models from verification
 that source code implements those models. Read its verification status before relying

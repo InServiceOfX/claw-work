@@ -326,6 +326,16 @@ if mmproj:
 ct = prof.get("chat_template")
 if ct:
     server_args.extend(["--chat-template", ct])
+# A template file replaces the embedded GGUF template; relative paths are
+# relative to this directory (see patch-chat-template.py).
+ct_file = prof.get("chat_template_file")
+if ct_file:
+    ct_file = Path(os.path.expandvars(os.path.expanduser(str(ct_file))))
+    if not ct_file.is_absolute():
+        ct_file = Path(sys.argv[1]).resolve().parent / ct_file
+    if not ct_file.is_file():
+        fail(f"chat_template_file not found: {ct_file}")
+    server_args.extend(["--chat-template-file", str(ct_file)])
 ct_kwargs = prof.get("chat_template_kwargs")
 if ct_kwargs:
     if isinstance(ct_kwargs, (dict, list)):
