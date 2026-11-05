@@ -417,6 +417,15 @@ if [[ "${1:-}" == "--background" || "${1:-}" == "-bg" ]]; then
             echo "  Stop:       $0 --stop"
             exit 0
         fi
+        # A load failure (bad flag, assert, out of memory) kills the process
+        # within seconds; report it now rather than polling for 10 minutes.
+        if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+            echo ""
+            echo "Error: llama-server exited during startup. Last lines of $LOG_FILE:"
+            tail -n 20 "$LOG_FILE"
+            rm -f "$PID_FILE" "$ACTIVE_FILE"
+            exit 1
+        fi
         printf "."
         sleep 2
     done

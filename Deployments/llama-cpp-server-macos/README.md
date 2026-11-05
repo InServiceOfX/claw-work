@@ -59,6 +59,10 @@ llama-cpp-server-macos/
 - `llama-server` binary in PATH (via `brew install llama.cpp` or build from source).
   Qwen3.5-class models need a build with Gated DeltaNet support — older builds
   fail to load the architecture.
+  Homebrew ships `ggml` as a separate formula: if it gets upgraded without
+  `llama.cpp` (e.g. as another formula's dependency), the old binary aborts at
+  load with `GGML_ASSERT(...) failed` in `ggml_gated_delta_net`. Fix with
+  `brew upgrade llama.cpp`; `otool -L` on its `libllama` shows the ggml it expects.
 - PyYAML, from either a venv in this directory
   (`uv venv --python 3.13 && uv pip install pyyaml`) or, if there is none,
   an ephemeral `uv run --with pyyaml` environment. Installing
