@@ -41,6 +41,9 @@ Sources used while parsing the six TikToks. All are public. Paid products are na
   - `/plugin marketplace add cb9191/animate`
   - `/plugin install animate@animate`
 - Related public repos mentioned in research: html-to-mp4, howseen-ai/claude-motion-design
+- Inspiration mentioned: skilry.dev (browse free; paid prompt library $9.99/mo, $79/yr, or $169 lifetime)
+- Inspiration mentioned: @KevinNgo on X ("Kevin Ngo - Creative coding with AI")
+- TTS mentioned: elevenlabs.io (paid; swap for open-source TTS if you want a free stack)
 
 ## DJ tonal play
 

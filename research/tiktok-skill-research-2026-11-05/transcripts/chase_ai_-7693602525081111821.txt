@@ -1,0 +1,282 @@
+you don't need remotion you don't need after effects
+all you need is claw code and javascript
+to create videos like these
+whether it's a visual explainer
+a product demo or just pure motion graphics
+these types of videos are exploding
+right now and that's because it's free this isn't an AI
+video generator this is just claw and javascript
+and so today I'm gonna show you
+how to create these sorts of videos for yourself we're gonna go over
+how to properly prompt it how to bring in reference images
+and then how to codify this entire thing into a skill
+so we can walk you through
+step zero all the way to a finished product
+so how does this all work how is Claude
+able to create videos when it is not an AI video generation tool
+well it uses javascript which is a coding language
+to essentially create still images
+it creates a bunch of still images
+stitches those all together exports it as an MP four
+and you get what you see here
+in fact I had it create a video explaining
+how this whole thing works
+so for this video I told it to create it in the style of a 3 blue one brown
+video and this was a one shot attempt
+this animation wasn't drawn by hand and it isn't AI video
+Claude wrote a function give it a time t and it returns one picture
+ask for 60 pictures every second
+play them in order and that's a video
+same tea same picture every time
+so any frame can be redrawn or checked on its own
+a headless browser draws each frame
+Ffmpeg stitches them together and the sound is a function of a t too
+Claude can't watch the video but it can look at the frames
+spot what's wrong and fix the function
+so Claude never made a video it wrote what the video is
+a function of time
+so let's break that down just a little bit further
+so as explained in the video
+every single frame of the video that's being created is generated
+via javascript so this
+frame you saw right here is a function of javascript code
+that is one single frame every second we create 60 versions
+of that frame stitch them together you now have one second of video
+now what's cool with this system
+is we can have Cloud Code check its own work so whether it's 60 frames
+or 240 frames we essentially run the video in a headless browser
+using something like playwright so it's like Cloud
+Code has its own version of Chrome that it's looking at
+it can then take a look at each frame
+frame by frame and then say hmm
+this works this doesn't let's fix this let's fix that and then
+once it's happy
+whether it gives the thumbs up or you give it the thumbs up
+it stitches them all
+via a tool called Ffmpeg which is totally open source
+and we get our video and on top of that we can easily add sound
+the video you saw had the sound generated with 11 labs
+and first I created the script
+and then we had sort of the graphics go along with it
+and as you'll see as we move along
+there's a lot of different ways we can approach
+the sort of video creation piece
+and again what's cool about this it's all code
+it's essentially free I'm not paying for any outside tools to do this
+now I think the easiest way to explain all this is kind of break it down into four different levels
+the first level is how this works purely from prompting
+second level is how we add
+sort of that looping element
+you saw in the video where it checked its own work
+third we'll talk about how do we bring in references
+to this whether it's video references
+or just style references via images
+and then fourth I'm gonna talk about how do you codify this
+entire thing and by codify
+I mean handing you this skill
+that I've created that sort of walks you through the entire process
+we're gonna go over today
+but before we go through all four of these levels
+a quick word from today's sponsor me so
+inside of Chase AI plus I have just released an updated Claude Code
+and Codex Master Class
+and it is the number one way to go from zero to AI Dev
+no matter your technical background
+or lack thereof you also get access to my custom AIOs
+which runs not only on Codex but Claude Code
+as well so if you're someone who wants to get a little more serious
+about AI Chase AI plus is the place for you I'll put a link to it
+down in the pin comment
+so let's begin with prompting and effort levels so right here I gave
+Opus 5.5 a pretty simple prompt I said make a dynamic 15
+second motion graphics video
+that shows what an incredible motion designer you are
+like it's a show reel for a resume go all out don't use any skills
+and I tested this on low high and Ultra code
+low knocked it out in like 20 minutes or so high took like 30 minutes
+Ultra code took 8 hours and what I want you to pay attention to
+is the quality difference between all of these and spoiler alert
+high and low did just fine Ultra code was definitely
+the best but if you think
+your issue with these videos or
+your sort of creations is an effort problem
+it's probably not it's probably just your prompts so here's low
+here's hi
+and here's ultra
+now all these were actually pretty solid and even low did a pretty
+good job and what I wanted you to get from that is that the baseline
+ability of Claude using javascript
+is actually really strong we don't have to be crazy
+with our prompts to get something that's actually quite legit
+but there is one thing we can specifically
+do that can make our outcomes
+way better and that is to ask for a storyboard
+this isn't something that should be
+wild if you're someone who's done any sort of AI video generation
+and the idea here is simple before we tell
+Claude to go out there and create a 10 15 30 65 minute video
+from one prompt why don't we have it actually
+storyboard it out for us have it create some individual frames
+which represent the different beats across the video
+so we can get sort of hands on
+on where we're gonna be going with this creation
+before we just have it go off in code because one thing I will say
+about these javascript creations is they can take a long time
+especially if you start adding the looping
+sequence like I'm going to introduce you in a second so if I simply
+ask it to give me a
+storyboard it's gonna give me something like this it's gonna say hey
+here's sort of like the seven big scenes you're going to see
+I can actually see the actual frames themselves before it's created
+and so I can start changing things
+before anything has really been coded
+because the worst thing in the worst scenario you can get in is you're creating
+an entire video it takes 20 minutes
+you get it back you say I don't like this or that and it tries
+again and you get into like this hour long
+three hour long loop of just like
+generation after generation so simply asking
+for a storyboard before it creates the video is gonna save you
+so much time so now let's move into level 2 where we can dive deeper
+into the prompt structure as well as the outside dependencies
+we need to actually get this whole thing to work now
+first things first when we do the prompt hey you just wanna mention
+what is gonna be the length and what
+type of video you wanna do so like a 30 second animated explainer
+about how whatever works you're also gonna Wanna mention
+sort of the aspect ratio you want to do this in is it gonna be a full
+screen video or we're doing something vertical
+that's for like short form social media
+then we definitely wanna mention javascript obvious enough
+then we wanna talk about the soundtrack the soundtrack can be pure
+code and that's what a lot of these things are but you can totally
+supply your own soundtrack to Claud Code
+in fact you can kind of work backwards
+when we were doing that video where I had to do the explainer
+for you where we actually had an audio and narrator
+I gave it the audio first of the narration
+and then it worked backwards from there and made sure the visuals
+match the audio so you have that option as well third we wanna say
+make sure you render it to an MP four with playwrite and Ffmpeg
+so we mention playright specifically because playright is
+what's going to allow Claude Code to run that headless
+browser to check to see hey do all these frames make sense
+an Ffmpeg is what we are going to use to actually stitch everything
+together now after that we can mention
+like I said earlier hey here's the voice MP
+three time the visuals to it
+and then at the end what we want to say is before you call it done
+use Ffmpeg to pull a contact sheet
+look at it fix what's wrong re render and repeat
+you don't have to use this exact verbiage but you need to mention
+something somewhere along the lines of hey before you're done
+check your work with FFM Pagan Playwrite and make sure
+everything aligns and makes sense
+now Opus 5.5 and fable 5.1 are so good that if you don't even
+mention these things it's probably going to do it but
+you should understand
+how this all works so if it isn't doing what you want
+you know how to actually articulate that so
+to recap you need playwrite you need Ffmpeg
+and you also need to figure out
+how do you want this actually created are you gonna do the
+visuals first and then audio afterwards
+or do you have audio with a soundtrack or maybe a narration
+and then I want the graphics to match that
+again when you're talking about narration we can use something like
+11 Labs
+but there are a ton of open source resources to create that narration
+as well although I will say 11 Labs
+is probably the best thing out there they just came out with their MCP
+this isn't sponsored by 11 Labs whatsoever but I do like their product
+and I believe their subscriptions like 5 bucks a month which is
+relatively cheap now level 3 is where we go beyond simple prompts
+and we start adding references
+this can either be images
+and we can say hey I want you to insert
+this actual image or I want you to copy
+its sort of aesthetic style
+or we can give it actual video and say
+can we use the composition of this video as inspiration
+for what we are trying to create and we're just going to insert
+our own unique content
+now Claude's really good at this on the left we have the reference
+video I fed it this was created with OBS
+5.5 and remotion and on the right is our javascript recreation so
+on the left
+hand side it was a video about currency and on the right hand side
+is about explaining sort of the history of electricity
+so we'll watch this for a couple seconds
+so you can see what a good job it does
+and so we'll stop it there but you can see in terms of the composition
+from the reference to our version
+it's pretty close it looks like it's from the same family
+of design yet the actual content is completely different
+now as for where to find the sort of inspiration
+there's obviously a million one places
+once place I like is this website called skillery
+dot dev so skill s k I l l l r y dot dev
+they have a category for a I videos
+so you can browse different Opus 5.5 videos just sort of like
+start getting your mind turning as for what you wanna do
+this is paid but on the free version you can still see quite a few
+um another really good place is Twitter
+and I think this guy Kevin
+is probably the best out there when it comes to creating
+these sort of videos so highly suggest taking a look
+at his profile and seeing like what the upper level
+if this sort of content creation really looks like
+and lastly at level 4 we wanna be able to codify
+this process we wanna turn it into some sort of procedure
+that Claude can do over and over
+again and the best way to do this is by simply turning it into a skill
+which is what I've done here and it's what I'm giving you today
+so this Claude Code skill
+essentially uses the whole javascript format we've been talking about
+and it just walks you through it it comes with seven pre loaded
+different styles cut paper cross hatch Rizzo Sketchbook
+isometric but you have the ability to do custom styles
+just by doing what I said
+handing it some sort of reference image or reference video
+now the skill goes through a number of stages and the best part is it walks you through it so
+it starts with an intake where it's gonna ask you a bunch of questions
+in terms of what's your subject what do you want the format to be
+what do you want to do with the audio
+the voice do you want sort of like
+some sort of hero character that gets
+seen from you know the first scene all the way to the end
+from there we talk about what the story is going to look like
+we eventually push it all the way to a storyboard
+like we talked about earlier so we can actually get sort of like
+eyes on what each scene
+will look like before we actually create the whole thing
+and then finally we code it and deliver it to you
+and throughout this entire process Claude will loop through
+the video it's created to make sure everything
+sinks up and makes sense that whole
+sort of loop we talked about earlier with playwrite and FFN Peg
+it's gonna do that all automatically
+you just need to answer the questions
+the skill prompts you for and provide whatever references you want
+installing it is super easy you can do it as a plugin or
+you can just hand this URL
+to Claude Code and it will do everything for you
+it will also make sure you have all the prerequisites and dependencies
+like playwrite like Ffmpeg like things like faster whisper
+and it'll even ask if you want to do something like the 11 Labs
+connector
+now this thing is very much a work in progress I've been messing
+with it a ton so if you decide to use this for yourself
+and you come up with your own sort of improvements definitely
+open up a PR and let me add that to what everyone is using
+so that's where I'm gonna leave you guys for today I hope you got something out of it I think these javascript
+videos are awesome because like I keep saying
+they're pretty much free we just pay for it with usage
+there's no third party AI image generator or AI video generator
+we need to use to create these things and
+the level the quality is really high
+we just need to know how to prompt it and how to give it references so
+as always let me know what you thought
+make sure to check out Chase AI
+plus if you want to get your hands on my college coding master class
+and besides that I'll see you around
