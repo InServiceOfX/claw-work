@@ -17,3 +17,10 @@ and the [public/privacy boundary](PRIVACY.md).
 The Lean toolkit distinguishes proofs about mathematical models from verification
 that source code implements those models. Read its verification status before relying
 on any result. Development happens on feature branches; the repository owner merges.
+
+## Research
+
+- [TikTok skill research (2026-11-05)](research/tiktok-skill-research-2026-11-05/README.md):
+  parsed six public TikToks for Claude / AI-edit workflow notes, captions, and screenshots.
+  Themes: HyperFrames talking-head edits, Claude × CapCut, video-editor skill packaging,
+  procedural JS canvas video, and DJ tonal play for Mixxx.
