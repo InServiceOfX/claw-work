@@ -1,0 +1,26 @@
+# llama.cpp Native Server — Global Config (macOS / Metal)
+# Copy to config.yml and edit for your machine.
+#
+# No Docker, no CUDA — runs llama-server binary directly with Metal acceleration.
+# Full server docs: https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+
+server:
+  # Path to llama-server binary (brew install llama.cpp, or build from source)
+  binary: llama-server
+
+  # Default host/port (can be overridden per-profile).
+  # llama-server exits with "couldn't bind HTTP server socket" rather than
+  # picking another port, so if something already owns 8080 on this machine
+  # (check: lsof -nP -iTCP:8080 -sTCP:LISTEN), set a free one here, e.g. 8081.
+  # Keep it here rather than in profiles so launch.sh --status agrees with it.
+  host: 127.0.0.1
+  port: 8080
+
+# Base directory for model files.
+# Profiles can reference model_path relative to this, or use absolute paths.
+models_dir: ~/.cache/huggingface/hub
+
+# HuggingFace hub cache root, used to resolve profiles that set hf_repo/hf_file.
+# Leave commented to follow huggingface_hub's own resolution: $HF_HUB_CACHE,
+# then $HF_HOME/hub, then ~/.cache/huggingface/hub. Set it only to override.
+# hf_cache: /Volumes/External/huggingface/hub

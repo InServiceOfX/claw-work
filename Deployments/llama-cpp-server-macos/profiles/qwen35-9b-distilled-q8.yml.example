@@ -1,0 +1,70 @@
+# Profile: Qwen3.5-9B Claude 4.6 Opus Reasoning Distilled v2 (Q8_0)
+# Source: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+#
+# Q8_0: highest quality of these local quantized profiles, with higher memory
+# use than Q4_K_M/Q5_K_M. Apple M4 Pro / 64GB target: 256K binary context with
+# 4 server slots. 262144 = 256 * 1024.
+#
+# MacBook Pro M5 / 32GB suggestion:
+#   Prefer Q5_K_M for 128K+ contexts.
+#   If you run Q8_0 anyway, start with:
+#     ctx_size: 65536
+#     parallel: 1
+#     cache_ram: 1024
+#   Try ctx_size: 131072 only if memory pressure stays low.
+
+hf_repo: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+hf_file: Qwen3.5-9B.Q8_0.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+ctx_size: 262144
+n_predict: -1
+parallel: 4
+
+# ─── macOS / Metal Performance ───────────────────────────────────────────────
+
+flash_attn: "on"
+
+# mlock prevents macOS from compressing/swapping model memory.
+mlock: true
+
+# Threads: CPU threads for non-GPU work. -1 lets llama.cpp auto-detect.
+# threads: -1
+
+batch_size: 2048
+ubatch_size: 2048
+
+# Continuous batching is enabled by default in recent llama.cpp builds, but this
+# keeps the intended server behavior explicit.
+cont_batching: true
+
+# Prompt cache RAM limit in MiB. 8192 is reasonable on a 64 GB Mac mini.
+# For 32GB machines, use 1024-2048 or 0 to disable prompt cache.
+cache_ram: 8192
+
+# 0=normal, 1=medium, 2=high, 3=realtime
+priority: 1
+
+# KV cache quantization: compress KV cache to fit larger contexts.
+cache_type_k: q8_0
+cache_type_v: q8_0
+
+jinja: true
+
+# Optional: pass chat-template kwargs as JSON. Useful for templates that support
+# switches such as non-thinking mode.
+# chat_template_kwargs:
+#   enable_thinking: false
+
+# Optional: enable llama.cpp's default speculative decoding config.
+# Leave disabled unless you have verified it helps this model/workload.
+# spec_default: true
+
+# Escape hatch for new llama-server flags before launch.sh supports them.
+# extra_args:
+#   - --slots

@@ -1,0 +1,12 @@
+# Machine-local configuration: copy from the .example templates and size for
+# this machine's memory. Never committed.
+config.yml
+profiles/*.yml
+
+# Runtime state written by launch.sh.
+.llama-server.pid
+.llama-server.profile
+.llama-server.log
+
+# Optional local Python environment for launch.sh / fetch-model.sh.
+.venv/

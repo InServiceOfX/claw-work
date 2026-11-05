@@ -1,0 +1,127 @@
+# Profile: Qwen3.8-9B-Distill (Q4_K_M) — lowest latency, single slot
+#
+# Model card: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Upstream:   https://huggingface.co/empero-ai/Qwen3.8-9B-Distill
+#
+# The interactive/agent profile. Everything here is chosen to shorten the wall
+# clock of one turn, and context is deliberately traded away to get it.
+#
+# Sibling profiles, same model:
+#   qwen38-9b-distill-q8       — quality, 262144 ctx, 1 slot
+#   qwen38-9b-distill-q4       — concurrency, 4 slots x 262144 ctx
+#   qwen38-9b-distill-q4-fast  — this one
+#
+# Download first:
+#   ./fetch-model.sh download empero-ai/Qwen3.8-9B-Distill-GGUF Qwen3.8-9B-Q4_K_M.gguf
+#
+# ─── Why Q4_K_M here, and only here ──────────────────────────────────────────
+# Decode is memory-bandwidth-bound: every token streams the whole weight file.
+# Q4_K_M is 5.78 GB against Q8_0's 9.79 GB, so it wins — but only while the KV
+# cache is small enough that weights dominate the bytes moved per token.
+# Measured, M4 Pro, same prompts on both quants:
+#
+#   ctx        decode Q8_0   decode Q4_K_M   speedup
+#   571          24.00          36.48         1.52x
+#   30,796       19.71          28.25         1.43x
+#   130,868      11.00          12.72         1.16x
+#   249,639       6.48           7.21         1.11x
+#
+# The advantage decays to almost nothing at depth, because the f16 KV cache is
+# the same size on both quants and comes to dominate the per-token traffic.
+# That is precisely why this profile is capped at 65536: Q4_K_M is worth
+# choosing in the short-context regime and barely worth it outside it.
+#
+# The cost is real and not measured here: this is a reasoning distill, and
+# quantization error compounds across a long chain of thought. Keep the q8
+# profile for work where the answer quality matters more than the latency.
+#
+# ─── Sizing (Apple M4 Pro / 64 GB) ───────────────────────────────────────────
+# Weights (Q4_K_M)                  5.38 GiB
+# KV cache, 65536 tokens, f16       2.00 GiB
+# Compute buffers + prompt cache   ~2    GiB
+#                                  ─────────
+#                                  ~9.4  GiB — and it loads in well under a minute
+
+hf_repo: empero-ai/Qwen3.8-9B-Distill-GGUF
+hf_file: Qwen3.8-9B-Q4_K_M.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+
+# ─── Context: deliberately small ─────────────────────────────────────────────
+# 65536 in a single slot. Allocating a larger window would not slow decode —
+# that scales with how full the cache actually is, not how big it is — and it
+# would not slow startup either (measured: ~3.4s to listening at 262144). The
+# reason to keep it small is discipline: a window you cannot afford to fill
+# only invites prompts whose prefill dominates the turn.
+#
+# Measured on Q8_0, prefill is what actually hurts at depth:
+#   ctx 130,868 -> 827s of prefill before the first token appears.
+# At 65536 that is roughly 5 minutes worst case, and under 30s for the few-
+# thousand-token prompts an agent turn actually sends.
+#
+# Raise to 131072 if you regularly exceed 64K, and accept the prefill bill.
+ctx_size: 65536
+parallel: 1
+
+n_predict: -1
+
+flash_attn: "on"
+
+# ─── Batching ────────────────────────────────────────────────────────────────
+batch_size: 2048
+ubatch_size: 2048
+cont_batching: true
+
+# Prompt cache. Worth its RAM here: agent workloads resend a near-identical
+# system prompt every turn, and a cache hit skips prefill entirely — by far the
+# largest latency win available on repeated turns.
+cache_ram: 8192
+
+# ─── KV Cache ────────────────────────────────────────────────────────────────
+# f16, not q8_0. At 2 GiB there is nothing to save, and f16 avoids the
+# dequantization work in the attention kernel on the latency-critical path.
+
+# ─── macOS / Metal ───────────────────────────────────────────────────────────
+mlock: true
+threads: 10
+priority: 1
+
+# ─── Chat Template & Reasoning ───────────────────────────────────────────────
+jinja: true
+reasoning_format: deepseek
+
+# ─── The biggest latency lever is here, not in the quant ─────────────────────
+# This model opens every answer with a <think> block. A turn with ~1500
+# thinking tokens and ~300 visible ones spends ~80% of its wall clock before
+# you see anything. Q4 over Q8 buys ~1.7x; skipping the thinking buys ~5x.
+#
+# Verified against this GGUF's embedded template: the key is `enable_thinking`.
+# `thinking: false` is silently ignored — the template never reads that name.
+# chat_template_kwargs:
+#   enable_thinking: false
+#
+# Softer alternative — keep reasoning but bound it:
+# reasoning_budget: 4096
+
+# ─── Sampling Defaults ───────────────────────────────────────────────────────
+# Model card recipe. Do not set temp: 0 — greedy decoding is a documented
+# repetition-loop failure mode, and 4-bit is the quant most prone to it.
+temp: 0.6
+top_p: 0.95
+top_k: 20
+
+# 4-bit benefits more than the larger quants from an anti-repetition nudge on
+# long generations. Enable if you see loops.
+# presence_penalty: 1.5
+
+# ─── Speculative decoding — benchmark before enabling ────────────────────────
+# ngram speculation needs no draft model and can pay off on code and other
+# highly predictable output. It can also lose on prose. Measure it.
+# extra_args:
+#   - --spec-type
+#   - ngram-simple

@@ -1,0 +1,65 @@
+# Profile: Qwen3.8-9B-Distill (Q6_K) — near-lossless, full 256K context
+#
+# Model card: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Upstream:   https://huggingface.co/empero-ai/Qwen3.8-9B-Distill
+#
+# The card calls Q6_K near-lossless. It saves 2 GiB over Q8_0 for a quality
+# difference you are unlikely to measure. On a 64 GB machine that saving buys
+# nothing, so prefer the q8 profile there; Q6_K is the better pick on 36 GB,
+# or when you want the extra headroom for a second server.
+#
+# See qwen38-9b-distill-q8.yml.example for the full annotated version — the
+# KV-cache math and the per-key rationale are the same.
+#
+# Download first:
+#   ./fetch-model.sh download empero-ai/Qwen3.8-9B-Distill-GGUF Qwen3.8-9B-Q6_K.gguf
+#
+# Sizing: 7.04 GiB weights + 8.00 GiB f16 KV at 262144 + ~1.5 GiB ≈ 16.5 GiB.
+
+hf_repo: empero-ai/Qwen3.8-9B-Distill-GGUF
+hf_file: Qwen3.8-9B-Q6_K.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+
+# ctx_size / parallel = usable context per request. One slot at the model's
+# full native window.
+ctx_size: 262144
+parallel: 1
+
+n_predict: -1
+
+flash_attn: "on"
+
+batch_size: 2048
+ubatch_size: 2048
+cont_batching: true
+cache_ram: 8192
+
+# f16 KV. Switch both to q8_0 to halve the cache to 4.25 GiB on a 36 GB
+# machine, or if you raise ctx_size.
+# cache_type_k: q8_0
+# cache_type_v: q8_0
+
+mlock: true
+threads: 10
+priority: 1
+
+jinja: true
+reasoning_format: deepseek
+
+# Model card recipe. Do not set temp: 0 — greedy decoding is a documented
+# repetition-loop failure mode for this model.
+temp: 0.6
+top_p: 0.95
+top_k: 20
+# presence_penalty: 1.5
+
+# spec_default: true
+
+# extra_args:
+#   - --slots

@@ -1,0 +1,134 @@
+# Profile: Qwen3.8-9B-Distill (Q8_0) — highest-quality quant, full 256K context
+#
+# Model card: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Upstream:   https://huggingface.co/empero-ai/Qwen3.8-9B-Distill
+# Base arch:  Qwen/Qwen3.5-9B — hybrid, 32 blocks laid out as
+#             8 x (3 x Gated DeltaNet -> 1 x Gated Attention)
+#
+# Requires a llama.cpp build with Qwen3.5 / Gated DeltaNet support. Older
+# builds fail to load the architecture outright.
+#
+# Download first (lands in ~/.cache/huggingface/hub, shared with mlx_lm):
+#   ./fetch-model.sh download empero-ai/Qwen3.8-9B-Distill-GGUF Qwen3.8-9B-Q8_0.gguf
+#
+# ─── Sizing (Apple M4 Pro / 64 GB) ───────────────────────────────────────────
+# Weights (Q8_0)                     9.11 GiB
+# KV cache, 262144 tokens, f16       8.00 GiB
+# Compute buffers + recurrent state ~1.5  GiB
+#                                   ─────────
+#                                   ~18.6 GiB   — comfortable headroom on 64 GB
+#
+# Only the 8 Gated Attention layers keep a growing KV cache (4 KV heads x 256
+# dim), so per token that is 8 * 4 * 256 * 2 = 16384 values = 32 KiB at f16.
+# The 24 Gated DeltaNet layers hold a fixed-size recurrent state per slot
+# instead, which is why 256K context is affordable here at all. Confirm against
+# the `KV self size` line in llama-server's startup log.
+
+# ─── Model ────────────────────────────────────────────────────────────────────
+# Resolved through the HuggingFace hub cache at launch. Do not pin a snapshot
+# hash — launch.sh follows refs/main so the profile survives a revision bump.
+hf_repo: empero-ai/Qwen3.8-9B-Distill-GGUF
+hf_file: Qwen3.8-9B-Q8_0.gguf
+# hf_revision: <sha>   # pin only if you need a specific upload
+
+# ─── Server ───────────────────────────────────────────────────────────────────
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+# ─── GPU & Layers ─────────────────────────────────────────────────────────────
+# -ngl 99: offload all layers to Metal.
+n_gpu_layers: 99
+
+# ─── Context ─────────────────────────────────────────────────────────────────
+# llama-server splits -c across slots: usable context per request is
+# ctx_size / parallel. 262144 / 1 gives one slot with the model's full native
+# 262144-token window — the largest single-request context without YaRN.
+#
+# Trade concurrency for it deliberately: with parallel: 4 the same ctx_size
+# would leave each slot only 65536 tokens. To get four slots at full context
+# instead, use ctx_size: 1048576 (see the q4 profile).
+ctx_size: 262144
+parallel: 1
+
+# ─── Token Prediction ────────────────────────────────────────────────────────
+# -n -1: no server-side cap. The model card recommends allowing at least 16384
+# tokens per answer because every response opens with a <think> block; leave
+# the actual limit to the client's max_tokens.
+n_predict: -1
+
+# ─── Flash Attention ──────────────────────────────────────────────────────────
+# Required for long context to be practical. Note it does not make decode speed
+# independent of context depth — every token still streams the whole KV cache.
+# Measured on M4 Pro, this profile, f16 KV:
+#   575 tok ctx  -> 402 tok/s prefill, 24.0 tok/s decode
+#   30.8K        -> 300              , 19.7
+#   60.5K        -> 248              , 16.1
+#   91.3K        -> 196              , 13.0
+# Roughly half the generation speed by 90K. The window is there; its tail is slow.
+flash_attn: "on"
+
+# ─── Batching ────────────────────────────────────────────────────────────────
+batch_size: 2048
+ubatch_size: 2048
+cont_batching: true
+
+# Prompt cache RAM limit in MiB. 8192 suits a 64 GB machine.
+cache_ram: 8192
+
+# ─── KV Cache Quantization ───────────────────────────────────────────────────
+# Left at f16 on purpose. q8_0 KV halves the cache to 4.25 GiB, but on 64 GB
+# there is nothing to buy with that memory, and f16 avoids both the quality
+# loss and the dequantization work in the attention kernel.
+#
+# Turn these on for a 32 GB machine, or if you raise ctx_size past 262144:
+# cache_type_k: q8_0
+# cache_type_v: q8_0
+
+# ─── macOS / Metal ───────────────────────────────────────────────────────────
+# mlock keeps macOS from compressing or swapping the weights.
+mlock: true
+
+# M4 Pro is 10 performance + 4 efficiency cores. Pin to the P-cores; with all
+# layers on Metal the CPU only handles sampling and orchestration.
+threads: 10
+
+# 0=normal, 1=medium, 2=high, 3=realtime
+priority: 1
+
+# ─── Chat Template & Reasoning ───────────────────────────────────────────────
+# The chat template is embedded in the GGUF; jinja renders it.
+jinja: true
+
+# This is a reasoning model — every answer opens with <think>...</think>.
+# "deepseek" moves that span into message.reasoning_content instead of leaving
+# it in message.content, so OpenAI-compatible clients get clean text without
+# each one having to strip the tags itself.
+reasoning_format: deepseek
+
+# Cap thinking length if a client is prone to runaway deliberation.
+# The card notes over-long deliberation on easy questions is a known trait.
+# reasoning_budget: 8192
+
+# ─── Sampling Defaults ───────────────────────────────────────────────────────
+# The model card's recipe. Applied to requests that don't override it.
+# Greedy decoding is a documented repetition-loop failure mode here — do not
+# set temp: 0.
+temp: 0.6
+top_p: 0.95
+top_k: 20
+
+# The Qwen3.5 base card suggests presence_penalty 1.5 for general thinking
+# tasks and 0.0 for coding. Left at the 0.0 default; raise it if you see
+# repetition on long open-ended generations.
+# presence_penalty: 1.5
+
+# ─── Experimental / Optional ─────────────────────────────────────────────────
+# Enable llama.cpp's default speculative decoding config only after measuring
+# it on this model and workload.
+# spec_default: true
+
+# Escape hatch for llama-server flags launch.sh does not map yet.
+# extra_args:
+#   - --slots

@@ -1,0 +1,77 @@
+# Profile: Qwen3.5-9B Claude 4.6 Opus Reasoning Distilled v2 (Q5_K_M)
+# Source: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+#
+# Q5_K_M: better quality than Q4_K_M, ~6.5GB weights.
+# Apple M4 Pro / 64GB target: 256K binary context with 4 server slots.
+# 262144 = 256 * 1024.
+#
+# MacBook Pro M5 / 32GB suggestion:
+#   ctx_size: 131072  # 128K, safer general-purpose ceiling
+#   parallel: 1       # or 2 if memory pressure stays low
+#   cache_ram: 2048   # reduce prompt-cache headroom
+# Use ctx_size: 65536 if you need more OS/app headroom.
+
+hf_repo: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+hf_file: Qwen3.5-9B.Q5_K_M.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+ctx_size: 262144
+n_predict: -1
+parallel: 4
+
+# ─── macOS / Metal Performance ───────────────────────────────────────────────
+
+# Flash attention: large win on attention cost, and required for long context to
+# be practical. It does not hold generation speed constant as context grows —
+# measured ~24 -> ~13 tok/s from 0.6K to 91K on an M4 Pro (9B Q8_0, f16 KV).
+# Metal supports this in recent llama.cpp builds.
+flash_attn: "on"
+
+# mlock: prevent macOS from compressing/swapping model memory.
+# With 36GB unified memory and ~7.7GB model+mmproj, plenty of headroom.
+mlock: true
+
+# Threads: CPU threads for non-GPU work. -1 lets llama.cpp auto-detect.
+# threads: -1
+
+# Batch size: larger = faster prompt processing, with more memory pressure.
+batch_size: 2048
+ubatch_size: 2048
+
+# Continuous batching: enabled by default in recent llama.cpp builds.
+# Set false only when debugging request scheduling behavior.
+cont_batching: true
+
+# Prompt cache RAM limit in MiB. 8192 is reasonable on a 64 GB Mac mini.
+# For 32GB machines, use 2048 or 0 to disable prompt cache.
+cache_ram: 8192
+
+# Priority: elevate thread priority for lower latency.
+# 0=normal, 1=medium, 2=high, 3=realtime
+priority: 1
+
+# KV cache quantization: compress KV cache to fit larger contexts.
+# q8_0 is a good balance of quality/memory on Apple Silicon with ample RAM.
+cache_type_k: q8_0
+cache_type_v: q8_0
+
+# Jinja chat templates are enabled by default in current llama.cpp.
+jinja: true
+
+# Optional: pass chat-template kwargs as JSON. Useful for templates that support
+# switches such as non-thinking mode.
+# chat_template_kwargs:
+#   enable_thinking: false
+
+# Optional: enable llama.cpp's default speculative decoding config.
+# Leave disabled unless you have verified it helps this model/workload.
+# spec_default: true
+
+# Escape hatch for new llama-server flags before launch.sh supports them.
+# extra_args:
+#   - --slots

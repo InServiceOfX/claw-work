@@ -1,0 +1,70 @@
+# Profile: Qwen3.8-9B-Distill (Q5_K_M) — 32 GB machines, full 256K context
+#
+# Model card: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Upstream:   https://huggingface.co/empero-ai/Qwen3.8-9B-Distill
+#
+# Tuned for a 32 GB MacBook Pro rather than the 64 GB Mac mini: Q5_K_M weights
+# plus a q8_0 KV cache still leave one slot at the model's full native window.
+#
+# See qwen38-9b-distill-q8.yml.example for the full annotated version.
+#
+# Download first:
+#   ./fetch-model.sh download empero-ai/Qwen3.8-9B-Distill-GGUF Qwen3.8-9B-Q5_K_M.gguf
+#
+# Sizing: 6.19 GiB weights + 4.25 GiB q8_0 KV at 262144 + ~1.5 GiB ≈ 12 GiB.
+# On a 64 GB machine prefer the q8 profile — there is memory to spare there.
+
+hf_repo: empero-ai/Qwen3.8-9B-Distill-GGUF
+hf_file: Qwen3.8-9B-Q5_K_M.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+
+# ctx_size / parallel = usable context per request.
+# Drop to 131072 if 32 GB feels tight with apps open; 65536 for real headroom.
+ctx_size: 262144
+parallel: 1
+
+n_predict: -1
+
+flash_attn: "on"
+
+# Smaller than the 64 GB profiles: prompt-processing batches spike memory, and
+# there is less slack to absorb it here.
+batch_size: 1024
+ubatch_size: 1024
+cont_batching: true
+
+# Prompt cache RAM limit in MiB. 2048 on a 32 GB machine; 0 disables it.
+cache_ram: 2048
+
+# Halves the KV cache. Not optional at this context size on 32 GB.
+cache_type_k: q8_0
+cache_type_v: q8_0
+
+mlock: true
+
+# Leave threads unset so llama.cpp auto-detects — this profile is meant to be
+# portable across laptop core counts.
+# threads: -1
+
+priority: 1
+
+jinja: true
+reasoning_format: deepseek
+
+# Model card recipe. Do not set temp: 0 — greedy decoding is a documented
+# repetition-loop failure mode for this model.
+temp: 0.6
+top_p: 0.95
+top_k: 20
+# presence_penalty: 1.5
+
+# spec_default: true
+
+# extra_args:
+#   - --slots

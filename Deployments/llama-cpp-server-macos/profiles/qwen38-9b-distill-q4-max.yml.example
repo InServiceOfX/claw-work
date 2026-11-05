@@ -1,0 +1,142 @@
+# Profile: Qwen3.8-9B-Distill (Q4_K_M) — full 262144 window in a single slot
+#
+# Model card: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Upstream:   https://huggingface.co/empero-ai/Qwen3.8-9B-Distill
+#
+# The largest single-request context this model supports, on the smaller quant.
+# Q4_K_M's small weights leave room for an f16 KV cache at the full window, so
+# this costs ~3 GiB less than the q8 profile for the same 262144 tokens.
+#
+# ─── Read this first: prefer the q8 profile for deep-context work ────────────
+# Measured on an M4 Pro / 64 GB, Q4_K_M buys almost nothing at depth:
+#
+#   ctx        prefill Q8 -> Q4      decode Q8 -> Q4
+#   571        402 -> 367 tok/s      24.00 -> 36.48  (1.52x)
+#   130,868    158 -> 155 tok/s      11.00 -> 12.72  (1.16x)
+#   249,639     95 ->  95 tok/s       6.48 ->  7.21  (1.11x)
+#
+# Prefill — the dominant cost at this context size — is identical: 2623s on Q4
+# against 2629s on Q8 at 250K. Prefill is compute-bound, so shrinking the
+# weights does not help it, and at short context Q4 is actually slower. Decode
+# gains collapse to 11% because the f16 KV cache is the same on both quants and
+# dominates per-token traffic once it is large.
+#
+# So this profile trades reasoning quality for ~11% decode and ~3 GiB, on work
+# where you have already spent 44 minutes on prefill. Use it when memory is
+# genuinely tight or you want the headroom for concurrent slots. Otherwise
+# reach for qwen38-9b-distill-q8, which has the same window at better quality.
+#
+# Sibling profiles, same model:
+#   qwen38-9b-distill-q4-fast  — 65536 ctx, lowest latency
+#   qwen38-9b-distill-q4       — 4 slots x 262144, concurrency
+#   qwen38-9b-distill-q4-max   — this one, 1 slot x 262144
+#   qwen38-9b-distill-q8       — 1 slot x 262144, best quality
+#
+# Download first:
+#   ./fetch-model.sh download empero-ai/Qwen3.8-9B-Distill-GGUF Qwen3.8-9B-Q4_K_M.gguf
+#
+# ─── What fits on an M4 Pro / 64 GB ──────────────────────────────────────────
+# Q4_K_M weights are 5.38 GiB, so the KV cache sets the budget:
+#
+#   ctx        slots   KV type   KV       total    per-request window
+#   65,536     1       f16        2.0     ~9.4     65,536      (q4-fast)
+#   262,144    1       f16        8.0    ~15.4     262,144     (this profile)
+#   1,048,576  4       q8_0      17.0    ~24.4     262,144 x4  (q4)
+#   1,048,576  1       q8_0      17.0    ~24.4     1,048,576   (YaRN, see below)
+#
+# ─── Read this before raising ctx_size ───────────────────────────────────────
+# The window is memory-cheap. Filling it is not. Measured on Q8_0, same machine:
+#
+#   ctx        prefill      time to first token   decode
+#   575        402 tok/s        1s                24.0 tok/s
+#   30,800     300 tok/s      103s                19.7
+#   130,868    158 tok/s      827s                11.0
+#   249,639     95 tok/s     2629s (44 min)        6.5
+#
+# So a genuinely full 256K prompt costs roughly three quarters of an hour before
+# the first token appears, and then generates at a walking pace. Q4_K_M shifts
+# these numbers but does not change their shape — decode is bandwidth-bound and
+# prefill is compute-bound, and both degrade with depth.
+#
+# The window is worth having for documents you feed once and query repeatedly
+# (the prompt cache then skips prefill), not for interactive turns. If your
+# prompts are reliably under ~30K tokens, q4-fast is the same model with a
+# smaller KV allocation — but startup and decode are identical, so there is no
+# speed penalty to leaving this profile loaded and simply sending short prompts.
+
+hf_repo: empero-ai/Qwen3.8-9B-Distill-GGUF
+hf_file: Qwen3.8-9B-Q4_K_M.gguf
+
+server:
+  # Use 127.0.0.1 for local-only serving. Use 0.0.0.0 to expose on your LAN.
+  host: 127.0.0.1
+  # port comes from config.yml; set it here only to override for this profile.
+
+n_gpu_layers: 99
+
+# ─── Context ─────────────────────────────────────────────────────────────────
+# ctx_size / parallel = usable context per request. One slot at the model's
+# full native 262144-token window — the maximum without YaRN.
+ctx_size: 262144
+parallel: 1
+
+n_predict: -1
+
+flash_attn: "on"
+
+# ─── Batching ────────────────────────────────────────────────────────────────
+# Prefill is the bottleneck at this context size, and these are the two knobs
+# that move it. 2048 is as large as is comfortable here; raising them further
+# spikes the compute buffer for a diminishing prefill gain.
+batch_size: 2048
+ubatch_size: 2048
+cont_batching: true
+
+# Prompt cache. The single most valuable setting in this profile: a hit skips
+# prefill entirely, which is the difference between 44 minutes and instant on a
+# repeated long document. Raise it if you work with a stable corpus.
+cache_ram: 8192
+
+# ─── KV Cache ────────────────────────────────────────────────────────────────
+# f16 at 8.0 GiB. Q4_K_M's small weights mean there is no need to quantize the
+# cache here — unlike the 4-slot q4 profile, which needs q8_0 to afford 17 GiB.
+
+# ─── macOS / Metal ───────────────────────────────────────────────────────────
+mlock: true
+threads: 10
+priority: 1
+
+# ─── Chat Template & Reasoning ───────────────────────────────────────────────
+jinja: true
+reasoning_format: deepseek
+
+# Verified against this GGUF's embedded template: the key is `enable_thinking`.
+# `thinking: false` is silently ignored — the template never reads that name.
+# chat_template_kwargs:
+#   enable_thinking: false
+
+# ─── Sampling Defaults ───────────────────────────────────────────────────────
+# Model card recipe. Do not set temp: 0 — greedy decoding is a documented
+# repetition-loop failure mode, and 4-bit is the quant most prone to it.
+temp: 0.6
+top_p: 0.95
+top_k: 20
+# presence_penalty: 1.5
+
+# ─── Beyond 262144: YaRN ─────────────────────────────────────────────────────
+# The base Qwen3.5 card documents YaRN to ~1,010,000 tokens with factor 4.0 over
+# a 262144 original context. On Q4_K_M with a q8_0 KV cache that fits this
+# machine in ~24.4 GiB. It is nonetheless a bad default, for three reasons:
+#
+#   1. Static YaRN degrades quality on short prompts, which is most prompts.
+#   2. The distill's own card claims only the 262144 native window.
+#   3. Extrapolating the prefill curve, a full 1M-token prompt is several hours
+#      before the first token. That is a batch job, not a context window.
+#
+# If you need it, put it in a separate profile rather than enabling it here:
+# ctx_size: 1048576
+# rope_scaling: yarn
+# rope_scale: 4.0
+# yarn_orig_ctx: 262144
+# cache_type_k: q8_0
+# cache_type_v: q8_0
