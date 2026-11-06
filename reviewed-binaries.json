@@ -354,6 +354,66 @@
       "sha256": "bd4472cd5dc00148ad75d706ee90ae02aa6de0c917715bc13b07321d50952a2c",
       "max_bytes": 131072,
       "note": "Public TikTok screenshot - @ray_fu Claude landing page output"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/build_in_public/01-hook.jpg": {
+      "sha256": "bca95df1cacc2238f6ac02af1bc4fe2ce8ac1ed76c341af77b77dcab8c484f67",
+      "max_bytes": 106742,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/build_in_public/02-under-100-words.jpg": {
+      "sha256": "e1203b1b82aa7f55f363b5f2b0b81fc854ac4934ac89a647c5a576225d2c84b9",
+      "max_bytes": 82955,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/build_in_public/03-subject-under-30.jpg": {
+      "sha256": "dce24814bf096105bf9847301159c3fc7fa28c93b65c27051ea6053fd461af8d",
+      "max_bytes": 108305,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/build_in_public/04-followups.jpg": {
+      "sha256": "79fa0550635e95bd5310e725d19024f1ca70b60d8580fde6fe0dc803951db253",
+      "max_bytes": 131653,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/joshuablatch/01-library-intro.jpg": {
+      "sha256": "5976ccd6affe1c2326309afd48b03f6dc3a24943da61b94988249cc45ee18ade",
+      "max_bytes": 96888,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/joshuablatch/02-opportunities-rule.jpg": {
+      "sha256": "7ec652ce2455d9d66654b0df6c4c1d1b7b962068ebeaef9235cd8722ad5bb877",
+      "max_bytes": 65397,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/joshuablatch/03-approve-pass-pulse.jpg": {
+      "sha256": "f5f969f428be967dbcfb11df44adafc3d786fc82edc1540fd952b1db3bebf525",
+      "max_bytes": 106417,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/joshuablatch/04-built-modules.jpg": {
+      "sha256": "8fb16ae47f1e179e1fceeccc10e2e7c4b212bd539280556674b73d50aaa00134",
+      "max_bytes": 89299,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/systemswithsanam/01-no-paywall.jpg": {
+      "sha256": "bf8210efdff1138c202d3ee31bf1e10a96eeb8ba14f347a9e021d532fdf85121",
+      "max_bytes": 111367,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/systemswithsanam/02-desktop-capcut-folder.jpg": {
+      "sha256": "e4ce58a9bdaf7ae0f58ca1f3c158ff25662831b7ef1dd3290f99359fac315da7",
+      "max_bytes": 139406,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/systemswithsanam/03-style-interview-prompt.jpg": {
+      "sha256": "941148e11cdd6926abcb099412912eeeeb78390d6d3d9eb6cda69c6459ffc033",
+      "max_bytes": 136975,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-shortform-and-outreach-2026-11-06/screenshots/systemswithsanam/04-save-as-skill.jpg": {
+      "sha256": "40da2e06436599cb1020fd58810518a4ef1824c4370868c80936914c5a1dd69d",
+      "max_bytes": 113284,
+      "note": "Public TikTok screenshot (720x1280)"
     }
   }
 }

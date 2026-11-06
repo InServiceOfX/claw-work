@@ -4,8 +4,8 @@
 - Auto-captions: [`../transcripts/chase_ai_-7693602525081111821.txt`](../transcripts/chase_ai_-7693602525081111821.txt)
 - Screenshots: [`../screenshots/chase_ai/`](../screenshots/chase_ai/)
 - Theme: procedural motion graphics (HTML canvas + Playwright + FFmpeg)
-- CTA: paid Chase AI+ Skool community and Claude Code/Codex masterclasses; link in the pinned comment. The workflow and GitHub plugin are shown in the video and do not require that purchase. Free core: https://github.com/cb9191/animate (MIT), shown on screen.
-- Inspiration mentions: skilry.dev (browse free; paid prompt library $9.99/mo, $79/yr, or $169 lifetime — use free thumbnails as visual refs instead of buying prompts); @KevinNgo on X ("Kevin Ngo - Creative coding with AI"); elevenlabs.io for TTS (paid; swap for open-source TTS if you want a free stack).
+- CTA: paid Chase AI+ Skool community and Claude Code/Codex masterclasses; link in the pinned comment. The workflow and GitHub plugin are shown in the video and do not require that purchase. Free core: https://github.com/cth9191/animate (MIT, ~1.5k★), shown on screen.
+- Inspiration mentions: https://skillry.dev (browse free; paid prompt library $9.99/mo, $79/yr, or $169 lifetime — use free thumbnails as visual refs instead of buying prompts; note: **skillery.dev** is a different unrelated product); @KevinNgo on X ("Kevin Ngo - Creative coding with AI"); elevenlabs.io for TTS (paid; swap for open-source TTS if you want a free stack).
 
 This is not generative "AI video" (no Runway/Sora-style model) and he says you do not need Remotion or After Effects. Claude writes deterministic JavaScript; a headless browser draws frames; FFmpeg stitches them.
 
@@ -18,7 +18,7 @@ This is not generative "AI video" (no Runway/Sora-style model) and he says you d
 - **5:58–7:19** Storyboard first: ask Claude for 5–7 static keyframes (e.g. t=1, t=5, t=10) before committing to a full render. User approves beats, then full 60fps Playwright render.
 - **7:19–9:56** Level 2 master prompt (on-screen ~7:19 and ~8:36). See below.
 - **9:56–11:43** Level 3: pass reference images or reference videos so Claude copies composition/aesthetic. Example shown: a coded recreation of a traditional motion-graphics timeline of currency/communication from 9000 BC to 1969.
-- **11:43+** Level 4 skill packaging: the `animate` skill with 7 built-in styles (cut-paper, crosshatch, riso, sketchbook, and others). README title on screen: "Animate - procedural animation in any style, for Claude Code". Automates intake, storyboard, generation, and self-correction. Then the `cb9191/animate` README and install commands.
+- **11:43+** Level 4 skill packaging: the `animate` skill with 7 built-in styles: `cut-paper`, `crosshatch`, `riso`, `sketchbook`, `math`, `pixel`, `isometric` (+ 8th custom slot via `new-style.md` / references). README title on screen: "Animate - procedural animation in any style, for Claude Code". Automates intake, storyboard, generation, and self-correction. Then the `cth9191/animate` README and install commands.
 
 Public writeup covering the same method and Level 1/2 prompt text: https://visions.joaoqueiros.com/blog/claude-javascript-video-canvas-playwright-ffmpeg-animate-skill/
 
@@ -34,7 +34,7 @@ Close:
 
 > Before you call it done, use FFmpeg to pull a contact sheet, look at it, fix what's wrong, re-render, and repeat.
 
-## On-screen GitHub install (screenshot `06-install-commands.jpg`, README of `cb9191/animate`, MIT)
+## On-screen GitHub install (screenshot `06-install-commands.jpg`, README of `cth9191/animate`, MIT)
 
 Requirements shown: Claude Code, Node 18+, Playwright with Chromium, and ffmpeg on PATH. Fonts are local system fonts with Windows/macOS/Linux fallbacks. Optional voice-overs: Python `faster-whisper` for word timing, and optionally the ElevenLabs connector in Claude (Settings → Connectors).
 
@@ -45,7 +45,7 @@ npm i -g playwright && npx playwright install chromium
 As a plugin:
 
 ```
-/plugin marketplace add cb9191/animate
+/plugin marketplace add cth9191/animate
 /plugin install animate@animate
 ```
 
@@ -71,6 +71,23 @@ Tightened loop:
 6. Optional: use `faster-whisper` word timings to land visual changes on specific words.
 
 For claw-dj marketing this is useful for explainer motion graphics (how AI mixes work, lobster brand boards), not for cutting live Mixxx recordings.
+
+## 6-gate delivery pipeline (from README shown on screen ~13:00)
+
+| Step | Gate |
+|---|---|
+| 0 Intake | subject, formats, voice, look, hero, music, product + style gallery |
+| 1 Story check | beat table, facts web-checked — approve/change |
+| 2 Look check | 2–4 style frames (or ref compares) — thumbs up |
+| 3 Storyboard | every beat as key frame + sound/transition — panel thumbs |
+| 4 Build | animate approved panels, render, review |
+| 5 Delivery | measured checks: beat-grid cuts, story-arc loudness, hero anchoring, loudest-after-silence, narration pace → revision notes |
+
+## Verified rewatch (2026-11-06)
+
+- **GitHub URL fix:** `cb9191/animate` (404) → **`https://github.com/cth9191/animate`** (live MIT repo, ~1.5k★)
+- **Inspiration URL fix:** `skilry.dev` (404) → **`https://skillry.dev`** (note: `skillery.dev` is unrelated)
+- 7 built-in styles confirmed: `cut-paper`, `crosshatch`, `riso`, `sketchbook`, `math`, `pixel`, `isometric`
 
 ## Screenshot index
 
