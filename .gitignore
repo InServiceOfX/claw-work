@@ -36,3 +36,6 @@ litellm_cache.sqlite/
 *.ir
 __pycache__/
 *.py[cod]
+
+# Project-local canvas renderer dependencies and generated media stay untracked.
+node_modules/

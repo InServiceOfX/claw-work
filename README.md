@@ -24,6 +24,10 @@ on any result. Development happens on feature branches; the repository owner mer
 
 ## Research
 
+- [Video production skills and workflows](docs/video-production/README.md):
+  six-video breakdown, priority ranking, transcript editing and canvas-explainer
+  skills, plus a local [Rust cut-list helper](Rust/claw-edit/README.md).
+
 - [TikTok skill research (2026-11-05)](research/tiktok-skill-research-2026-11-05/README.md):
   parsed six public TikToks for Claude / AI-edit workflow notes, captions, and screenshots.
   Themes: HyperFrames talking-head edits, Claude × CapCut, video-editor skill packaging,

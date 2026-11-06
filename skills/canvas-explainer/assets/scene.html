@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Phrase alignment — silent canvas study</title>
+<style>html,body{margin:0;background:#111918}canvas{display:block}</style>
+<canvas id="scene" width="360" height="640"></canvas>
+<script>
+const canvas = document.querySelector('#scene');
+const ctx = canvas.getContext('2d');
+const ease = x => { x = Math.max(0, Math.min(1, x)); return x*x*(3-2*x); };
+window.renderFrame = function(t) {
+  const progress = ease((t - 1.5)/2.5);
+  ctx.clearRect(0,0,360,640);
+  ctx.fillStyle = '#111918'; ctx.fillRect(0,0,360,640);
+  ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+  ctx.fillStyle = '#a7b8af'; ctx.font = '12px sans-serif';
+  ctx.fillText('A SMALL MIXING LESSON', 28, 55);
+  ctx.fillStyle = '#f3efdf'; ctx.font = 'bold 36px sans-serif';
+  ctx.fillText('Let the phrases',28,93); ctx.fillText('meet.',28,136);
+  ctx.fillStyle = '#a7b8af'; ctx.font = '16px sans-serif';
+  ctx.fillText('Two tracks. One shared entry.',28,198);
+  const drawRow = (y, offset, color, label) => {
+    ctx.fillStyle = color; ctx.font = '12px sans-serif'; ctx.fillText(label,28,y-25);
+    for(let i=0;i<8;i++) {
+      ctx.fillStyle = i===0 ? color : '#34423c';
+      ctx.fillRect(28+i*32+offset,y,25,68);
+    }
+  };
+  drawRow(290,0,'#c5e890','OUTGOING');
+  drawRow(405,50*(1-progress),'#efae88','INCOMING');
+  ctx.strokeStyle = '#f3efdf'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(28,278); ctx.lineTo(28,485); ctx.stroke();
+  ctx.fillStyle = '#f3efdf'; ctx.font = 'bold 21px sans-serif';
+  ctx.fillText(t < 4 ? 'Align the first beat.' : 'Now the story continues.',28,526);
+  ctx.fillStyle = '#a7b8af'; ctx.font = '12px sans-serif';
+  ctx.fillText('ILLUSTRATION · NO LIVE MIX CLAIM',28,571);
+};
+window.renderFrame(0);
+</script>
+</html>

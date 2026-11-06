@@ -1,0 +1,3 @@
+interface:
+  display_name: "Canvas Explainer"
+  short_description: "Render faceless explainers from deterministic canvas scenes"

@@ -26,7 +26,16 @@ Auto-captions (cleaned spoken text) live in `transcripts/`. Chosen stills (720px
 5. **Comment / bio lead magnets.** Sarah ("edit"), Adam ("CLAUDE"), Jam ("JAM" / link in bio) gate extras. Brian does not. Chase pitches a paid community in a pinned comment but the method and GitHub skill are shown in-video. Free substitutes are listed in `PUBLIC-EXTRAS.md`.
 6. **DJ tonal play (claw-dj / Mixxx).** Phil shows Ableton pitch-duplication + Pioneer CDJ hot cues, or a Pioneer DJS-1000 in Scale Mode. Mixxx workarounds: pre-produced hot-cue track, or multiple samplers at different pitches. This folder is the Mixxx-facing note; product code stays in InServiceOfX/claw-dj.
 
-## Suggested next uses (not done in this PR)
+## Follow-through
+
+See [production workflows and per-video breakdown](../../docs/video-production/README.md)
+for original reusable skills, the local Rust cut-list helper, verification and
+limits. DJ follow-through is documented in claw-dj's
+`docs/TONE_PLAY_AGENT_HANDOFF.md`; it reuses that repository's existing
+original-source Python/Rust experiment. The suggestions below record the
+original research PR's proposals, not evidence they were implemented there.
+
+## Original suggested next uses (not done in the research PR)
 
 - Marketing: turn Brian/Adam/Jam last-take + caption rules into a claw-dj short-form edit prompt that points at HyperFrames docs (open source).
 - Mixxx: optionally implement sampler pitch maps or a hot-cue tonal-play helper in claw-dj (separate repo/PR).
