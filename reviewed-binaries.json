@@ -119,6 +119,106 @@
       "sha256": "8d304a6fbda49fb1d99b8826168ff7195a743d2dfb8b9d10d9cf96f95e409add",
       "max_bytes": 131072,
       "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/ceciliakimdesign/01-nessie-home-moving-bg.jpg": {
+      "sha256": "a9a6ab3a90d93cc89d5409e1252445ba9ff7fcb96ea34c629522dc211402130b",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/ceciliakimdesign/02-five-design-directions.jpg": {
+      "sha256": "5a22b5fe6630f5d6ce72541c4263240293a5b797caa3a2490960ed8fe9bcfd38",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/ceciliakimdesign/03-mobbin-partiful-ui.jpg": {
+      "sha256": "026f5cb72970049d2882101672fa76699a35c0455941638b586febdab80a6f45",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/ceciliakimdesign/04-reorder-sheet-ux.jpg": {
+      "sha256": "74ea81a59d2bf2d3fc189c285620c8cf4c11b0283df5d7233c554df71a4bf3e4",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/buildingnpublic/01-icm-folder-intro.jpg": {
+      "sha256": "59fa70ecd4f0a111ca50cb949e7cb15d4f89f0aa3e8d7235b61fa91776881651",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/buildingnpublic/02-97-percent-fewer-tokens.jpg": {
+      "sha256": "b58b9b79e5dbe79d7ddda2bc973073a441274991335d01c2d0134e57de056bbc",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/buildingnpublic/03-arxiv-icm-paper.jpg": {
+      "sha256": "871081d6649a5f7ff8107db2b65e8e08d36d22c244eed5fc6730d6e0fc84f1ce",
+      "max_bytes": 196608,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/buildingnpublic/04-github-icm-architect.jpg": {
+      "sha256": "6651c0e5e4da593af284f10c26a940fd8a9eb98fce75d991868e11711683e260",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/nateherkai/01-demo-site-pegasus.jpg": {
+      "sha256": "b23fb649b062e68c5bf3cf85dfc45a7c313493663600de2d6ff9baf4f93b3d8e",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/nateherkai/02-impeccable-card.jpg": {
+      "sha256": "309ee8ecf7968ce2683832eaf344b980ce04f5823621defc449815b97107857f",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/nateherkai/03-taste-skill-readme.jpg": {
+      "sha256": "9b1982851b005484d856847fb9cb1b66b51666b79e2fc7eb3f40c3df9d10345d",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/nateherkai/04-demo-site-aicm.jpg": {
+      "sha256": "3d94172f68027cfa8a19a73ac045b7c86c3314b9dc0d50c93e5dbcbf6cbdf4b1",
+      "max_bytes": 98304,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/itstundealao/01-github-brag-repo.jpg": {
+      "sha256": "779241299a35af655cf0d782246beb40ac463f5fb7a1cca42ba4d0968f46e75e",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/itstundealao/02-brag-command.jpg": {
+      "sha256": "e017a39d073f0b9d07c3798b00c953724b398c170b93292f20532692541d7b80",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/itstundealao/03-cost-token-breakdown.jpg": {
+      "sha256": "d19054cc161494d073e58152c7e4a678fb10f46d261a403fa2c1ca9cac1388f2",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/itstundealao/04-output-video-mock.jpg": {
+      "sha256": "df3743113aad5af0ea7135974527430a610e14437b512e26333e06fbf01c4a41",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/sigmaflowai2/01-hairline-field-figure.jpg": {
+      "sha256": "4bdcd7631a909d9f4eeebabee048af26fe95d3e562a5b95a837005407045bd78",
+      "max_bytes": 98304,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/sigmaflowai2/02-github-hairline.jpg": {
+      "sha256": "d8631d8d7d1473fde48730126abbff76ba35f1ed3684ace8da21ffa5b107fc72",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/sigmaflowai2/03-hairline-create-command.jpg": {
+      "sha256": "5543f71f88e80e026fa01a9d40a49f5ec4d315c5972e7f159f4f91d52dbdcebb",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-mcp-and-skills-2026-11-06/screenshots/sigmaflowai2/04-hairline-funnel-output.jpg": {
+      "sha256": "e3874b6627434d76835d7739b8910bb12c83b0c823e3fc5616af62571076749f",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot (720x1280)"
     }
   }
 }
