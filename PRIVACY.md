@@ -30,6 +30,42 @@ The checks reject known secret patterns, personal absolute paths and forbidden
 artifact paths. They cannot recognize every possible private fact. Human review
 remains necessary; this is not a claim of perfect data-loss prevention.
 
+## Reviewed binaries
+
+Binary files (non-UTF-8 content) are rejected by default with
+`binary_requires_explicit_publication_review`. To include pre-reviewed binary
+artifacts such as small public screenshots or icons:
+
+1. Add an entry to `reviewed-binaries.json` at the repository root with the exact
+   repo-relative path as key, and an object containing:
+   - `sha256`: the lowercase hex SHA-256 digest of the file contents
+   - `max_bytes`: an upper bound on the file size (the check fails closed if the
+     actual file exceeds this limit)
+   - `note` (optional): a short description of what the file is and why it was reviewed
+
+2. Verify the file:
+   - Valid format for its extension (e.g. valid JPEG header)
+   - No embedded EXIF/GPS/personal metadata leaks
+   - Small size appropriate for documentation (typically < 128 KiB per image)
+   - Sourced from public content (e.g. public website screenshots, open-source icons)
+
+3. The privacy gate passes only when the committed file's SHA-256 and size match the
+   manifest entry exactly. Any byte change to a reviewed file—or any new binary at
+   an unlisted path—fails closed.
+
+Example entry in `reviewed-binaries.json`:
+```json
+{
+  "reviewed": {
+    "docs/screenshot.jpg": {
+      "sha256": "abc123...",
+      "max_bytes": 131072,
+      "note": "Public documentation screenshot"
+    }
+  }
+}
+```
+
 ## Runtime review boundary
 
 Keep review source, proof models, manifests, reports and logs in an explicitly

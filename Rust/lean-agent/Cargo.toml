@@ -33,4 +33,5 @@ flate2 = "1"
 zstd = "0.13"
 
 [dev-dependencies]
+sha2 = "0.10"
 tempfile = "3"

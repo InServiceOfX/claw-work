@@ -1,8 +1,11 @@
 use claw_lean_agent::{
     input::{InventoryLimits, create_private_dir, inventory_target, prepare_review},
-    privacy::{scan_blob, scan_index},
+    privacy::{
+        ReviewedBinariesManifest, ReviewedBinary, scan_blob, scan_blob_with_manifest, scan_index,
+    },
 };
-use std::{fs, process::Command};
+use sha2::Digest;
+use std::{collections::HashMap, fs, process::Command};
 mod common;
 use common::tempdir;
 
@@ -126,4 +129,139 @@ fn inventory_entry_limit_is_reported() {
     let inv = inventory_target(t.path(), &limits).unwrap();
     assert!(inv.truncated);
     assert!(inv.files.len() <= 3);
+}
+
+#[test]
+fn unreviewed_binary_fails_with_binary_requires_review() {
+    let binary_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46];
+    let violations = scan_blob("image.jpg", binary_content);
+    assert_eq!(violations.len(), 1);
+    assert_eq!(
+        violations[0].rule,
+        "binary_requires_explicit_publication_review"
+    );
+}
+
+#[test]
+fn reviewed_binary_with_matching_hash_passes() {
+    let binary_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46];
+    let hash = format!("{:x}", sha2::Sha256::digest(binary_content));
+    let mut manifest = ReviewedBinariesManifest::default();
+    manifest.reviewed.insert(
+        "images/test.jpg".to_string(),
+        ReviewedBinary {
+            sha256: hash,
+            max_bytes: 1024,
+            note: Some("Test image".to_string()),
+        },
+    );
+    let violations = scan_blob_with_manifest("images/test.jpg", binary_content, &manifest);
+    assert!(
+        violations.is_empty(),
+        "Reviewed binary should pass: {:?}",
+        violations
+    );
+}
+
+#[test]
+fn reviewed_binary_with_changed_hash_fails_closed() {
+    let original_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46];
+    let modified_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x47];
+    let original_hash = format!("{:x}", sha2::Sha256::digest(original_content));
+    let mut manifest = ReviewedBinariesManifest::default();
+    manifest.reviewed.insert(
+        "images/test.jpg".to_string(),
+        ReviewedBinary {
+            sha256: original_hash,
+            max_bytes: 1024,
+            note: None,
+        },
+    );
+    let violations = scan_blob_with_manifest("images/test.jpg", modified_content, &manifest);
+    assert_eq!(violations.len(), 1);
+    assert_eq!(
+        violations[0].rule,
+        "binary_requires_explicit_publication_review"
+    );
+}
+
+#[test]
+fn reviewed_binary_exceeding_max_bytes_fails_closed() {
+    let binary_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46];
+    let hash = format!("{:x}", sha2::Sha256::digest(binary_content));
+    let mut manifest = ReviewedBinariesManifest::default();
+    manifest.reviewed.insert(
+        "images/test.jpg".to_string(),
+        ReviewedBinary {
+            sha256: hash,
+            max_bytes: 5,
+            note: None,
+        },
+    );
+    let violations = scan_blob_with_manifest("images/test.jpg", binary_content, &manifest);
+    assert_eq!(violations.len(), 1);
+    assert_eq!(
+        violations[0].rule,
+        "binary_requires_explicit_publication_review"
+    );
+}
+
+#[test]
+fn reviewed_binary_at_unlisted_path_fails() {
+    let binary_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46];
+    let hash = format!("{:x}", sha2::Sha256::digest(binary_content));
+    let mut manifest = ReviewedBinariesManifest::default();
+    manifest.reviewed.insert(
+        "images/reviewed.jpg".to_string(),
+        ReviewedBinary {
+            sha256: hash,
+            max_bytes: 1024,
+            note: None,
+        },
+    );
+    let violations = scan_blob_with_manifest("images/other.jpg", binary_content, &manifest);
+    assert_eq!(violations.len(), 1);
+    assert_eq!(
+        violations[0].rule,
+        "binary_requires_explicit_publication_review"
+    );
+}
+
+#[test]
+fn scan_index_uses_manifest_for_reviewed_binaries() {
+    use sha2::Digest;
+    let t = tempdir().unwrap();
+    let run = |args: &[&str]| {
+        assert!(
+            Command::new("git")
+                .args(args)
+                .current_dir(t.path())
+                .env("GIT_CONFIG_GLOBAL", "/dev/null")
+                .env("GIT_CONFIG_NOSYSTEM", "1")
+                .output()
+                .unwrap()
+                .status
+                .success()
+        );
+    };
+    run(&["init", "--template="]);
+    let binary_content: &[u8] = &[0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46];
+    fs::write(t.path().join("image.bin"), binary_content).unwrap();
+    run(&["add", "image.bin"]);
+    assert!(!scan_index(t.path()).unwrap().is_empty());
+    let hash = format!("{:x}", sha2::Sha256::digest(binary_content));
+    let mut reviewed = HashMap::new();
+    reviewed.insert(
+        "image.bin".to_string(),
+        ReviewedBinary {
+            sha256: hash,
+            max_bytes: 1024,
+            note: None,
+        },
+    );
+    let manifest = ReviewedBinariesManifest { reviewed };
+    let manifest_json = serde_json::to_string_pretty(&manifest).unwrap();
+    fs::write(t.path().join("reviewed-binaries.json"), &manifest_json).unwrap();
+    run(&["add", "reviewed-binaries.json"]);
+    assert!(scan_index(t.path()).unwrap().is_empty());
 }

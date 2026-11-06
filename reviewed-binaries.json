@@ -1,0 +1,124 @@
+{
+  "reviewed": {
+    "research/tiktok-skill-research-2026-11-05/screenshots/abloommedia/01-raw-footage-upload.jpg": {
+      "sha256": "27c9adc0844a8e6923595e2fce9f9eac67c63a588fa329adcce171357c36e404",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/abloommedia/02-storyboard-plan.jpg": {
+      "sha256": "40147f830bd70c1e31790ebd1c5e0668efebb36387204e4762588394d762ff7c",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/abloommedia/03-clarifying-questions.jpg": {
+      "sha256": "dd557f2871b9d506cf22b312e2965b057915de63071c251acde935f412ce94e3",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/abloommedia/04-capcut-timeline.jpg": {
+      "sha256": "9d9c998932a507215959faf76ece5c108fe441f12286cf17f9b10e8e5b975eb5",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/adamstewart/01-input-output-timeline.jpg": {
+      "sha256": "cef715dfc3eb2d2b31cfdba3b809208ea0d6a14d0bc54ce07b6c7c5327404cb0",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/adamstewart/02-prompt-raw-vs-final.jpg": {
+      "sha256": "e87723a256dbe03e3defe0a83565773d02cca77eebd804ae9f4e735f6a352720",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/adamstewart/03-captions-bigger.jpg": {
+      "sha256": "fb95442d27577341ce72051f58c9edf4ad12bfb9d24023f1e9e0469b524b9ea6",
+      "max_bytes": 32768,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/bridotai/01-hyperframes-install.jpg": {
+      "sha256": "52ab7a482b3f255da26c9ff80841a210349c8a41f2f7248823228f884f91e40f",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/bridotai/02-upload-at-hyperframes.jpg": {
+      "sha256": "ab4cabc0bf98c408a12bcf1c6fb0979fc65672d2b36f63e90f9f2e5c8bb6ceff",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/bridotai/03-editing-prompt.jpg": {
+      "sha256": "2646241044f44775ca1074a61d80bcc0e044eebf666a3cc6271338b761d33ac8",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/01-architecture.jpg": {
+      "sha256": "dd54e38e9690f818c9ba455a757200eecffe18270ca8b0571b7aa4d345ad4794",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/02-storyboard.jpg": {
+      "sha256": "8e852c1b33fca541654eb9e220f3f2780630c65edc8f53e6c9ff824cbb6f2e45",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/03-level2-prompt.jpg": {
+      "sha256": "04e973c42c78483d36dc8dbc2bffe4ddd4100cdc9f37c89cd8cd1fdaa15041a4",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/04-reference-compare.jpg": {
+      "sha256": "08fcc064cc9c3f1ed5113da933be869447eb85e2b2d5300ff69565976d241d93",
+      "max_bytes": 32768,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/05-github-readme.jpg": {
+      "sha256": "abeb19ce35528ad3e31fc1cb24c00f21027179ffab467ba142c27d094719812e",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/chase_ai/06-install-commands.jpg": {
+      "sha256": "bf3f8f8e6c480206584a129fd97cffdef96763a045120f7415c5cec93e984d21",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x406)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/djphilharris/01-hook.jpg": {
+      "sha256": "198769da13013cc8d7932c2a594d1305ce3141c6de6e49332c9fafe41c2eeaf4",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/djphilharris/02-ableton-pitch-sequence.jpg": {
+      "sha256": "d929e1c6c778e25917dd225d3c10bee1177450a39ec23c13fa39a314207ed063",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/djphilharris/03-cdj-hotcues.jpg": {
+      "sha256": "19ec57e1b140e58e9221971022d8e21449dc013da2ed29bbb43dd5c7516e49ff",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/djphilharris/04-djs1000-scale-mode.jpg": {
+      "sha256": "399259fee53aff200cb0cc5a1a2ede49c6d89f2a696a68dbd8b0c63fe2feb7e3",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/jamout/01-step1-setup.jpg": {
+      "sha256": "9ba5e48dd8c37301e485c7667f384a87cb4c6e71ddf4db698527fd39d4c61db8",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/jamout/02-step2-hyperframes.jpg": {
+      "sha256": "b871cde5303554dd624ac6a097be0b67c4a4902581a540bc8d49aafef244cbe2",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/jamout/03-nine-rules.jpg": {
+      "sha256": "92459af4a825219348018402e200540c0be652c76fe2a6f701e15142aaf75faf",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/tiktok-skill-research-2026-11-05/screenshots/jamout/04-step4-test.jpg": {
+      "sha256": "8d304a6fbda49fb1d99b8826168ff7195a743d2dfb8b9d10d9cf96f95e409add",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot (720x1280)"
+    }
+  }
+}

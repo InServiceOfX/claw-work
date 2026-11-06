@@ -1,8 +1,46 @@
 //! Defense-in-depth checks of indexed blobs, never a guarantee of absence of all private facts.
 use crate::{Result, input::excluded, process::run_bounded};
 use regex::Regex;
-use serde::Serialize;
-use std::{path::Path, process::Command, sync::OnceLock, time::Duration};
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+use std::{collections::HashMap, path::Path, process::Command, sync::OnceLock, time::Duration};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ReviewedBinary {
+    pub sha256: String,
+    pub max_bytes: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
+}
+
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct ReviewedBinariesManifest {
+    #[serde(default)]
+    pub reviewed: HashMap<String, ReviewedBinary>,
+}
+
+impl ReviewedBinariesManifest {
+    pub fn load(repo: &Path) -> Result<Self> {
+        let manifest_path = repo.join("reviewed-binaries.json");
+        if !manifest_path.exists() {
+            return Ok(Self::default());
+        }
+        let contents = std::fs::read_to_string(&manifest_path)?;
+        let manifest: Self = serde_json::from_str(&contents)?;
+        Ok(manifest)
+    }
+
+    pub fn is_reviewed(&self, path: &str, bytes: &[u8]) -> bool {
+        let Some(entry) = self.reviewed.get(path) else {
+            return false;
+        };
+        if bytes.len() as u64 > entry.max_bytes {
+            return false;
+        }
+        let hash = format!("{:x}", Sha256::digest(bytes));
+        hash == entry.sha256
+    }
+}
 
 #[derive(Debug, Serialize)]
 pub struct Violation {
@@ -21,6 +59,14 @@ fn patterns() -> &'static Vec<(&'static str, Regex)> {
     ].into_iter().map(|(name, re)| (name, Regex::new(re).expect("constant regex"))).collect())
 }
 pub fn scan_blob(path: &str, bytes: &[u8]) -> Vec<Violation> {
+    scan_blob_with_manifest(path, bytes, &ReviewedBinariesManifest::default())
+}
+
+pub fn scan_blob_with_manifest(
+    path: &str,
+    bytes: &[u8],
+    manifest: &ReviewedBinariesManifest,
+) -> Vec<Violation> {
     let mut rules = vec![];
     if path.split('/').any(excluded)
         || path.ends_with(".jsonl")
@@ -39,7 +85,11 @@ pub fn scan_blob(path: &str, bytes: &[u8]) -> Vec<Violation> {
                 }
             }
         }
-        _ => rules.push("binary_requires_explicit_publication_review"),
+        _ => {
+            if !manifest.is_reviewed(path, bytes) {
+                rules.push("binary_requires_explicit_publication_review");
+            }
+        }
     }
     rules
         .into_iter()
@@ -65,6 +115,7 @@ fn git(repo: &Path, args: &[&str], max: usize) -> Result<Vec<u8>> {
     Ok(r.stdout)
 }
 pub fn scan_index(repo: &Path) -> Result<Vec<Violation>> {
+    let manifest = ReviewedBinariesManifest::load(repo)?;
     let index = git(repo, &["ls-files", "--stage", "-z"], 16 * 1_048_576)?;
     let mut violations = vec![];
     for record in index.split(|b| *b == 0).filter(|r| !r.is_empty()) {
@@ -86,7 +137,7 @@ pub fn scan_index(repo: &Path) -> Result<Vec<Violation>> {
             return Err("Malformed object ID".into());
         }
         let bytes = git(repo, &["cat-file", "blob", parts[1]], 8 * 1_048_576)?;
-        violations.extend(scan_blob(path, &bytes));
+        violations.extend(scan_blob_with_manifest(path, &bytes, &manifest));
     }
     Ok(violations)
 }
