@@ -17,6 +17,11 @@ See [BOTS.md](BOTS.md) for the rules bots follow when contributing.
   local GGUF open-weight models natively on Apple Silicon (Metal), resolved from the
   HuggingFace hub cache, behind OpenAI- and Anthropic-compatible APIs. Includes the
   `llama-cpp-macos` skill for connecting Claude Code, Codex, Grok Build, Hermes and pi.
+- [claw-shorts](Skills/claw-shorts/README.md): create 9:16 vertical short-form videos
+  (TikTok, Reels, Shorts) from raw takes, screen recordings, or HTML/Canvas animations.
+  Non-destructive workflow with paced captions, safe-zone margins, and deterministic
+  output naming. Includes the `claw-shorts` skill for Claude Code, Codex, Grok Build,
+  Hermes and Pi.
 
 The Lean toolkit distinguishes proofs about mathematical models from verification
 that source code implements those models. Read its verification status before relying
