@@ -1,0 +1,15 @@
+The video you're watching right now was edited 100% with Claude code.
+The cuts, the captions,
+the colour grading, the zoom ins,
+the zoom outs. We can even add motion graphics and sound effects.
+And I didn't have to open a single editing app.
+I gave Claude my raw footage,
+bad takes, and simply told it in one prompt what I wanted.
+This is the prompt I gave it and you're watching what I got back.
+If I want to make a change,
+I just ask, make the captions bigger.
+What's great about this is
+he can now edit old videos
+in ways that you never thought was possible.
+Comment Claude
+and I'll send you the prompts and exactly how to set this up.

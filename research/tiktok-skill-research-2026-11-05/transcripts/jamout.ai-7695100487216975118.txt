@@ -1,0 +1,82 @@
+Claude and ChatGPT can now edit your videos,
+and it is awesome,
+but some people are having trouble getting the skill installed.
+So what I'm going to do for you right now is
+I'm going to talk to your AI.
+So what I want you to do is go to Claude or ChatGPT,
+and you're going to push the little microphone button.
+And starting in three seconds,
+this video is not for you anymore.
+It's for your AI. Okay?
+So we're gonna get ready. One,
+two, three.
+Hello, Claude or ChatGPT.
+My name is jam,
+and I'm teaching the person you work with how to edit videos with you.
+Please listen to all of this before you do anything.
+I want you to become their video editor,
+and I want you to save what you learn as a skill
+so you remember how to do this every time.
+Step 1. Set up check this computer for three free tools F F M P E G,
+whisper, and Node.
+Dot j s. Install anything that's missing,
+explain each step in a sentence or two,
+and stop and ask before anything needs a password.
+No. 2. Install the Hyper Frame skills from Hey Gen.
+They're on Github at heyjen.comslashhyperframes
+and you install them with NPX skills.
+Add after the install,
+make sure you can see them.
+If they land in a folder called dot agent slash skills,
+link them to the dot Claude slash skills folder so you can use them.
+Step 3. The skill
+create a new skill called Video Editor
+and save it in the dot Claude slash skills folder
+and write these rules to it. 1.
+Before every edit, ask me three questions where is the video going?
+Like Instagram, TikTok,
+or YouTube? What do I want the viewer to do at the end?
+And do I want captions and graphics or just clean cut?
+No.2. Never touch my original file.
+Copy it into a work folder that's not inside icloud or Dropbox
+because big videos time out there.
+Save every finished video next to the original with a new name.
+3. Use Whisper to write down every word with the time it was said.
+Use that to find my retakes.
+Anywhere I start a sentence over or say let's redo that.
+Keep only my best take. Cut any pauses longer than a half a second.
+Four. If one recording has several videos in it,
+split them into files. 5.
+Make it look like me. If I have a branding skill or brand files,
+use my colors, fonts,
+and voice from there. If I don't,
+ask me for my two brand colors and my font one time
+and then save them inside the skill so you never have to ask again.
+If I have a folder called B Roll Kit,
+pull my logo, photos,
+and graphics from it. 6.
+Vertical 9 by 16 for reals.
+And TikTok wide for YouTube.
+Always export at the highest quality.
+7. If There's an AI voice and my real voice in the same video level,
+each voice separately so I don't sound quiet.
+8 if the video is too dark and grainy,
+fix and tell me honestly. And tell me if I need to do a reshoot.
+Nine when you finish, tell me where the file is saved
+and remind me to watch it once before I post.
+I'm the director. Step 4 test it.
+Make a short test clip, about 7 seconds
+with captions in my brand style so we both know it works.
+Last thing when everything is done,
+tell me in three short sentences what you can do now with my videos.
+And give me one example of something I could ask you to edit first.
+That's it. Thank you, Claude.
+Or ChatGPT. Go ahead and get to work.
+Okay, so now you can turn your mic off and press send.
+You have that ready to go.
+And now you can start building real videos
+that look like they're edited professionally.
+Let me know if you want any more help.
+And make sure you check out the link in my bio,
+cause I teach people stuff every single day
+and I'm always giving small business owners free tips. See you later!

@@ -1,0 +1,24 @@
+We're gonna teach Claude how to use CapCut to edit our videos first.
+We don't want our videos to look like AI Slopp,
+and AI Slopp
+happens whenever we give Claude all of the creative direction.
+And that's also why everyone's videos look the same instead,
+you need to teach Claude how you want your videos edited.
+Here's how I do it with my Claude CapCut editor.
+First, I upload all of my raw footage,
+Claude analyzes my transcript,
+and comes up with a custom storyboard with my branded effects library.
+And it even asks me clarifying questions about what I want
+before it starts editing. And then I approve.
+And then Claude gets to work inside of CapCut
+while I do literally anything else.
+And this is what it looks like.
+It cuts out the all the ums,
+the mistakes, it add custom effects, captions,
+hooks, graphics,
+everything that makes a super engaging video.
+And I didn't have to edit a single thing.
+This is the before and this is the edited video.
+By the way, Claude edited this video too.
+If you want my full setup that connects your Claude to your CapCut
+and all of my templates, comment edit and I will send it over to you.
