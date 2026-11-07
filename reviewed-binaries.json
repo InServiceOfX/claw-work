@@ -394,6 +394,36 @@
       "sha256": "40da2e06436599cb1020fd58810518a4ef1824c4370868c80936914c5a1dd69d",
       "max_bytes": 113284,
       "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/weight-space-programming/video-analysis/j09uV1oAuIo/screenshots/11-50.jpg": {
+      "sha256": "80c80d4a210be388e46d12c263feb22ab9bf469c33aaf27571ef6d1e757377ea",
+      "max_bytes": 180000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman WSP video 11:50 copying heads"
+    },
+    "research/weight-space-programming/video-analysis/j09uV1oAuIo/screenshots/23-50.jpg": {
+      "sha256": "6b48d68982154dabd773f9ca45f37ed888ef5319e3ed9d9db5f4ba809e7b3d4b",
+      "max_bytes": 300000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman WSP video 23:50 Qwen benchmark"
+    },
+    "research/weight-space-programming/video-analysis/j09uV1oAuIo/screenshots/24-30.jpg": {
+      "sha256": "8ae76f7d2d844eefe4cdaf50e2ad29767bb447da5ea4b48809717136a33cccd2",
+      "max_bytes": 300000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman WSP video 24:30 Gemma negative"
+    },
+    "research/model-news/2026-11-05-M62vWrZh54/screenshots/03-40.jpg": {
+      "sha256": "9bc1fde6fe87601a945c2d77e4901939f5c000d09fe1d091d24369eb716e7dc7",
+      "max_bytes": 200000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman news 03:40 NorthCUA caveat"
+    },
+    "research/model-news/2026-11-05-M62vWrZh54/screenshots/10-08.jpg": {
+      "sha256": "1cf2ff85fdf7edec80f4ec2b5b857a271dffd94ee19f7b2e010619b799092c03",
+      "max_bytes": 300000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman news 10:08 Perplexity embed"
+    },
+    "research/model-news/2026-11-05-M62vWrZh54/screenshots/16-43.jpg": {
+      "sha256": "f2cd128e2c682060fb0bca9b3f9efb95a88d1ef13d1ef66165413c182d1cc164",
+      "max_bytes": 300000,
+      "note": "YouTube screenshot (1920x1080) - Matthew Berman news 16:43 LFM3 on-device"
     }
   }
 }
