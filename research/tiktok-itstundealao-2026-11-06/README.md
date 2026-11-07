@@ -9,12 +9,14 @@ Public account research: [Tunde Alao (@itstundealao)](https://www.tiktok.com/@it
 | Videos on profile (2026-11-06 ~21:15 PT) | 274 |
 | IDs enumerated via yt-dlp | 262 |
 | Gap (cause UNKNOWN) | 12 |
-| Transcribed (faster-whisper `small`, CPU) | 90 |
+| Transcribed total | 90 |
+| — 2026 posts transcribed | 63 |
+| — Older posts transcribed (recheck) | 27 |
 | Frame-inspected for on-screen sources | 22 |
-| Captions only (not transcribed) | 172 older posts |
 | Video-model reviews completed | 4 |
+| Caption/metadata only (not transcribed) | 172 |
 
-**Disclaimer:** 172 older posts were caption-screened only, not proven irrelevant. The 12-video gap and remaining videos have not been semantically screened. No claim of exhaustive coverage.
+**Disclaimer:** 172 older posts were caption-screened only, not proven irrelevant. The 12-video gap was not reviewed. No claim of exhaustive semantic screening.
 
 ## Source-verified repositories
 
@@ -56,7 +58,7 @@ The [7686156516189080854](https://www.tiktok.com/@itstundealao/video/76861565161
 ## Source ledger and catalog
 
 - [SOURCES.md](SOURCES.md) — provenance ledger for all source-linked videos
-- [CATALOG.md](CATALOG.md) — 63 reviewed videos with screening status (trimmed from 262 enumerated)
+- [CATALOG.md](CATALOG.md) — complete catalog of 262 enumerated videos with per-entry evidence levels
 
 ## Screenshot index
 
@@ -69,12 +71,13 @@ The [7686156516189080854](https://www.tiktok.com/@itstundealao/video/76861565161
 
 ## Limitations
 
-1. **Coverage gaps:** 12 videos not enumerated; 172 older posts caption-only.
-2. **Whisper transcription errors:** Automated transcripts may have errors.
-3. **No code execution:** README claims not independently tested.
-4. **Single-run anecdotes:** Cost/timing figures are the creator's single demo, not benchmarks.
-5. **Source conflicts:** VoiceStudio and claude-watch owner attribution unresolved.
-6. **Correlation not causation:** Format/views correlation observed, not a causal claim.
+1. **Coverage gaps:** 12 videos not enumerated (cause UNKNOWN); 172 older posts caption-only, not proven irrelevant.
+2. **Whisper transcription errors:** Automated transcripts may contain errors.
+3. **No code execution:** README claims not independently tested; local-mode alternatives documented from README inspection only.
+4. **No license/maintenance audit:** Repository existence and license field verified via GitHub API; no dependency audit or maintenance-quality assessment performed.
+5. **Single-run anecdotes:** Cost/timing figures are the creator's single demo, not benchmarks.
+6. **Source conflicts:** VoiceStudio and claude-watch owner attribution unresolved.
+7. **Correlation not causation:** Format/views correlation observed, not a causal claim.
 
 ## Privacy notes
 

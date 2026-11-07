@@ -1,6 +1,25 @@
 # Short-form video tooling
 
-Research notes from @itstundealao demos of open-source short-form video tools. All figures are from single on-screen demos, not independent benchmarks.
+Research notes from @itstundealao demos of open-source video and audio tools. All figures are from single on-screen demos, not independent benchmarks.
+
+## Handy — cjpais/Handy
+
+- Video: [7702529514181627169](https://www.tiktok.com/@itstundealao/video/7702529514181627169)
+- Repo: https://github.com/cjpais/Handy
+- License: **MIT**
+- Description: Free, open source, extensible speech-to-text application that works completely offline.
+- Provenance: Repo name "Handy" displayed with clone dialog visible. Owner text small/low-legibility but repo confirmed via GitHub API.
+
+### Demo observations (creator's single run)
+
+- Dictation described as "fast and accurate"
+- Runs locally (offline)
+
+### README notes (not independently tested)
+
+Repository describes offline speech-to-text. No paid API required per documentation.
+
+---
 
 ## supoclip — FujiwaraChoki/supoclip
 
@@ -131,6 +150,7 @@ The tools above add automation, scoring, and assembly. Trade-off: complexity, li
 
 | Repo | License | Implication |
 |------|---------|-------------|
+| cjpais/Handy | MIT | Permissive |
 | FujiwaraChoki/supoclip | AGPL-3.0 | Strong copyleft; network use triggers distribution |
 | calesthio/OpenMontage | AGPL-3.0 | Same |
 | debpalash/VoiceStudio | AGPL-3.0 | Same |
@@ -138,3 +158,11 @@ The tools above add automation, scoring, and assembly. Trade-off: complexity, li
 | bradautomates/claude-video | MIT | Permissive |
 
 **AGPL repos linked, not vendored.** Do not copy code into non-AGPL projects without review.
+
+---
+
+## Excluded from theme documentation
+
+| Repo | Reason |
+|------|--------|
+| kaankiziltug/logo-design-skill | Low priority — branding skill, not video tooling. Source displayed (NAME DISPLAYED; owner INFERRED). Listed in [SOURCES.md](../SOURCES.md) but no theme doc written. |
