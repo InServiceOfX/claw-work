@@ -219,6 +219,141 @@
       "sha256": "e3874b6627434d76835d7739b8910bb12c83b0c823e3fc5616af62571076749f",
       "max_bytes": 81920,
       "note": "Public TikTok screenshot (720x1280)"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/01-faceless-niche-scoring-diagram.jpg": {
+      "sha256": "ab5b2b7466e14336d3621ddddc302672766b1051dbed2d4d6584204e8ce287b8",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu niche scoring diagram"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/02-faceless-repeatability-table.jpg": {
+      "sha256": "f27c45f719a895f51f7ca2f87bcd815be2f1c2e2ce2e2cbd741a37d5f376db22",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu repeatability table"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/03-faceless-script-rules.jpg": {
+      "sha256": "c628192f07481b61e87ac0c9748c25c2a528326ff8ffd2f2ca2bbfdc013c196e",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu script rules"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/04-computer-use-adsense-dashboard.jpg": {
+      "sha256": "0e41c8ce006a9ff953f2cbb90ee28f8d8ca38f30242b3bc7c43e7db9dda52a21",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu AdSense dashboard"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/05-computer-use-faceless-video-list.jpg": {
+      "sha256": "ef063a4deea1d49b165c32fe270b5c20b70f9c80561575f6ff4df6d990ea13be",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu faceless video list"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/06-playwright-ffmpeg-stack.jpg": {
+      "sha256": "59e2ad8503a86bd65db1fe1db4fed9c1cb66c7751463f708ba62c78b4a698dca",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Playwright/FFmpeg stack"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/07-playwright-anti-slop-example.jpg": {
+      "sha256": "f3f2069c5adb1f7842d54c34e3f2941ebe77ac01bc7e0281df9560cd58ab9b3b",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu anti-slop example"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/08-5agent-researcher-package.jpg": {
+      "sha256": "cd9ad46838ec78263312c109b490aeffc552cd51de2c715e26dc6fc9b4f0d881",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu 5-agent researcher package"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/09-5agent-editor-draft.jpg": {
+      "sha256": "e79c0d28c3d3e5d4c202a8b25875088d883d2ff2e32615fe37ccbaeb68f92624",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu 5-agent editor draft"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/10-7agent-youtube-intro.jpg": {
+      "sha256": "0c641f0e4135ae40c69e5c0fa1e2ee516aca98a53a86e7add6001b35d7371aa3",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu 7-agent YouTube intro"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/11-7agent-tts-generation.jpg": {
+      "sha256": "96b16743a7075abe60863b23cf828c19ac5ce6332d0e630168ad7fa511fd5b77",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu 7-agent TTS generation"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/12-hook-scoring-youtube-research.jpg": {
+      "sha256": "0ba8543174e694ae2af6478993979c0f9efa40c2187acbdbafa976e34e2c7192",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu hook scoring YouTube research"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/13-hook-scoring-multi-agent-pipeline.jpg": {
+      "sha256": "e1442494cb15c49162d5f06d21da46f35b0e692d93587b7f6dd7e7b1eacc3535",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu hook scoring multi-agent pipeline"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/content/14-remotion-openhands-github.jpg": {
+      "sha256": "c5bad0b8f34405121377b537d7c36b7a4f285f772d80dcff9371531d690620ec",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu OpenHands GitHub"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/01-prospecting-hermes-icp.jpg": {
+      "sha256": "a638df6ac3c048a678ef0245a3f5e19dab98b71c3371ab4a7679c978a5091cb4",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu Hermes ICP prospecting"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/02-prospecting-agent-data.jpg": {
+      "sha256": "6a368d4cc6efbe67548b646fe960a734e3d2c5f80b52122621e6f7b656b484ba",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu agent prospect data"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/03-ad-library-hook-breakdown.jpg": {
+      "sha256": "60c5c18ee5e22ad4d3d61e8c2150cd7d3d747e942b1bf9d82ee92157e1cdad40",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Ad Library hook breakdown"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/04-ad-library-arcads-actors.jpg": {
+      "sha256": "c2e9038930e284febe570d4fbe599d342be8898a787ff7d0a1d9ae378b843b3a",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Arcads AI actors (documented, not adapted)"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/05-leadgen-icp-profile.jpg": {
+      "sha256": "ac02b944a2b1b5e78de4ec0f373f95beeb21e05f40e09c36e9d656cfdb249a73",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu lead-gen ICP profile"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/06-leadgen-clay-collector.jpg": {
+      "sha256": "42fa9151ba19e6be7c816bcac334d7289f4dfceb0ae8452b5c804f15b10ba0e2",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Clay collector (documented, not adapted)"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/07-paperclip-strategist-verlo.jpg": {
+      "sha256": "3081007d1d94f2ec52adc3d996333ac641bc083f7c1ac0f9cb5650f3e1c87915",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Paperclip strategist"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/08-paperclip-analytics.jpg": {
+      "sha256": "69aa005a61dd9878e51bff5dec963783b58682c11fc467fc00792ae130f59202",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Paperclip analytics"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/09-agent-reach-research-overlay.jpg": {
+      "sha256": "66bca0191722938970d978cb1f219c2d26cdcbc656f7f50b47a5b82ca1720b5b",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - @ray_fu Agent-Reach research overlay"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/10-icp-dashboard.jpg": {
+      "sha256": "3718b5afbcfe88f9a9982e0757a0803c86ec9271a93c6c9a3a245d74814f335d",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu ICP dashboard"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/11-icp-json-prospect.jpg": {
+      "sha256": "ec3246c14e3c0967939911546f053d4f935a200832b6b77eb2d4c1e5819d6fd8",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu ICP JSON prospect"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/12-landing-github-repo.jpg": {
+      "sha256": "b371ac468d7f4e85dc1a51e76476a6e32f9901b34a4720eec136a72818e1a078",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu GitHub repo setup"
+    },
+    "research/ray-fu-content-and-marketing-2026-11-05/screenshots/marketing/13-landing-claude-output.jpg": {
+      "sha256": "bd4472cd5dc00148ad75d706ee90ae02aa6de0c917715bc13b07321d50952a2c",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @ray_fu Claude landing page output"
     }
   }
 }
