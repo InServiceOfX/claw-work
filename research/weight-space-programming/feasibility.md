@@ -35,7 +35,9 @@ All numbers are arithmetic estimates, **not measurements**.
 1. With vendor-recommended sampling (temperature 0.6, top-p 0.95, top-k 20),
    generate on ~100–200 locally generated synthetic problems.
 2. Measure accuracy, token-limit hit rate, and verbatim n-gram loop detector.
-3. **If loops are rare, stop.** Edits remove obstacles; they do not add ability.
+3. **If loops are rare, stop.** This loop-removal workflow has not demonstrated
+   novel ability addition. No reliable benefit is expected without a measured
+   target failure.
 
 **Decoding baselines (required):**
 - presence_penalty 1.5 (Qwen recommendation)
@@ -51,11 +53,16 @@ All numbers are arithmetic estimates, **not measurements**.
   direction matters before any weight change.
 
 **Weight edit on a copy:**
-1. Rank-1 orthogonalisation: W' = W − α·u(uᵀW) on selected `mlp.down_proj`
-   (optionally `o_proj`) columns of 1–2 layers.
-2. Compute in fp32, cast to bf16.
-3. Count entries that changed after rounding.
-4. Never touch embeddings, LM head, or final norm.
+1. Normalise direction u to unit L2 norm (reject if zero or non-finite).
+2. Verify tensor orientation: formula `W' = W − α·û(ûᵀW)` assumes W is [d_out, d_in]
+   with û in output residual space. Transpose appropriately if needed.
+3. Rank-1 orthogonalisation on selected `mlp.down_proj` (optionally `o_proj`)
+   columns of 1–2 layers. No generic slicing without concrete shape validation.
+4. Compute in fp32; verify all values finite.
+5. Cast to bf16; verify finite after cast.
+6. Count entries that changed after rounding.
+7. α sweep on practice split only, never held-out.
+8. Never touch embeddings, LM head, or final norm.
 
 **Evaluation:**
 - Held-out synthetic test split.
@@ -69,12 +76,14 @@ All numbers are arithmetic estimates, **not measurements**.
 
 ### Unsuitable or deferred
 
-- **Quantised checkpoints** (MLX 4-bit/8-bit, GGUF Q4–Q8): packed integers plus
-  scales. Requantisation noise may swamp a rank-1 edit. Inference-only.
+- **Quantised checkpoints** (MLX 4-bit/8-bit, GGUF Q4–Q8): Quantisation may
+  distort small edits in ways not characterised here. This workflow uses
+  unquantised checkpoints only.
 - **Dense 4B+ edits**: No unquantised copy without download.
 - **MoE models**: Routing layer adds complexity.
 - **Cross-family merges**: Lineage unverified, architectures differ.
-- **Capability addition**: S1 negative result shows edits cannot add missing ability.
+- **Capability addition**: S1 negative result (Gemma 3 270M) shows this workflow
+  has not demonstrated novel ability addition.
 - **Safety-behaviour removal**: Excluded by design.
 
 ## Memory arithmetic (estimates)
@@ -100,10 +109,17 @@ All numbers are arithmetic estimates, **not measurements**.
 
 ## Rollback and reproducibility rules
 
-1. Never write into HF cache. Copy snapshot to experiment directory.
-2. Store each edit as (tensor name, indices/rank-1 factors, α, dtype, base sha256,
-   edited sha256).
-3. Rollback = delete the copy. Base is never modified.
-4. Pre-register gate thresholds, direction-selection rule, α grid, eval seeds.
-5. Report every run.
-6. Synthetic, locally generated tasks only.
+1. Never write into HF cache or source directory.
+2. Create fresh non-existing output directory; verify resolved path not under
+   cache or source. No symlinks/hardlinks to source for writable files.
+3. Store each edit as (tensor name, indices/rank-1 factors, α, dtype, base sha256
+   for edited tensors, edited sha256). Do not claim full-checkpoint hashes unless
+   actually computed.
+4. Write atomic: temp file then rename.
+5. Manifest all outputs with path and sha256.
+6. Rollback = use original base (never modified). Retain artifacts.
+7. No auto-delete unless every file verified in run manifest AND user approves.
+8. Pre-register gate thresholds, direction-selection rule, α grid, eval seeds.
+9. Report every run.
+10. Synthetic, locally generated tasks only.
+11. Ask before model downloads, package installs, heavy inference, or modifications.
