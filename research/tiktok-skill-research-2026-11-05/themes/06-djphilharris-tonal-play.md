@@ -2,7 +2,7 @@
 
 - Video: https://www.tiktok.com/@djphilharris/video/7694719261549317379
 - Auto-captions: [`../transcripts/djphilharris-7694719261549317379.txt`](../transcripts/djphilharris-7694719261549317379.txt)
-- Screenshots: [`../screenshots/djphilharris/`](../screenshots/djphilharris/)
+- Screenshots: moved to [claw-dj's Phil Harris archive](https://github.com/InServiceOfX/claw-dj/tree/master/docs/research/screenshots/djphilharris); no local screenshot copies remain here.
 - Theme: DJ tonal play (not an AI video-edit skill)
 - CTA: "Hope this helps, follow for daily DJ tricks and tips." No comment-keyword gate.
 

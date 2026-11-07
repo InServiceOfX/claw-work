@@ -15,7 +15,7 @@ Source request: document the Claude / AI-edit skills the creators teach, plus on
 | Chase AI | [@chase_ai_](https://www.tiktok.com/@chase_ai_) | [7693602525081111821](https://www.tiktok.com/@chase_ai_/video/7693602525081111821) | 849s | 253,700 / 18,100 / 123 | Procedural JS canvas video (not Remotion-required) | [themes/05-chase-ai-javascript.md](themes/05-chase-ai-javascript.md) |
 | Phil Harris | [@djphilharris](https://www.tiktok.com/@djphilharris) | [7694719261549317379](https://www.tiktok.com/@djphilharris/video/7694719261549317379) | 61s | 14,400 / 401 / 7 | DJ tonal play (Ableton/CDJ/sampler → Mixxx analog) | [themes/06-djphilharris-tonal-play.md](themes/06-djphilharris-tonal-play.md) |
 
-Auto-captions (cleaned spoken text) live in `transcripts/`. Chosen stills (720px wide, readable UI, not raw high-res dumps) live in `screenshots/<creator>/`.
+Auto-captions (cleaned spoken text) live in `transcripts/`. Chosen stills (720px wide, readable UI, not raw high-res dumps) live in `screenshots/<creator>/`, except the Phil Harris stills, which moved to [claw-dj](https://github.com/InServiceOfX/claw-dj/tree/master/docs/research/screenshots/djphilharris). The original notes and auto-captions remain here.
 
 ## Theme map
 
