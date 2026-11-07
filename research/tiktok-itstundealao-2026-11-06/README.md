@@ -53,10 +53,10 @@ The [7686156516189080854](https://www.tiktok.com/@itstundealao/video/76861565161
 | Token/output-shaping skills (caveman, ponytail, i-have-adhd) | [themes/02-token-output-shaping.md](themes/02-token-output-shaping.md) |
 | "Fact or Hype?" format pattern | [themes/03-fact-or-hype-format.md](themes/03-fact-or-hype-format.md) |
 
-## Source ledger and full catalog
+## Source ledger and catalog
 
-- [SOURCES.csv](SOURCES.csv) — provenance ledger for all source-linked videos
-- [CATALOG.csv](CATALOG.csv) — 262 enumerated videos with screening status
+- [SOURCES.md](SOURCES.md) — provenance ledger for all source-linked videos
+- [CATALOG.md](CATALOG.md) — 63 reviewed videos with screening status (trimmed from 262 enumerated)
 
 ## Screenshot index
 
