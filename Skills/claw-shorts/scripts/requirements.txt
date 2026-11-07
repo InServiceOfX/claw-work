@@ -1,0 +1,11 @@
+# claw-shorts dependencies
+# FFmpeg is required but installed via system package manager, not pip.
+
+# Optional: for advanced text rendering
+pillow>=10.0.0
+
+# Optional: for word-level timestamps
+# openai-whisper>=20231117
+
+# Optional: for canvas animations
+# playwright>=1.40.0
