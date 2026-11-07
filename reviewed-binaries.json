@@ -424,6 +424,26 @@
       "sha256": "f2cd128e2c682060fb0bca9b3f9efb95a88d1ef13d1ef66165413c182d1cc164",
       "max_bytes": 300000,
       "note": "YouTube screenshot (1920x1080) - Matthew Berman news 16:43 LFM3 on-device"
+    },
+    "research/tiktok-itstundealao-2026-11-06/screenshots/01-supoclip-clone-url.jpg": {
+      "sha256": "016f5ff08bbd62d9fe49186ff929ffcd1fc20b0fa3aa9cfbdafde42fe774604e",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - clone URL github.com/FujiwaraChoki/supoclip visible (1080x864)"
+    },
+    "research/tiktok-itstundealao-2026-11-06/screenshots/02-openmontage-repo-header.jpg": {
+      "sha256": "29824d0314a97f5ed1557ef8854030cfaf45415e2a7d621384fbef9e7494fb3b",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - repo header calesthio/OpenMontage visible (576x460)"
+    },
+    "research/tiktok-itstundealao-2026-11-06/screenshots/03-handy-clone-dialog.jpg": {
+      "sha256": "32663a7a8955330642b1e80f686e642e94ce2abed4ee32fddc4b704bde1427e3",
+      "max_bytes": 163840,
+      "note": "Public TikTok screenshot - Handy repo page with clone dialog (1080x864)"
+    },
+    "research/tiktok-itstundealao-2026-11-06/screenshots/04-caveman-repo-header.jpg": {
+      "sha256": "1f4ffbe0c28fd5939fc127b462e1be6412aaea2fa92c92c7d2b057be7cbed1b9",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - repo header JuliusBrussee/caveman visible (1080x864)"
     }
   }
 }
