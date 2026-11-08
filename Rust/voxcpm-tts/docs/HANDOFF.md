@@ -87,8 +87,19 @@ using the public `test_en.wav` shipped in the cached
 - [x] `cargo test --offline --all-targets --features gui`: 63 library tests
       passed, including the golden tokenizer, transformer, VAE, and T18
       full-model checks. CLI and GUI binaries have no unit tests of their own.
-- [ ] The Mac app window was not click-tested. The GUI binary is what the
-      bundle launches; it calls the same `job::run_job` path as the CLI.
+- [x] Session 3 re-verification (2026-11-07): fmt, clippy (`--features gui`), and
+      63 tests all passed. `src/native/engine.rs` had been committed unformatted and is
+      now `cargo fmt`-clean. Fresh native `say` with an **mp3** voice (the public
+      sample, transcoded): 462 characters in 3 chunks, 26.3 s of mono 48 kHz Int16
+      audio, 35 s of generation, warm load 2.7 s, 1 attempt per chunk (duration
+      ratios 0.79–0.91), no `voxcpm-tts-job-*` directories left, peak footprint
+      16.3 GB. Local Whisper (`whisper-large-v3-turbo-asr-fp16`) transcribed it
+      word for word.
+- [x] `VoxCPM TTS.app` lifecycle: it launches, passes signature verification, and
+      loads weights automatically (about 12 GB within 6 s). Quitting via AppleEvent
+      ends the process within 1 s, so nothing stays resident.
+- [ ] Generate/Cancel in the app window has still not been exercised by a human.
+      It calls the same `job::run_job` path as the CLI.
 - [ ] Mac mini M4 has not been run. Install there with `scripts/install.sh`
       (do not copy the virtualenv). Weights can be copied or fetched.
 - [x] The crate is committed on `feature/voxcpm2-tts-macos` after the privacy

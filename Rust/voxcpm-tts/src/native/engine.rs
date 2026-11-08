@@ -87,25 +87,25 @@ impl Engine for NativeEngine {
 
     fn load(&mut self) -> Result<f64> {
         objc2::rc::autoreleasepool(|_| {
-        if self.model.is_some() {
-            return Ok(0.0);
-        }
-        let start = Instant::now();
-        let snapshot = match model_snapshot_dir(&self.model_id) {
-            Some(path)
-                if super::weights::shard_paths(&path)?
-                    .iter()
-                    .all(|p| p.is_file()) =>
-            {
-                path
+            if self.model.is_some() {
+                return Ok(0.0);
             }
-            _ => crate::hub::fetch_model(&self.model_id)?,
-        };
-        let device = super::weights::device()?;
-        let model = VoxCpm2::load(&snapshot, DType::F32, &device)?;
-        device.synchronize()?;
-        self.model = Some(model);
-        Ok(start.elapsed().as_secs_f64())
+            let start = Instant::now();
+            let snapshot = match model_snapshot_dir(&self.model_id) {
+                Some(path)
+                    if super::weights::shard_paths(&path)?
+                        .iter()
+                        .all(|p| p.is_file()) =>
+                {
+                    path
+                }
+                _ => crate::hub::fetch_model(&self.model_id)?,
+            };
+            let device = super::weights::device()?;
+            let model = VoxCpm2::load(&snapshot, DType::F32, &device)?;
+            device.synchronize()?;
+            self.model = Some(model);
+            Ok(start.elapsed().as_secs_f64())
         })
     }
 
@@ -122,90 +122,94 @@ impl Engine for NativeEngine {
         cancel: &AtomicBool,
     ) -> Result<Audio> {
         objc2::rc::autoreleasepool(|_| {
-        Self::check_cancel(cancel)?;
-        ensure!(!text.trim().is_empty(), "the text is empty");
-        ensure!(
-            params.inference_timesteps > 0 && params.inference_timesteps <= 100,
-            "diffusion steps must be in 1..=100"
-        );
-        ensure!(
-            params.cfg_value.is_finite() && (1.0..=4.0).contains(&params.cfg_value),
-            "cfg must be finite and in 1..=4"
-        );
-        ensure!(
-            params.max_audio_seconds.is_finite() && params.max_audio_seconds >= 0.0,
-            "max audio duration must be finite and nonnegative"
-        );
-        self.load()?;
-        Self::check_cancel(cancel)?;
-        self.prepare_voice(voice)?;
-        Self::check_cancel(cancel)?;
-        let model = self.model.as_ref().context("model is not loaded")?;
-        let cond = Conditioning {
-            reference: self.voice.as_ref().map(|v| &v.reference),
-            prompt: self
-                .voice
-                .as_ref()
-                .and_then(|v| v.prompt.as_ref().zip(v.transcript.as_deref())),
-        };
-        let max_patches = (params.max_audio_seconds > 0.0)
-            .then(|| (params.max_audio_seconds / SECONDS_PER_PATCH).floor() as usize);
-        if let Some(cap) = max_patches {
+            Self::check_cancel(cancel)?;
+            ensure!(!text.trim().is_empty(), "the text is empty");
             ensure!(
-                cap >= 4,
-                "max audio duration must allow at least 0.64 seconds"
+                params.inference_timesteps > 0 && params.inference_timesteps <= 100,
+                "diffusion steps must be in 1..=100"
             );
-        }
-        let opts = GenOptions {
-            inference_timesteps: params.inference_timesteps,
-            cfg_value: params.cfg_value,
-            max_patches,
-            ..GenOptions::default()
-        };
-        let seed = params.seed.unwrap_or_else(|| {
-            SystemTime::now()
-                .duration_since(UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_nanos() as u64
-        });
-        let mut noise = SeededNoise::new(seed);
-        let generation = model.generate(text, &cond, &opts, &mut noise, &mut |patches| {
-            on_event(EngineEvent::Generated {
-                audio_seconds: patches as f64 * SECONDS_PER_PATCH,
-            });
-            if cancel.load(Ordering::SeqCst) {
-                ControlFlow::Break(())
-            } else {
-                ControlFlow::Continue(())
+            ensure!(
+                params.cfg_value.is_finite() && (1.0..=4.0).contains(&params.cfg_value),
+                "cfg must be finite and in 1..=4"
+            );
+            ensure!(
+                params.max_audio_seconds.is_finite() && params.max_audio_seconds >= 0.0,
+                "max audio duration must be finite and nonnegative"
+            );
+            self.load()?;
+            Self::check_cancel(cancel)?;
+            self.prepare_voice(voice)?;
+            Self::check_cancel(cancel)?;
+            let model = self.model.as_ref().context("model is not loaded")?;
+            let cond = Conditioning {
+                reference: self.voice.as_ref().map(|v| &v.reference),
+                prompt: self
+                    .voice
+                    .as_ref()
+                    .and_then(|v| v.prompt.as_ref().zip(v.transcript.as_deref())),
+            };
+            let max_patches = (params.max_audio_seconds > 0.0)
+                .then(|| (params.max_audio_seconds / SECONDS_PER_PATCH).floor() as usize);
+            if let Some(cap) = max_patches {
+                ensure!(
+                    cap >= 4,
+                    "max audio duration must allow at least 0.64 seconds"
+                );
             }
-        })?;
-        if !generation.stopped {
-            return Err(BadGeneration(format!(
-                "generation reached the safety cap after {} patches",
-                generation.patches
-            ))
-            .into());
-        }
-        Self::check_cancel(cancel)?;
-        let samples = model.decode(&generation)?;
-        Self::check_cancel(cancel)?;
-        ensure!(
-            !samples.is_empty() && samples.iter().all(|s| s.is_finite()),
-            "model produced empty or nonfinite audio"
-        );
-        Ok(Audio::new(samples, OUTPUT_SAMPLE_RATE))
+            let opts = GenOptions {
+                inference_timesteps: params.inference_timesteps,
+                cfg_value: params.cfg_value,
+                max_patches,
+                ..GenOptions::default()
+            };
+            let seed = params.seed.unwrap_or_else(|| {
+                SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .unwrap_or_default()
+                    .as_nanos() as u64
+            });
+            let mut noise = SeededNoise::new(seed);
+            let generation = model.generate(text, &cond, &opts, &mut noise, &mut |patches| {
+                on_event(EngineEvent::Generated {
+                    audio_seconds: patches as f64 * SECONDS_PER_PATCH,
+                });
+                if cancel.load(Ordering::SeqCst) {
+                    ControlFlow::Break(())
+                } else {
+                    ControlFlow::Continue(())
+                }
+            })?;
+            if !generation.stopped {
+                return Err(BadGeneration(format!(
+                    "generation reached the safety cap after {} patches",
+                    generation.patches
+                ))
+                .into());
+            }
+            Self::check_cancel(cancel)?;
+            let samples = model.decode(&generation)?;
+            Self::check_cancel(cancel)?;
+            ensure!(
+                !samples.is_empty() && samples.iter().all(|s| s.is_finite()),
+                "model produced empty or nonfinite audio"
+            );
+            Ok(Audio::new(samples, OUTPUT_SAMPLE_RATE))
         })
     }
 
     fn unload(&mut self) -> Result<()> {
         objc2::rc::autoreleasepool(|_| {
-        let device = self.model.as_ref().map(|m| m.device().clone());
-        if let Some(device) = &device { device.synchronize()?; }
-        self.voice = None;
-        self.model = None;
-        // Flush once more after tensors drop to purge candle's unused pool.
-        if let Some(device) = &device { device.synchronize()?; }
-        Ok(())
+            let device = self.model.as_ref().map(|m| m.device().clone());
+            if let Some(device) = &device {
+                device.synchronize()?;
+            }
+            self.voice = None;
+            self.model = None;
+            // Flush once more after tensors drop to purge candle's unused pool.
+            if let Some(device) = &device {
+                device.synchronize()?;
+            }
+            Ok(())
         })
     }
 }
