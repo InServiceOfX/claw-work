@@ -9,6 +9,10 @@ See [BOTS.md](BOTS.md) for the rules bots follow when contributing.
 
 ## Projects
 
+- [Personal Files](Rust/personal-files/README.md): Finder-inspired Ubuntu file
+  browser in Rust and GTK 3. Favorites, recent and frequent places, tabs, path
+  copy, and local skins. Per-user install; it does not replace the system file
+  manager.
 - [Lean agent toolkit](Rust/lean-agent/README.md): mathlib-enabled Docker environment,
   Rust-first isolated proof checking and mathematical code-review workflows.
   [Local setup for Claude Code, Codex, Grok Build, Hermes and Pi](Rust/lean-agent/docs/SETUP.md)

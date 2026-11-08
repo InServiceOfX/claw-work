@@ -1,0 +1,111 @@
+[
+  {
+    "reason": "Local filesystem behavior and durable personal places",
+    "description": "Local filesystem behavior and durable personal places",
+    "dependencies": [],
+    "priority": 1,
+    "filename": "core_rust.prompt",
+    "filepath": "src/core.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Finder-inspired local skins",
+    "description": "Finder-inspired local skins",
+    "dependencies": [
+      "core_rust.prompt"
+    ],
+    "priority": 2,
+    "filename": "appearance_rust.prompt",
+    "filepath": "src/appearance.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Native Ubuntu GTK browser and real desktop acceptance",
+    "description": "Native Ubuntu GTK browser with independent tabs and real desktop acceptance",
+    "dependencies": [
+      "core_rust.prompt",
+      "appearance_rust.prompt"
+    ],
+    "priority": 3,
+    "filename": "ui_rust.prompt",
+    "filepath": "src/ui.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Public library modules for independent acceptance",
+    "description": "Public library modules for independent acceptance",
+    "dependencies": [
+      "ui_rust.prompt"
+    ],
+    "priority": 4,
+    "filename": "library_rust.prompt",
+    "filepath": "src/lib.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Desktop executable entry point",
+    "description": "Desktop executable entry point",
+    "dependencies": [
+      "library_rust.prompt"
+    ],
+    "priority": 5,
+    "filename": "main_rust.prompt",
+    "filepath": "src/main.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Repeatable user-cache release builds",
+    "description": "Repeatable user-cache release builds",
+    "dependencies": [],
+    "priority": 6,
+    "filename": "build_bash.prompt",
+    "filepath": "build.sh",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Repository launcher",
+    "description": "Repository launcher",
+    "dependencies": [
+      "build_bash.prompt"
+    ],
+    "priority": 7,
+    "filename": "launch_bash.prompt",
+    "filepath": "launch.sh",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Per-user Ubuntu launcher installation",
+    "description": "Per-user Ubuntu launcher installation",
+    "dependencies": [
+      "build_bash.prompt"
+    ],
+    "priority": 8,
+    "filename": "install_bash.prompt",
+    "filepath": "install.sh",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  }
+]

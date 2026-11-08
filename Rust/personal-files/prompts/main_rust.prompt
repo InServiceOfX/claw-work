@@ -1,0 +1,3 @@
+<pdd-reason>Start the native Ubuntu application with a conventional Rust executable.</pdd-reason>
+<pdd-dependency>library_rust.prompt</pdd-dependency>
+Implement src/main.rs. Call personal_files::ui::run and exit with its return code. All command parsing and GUI ownership belongs to ui::run.

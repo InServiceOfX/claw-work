@@ -1,0 +1,10 @@
+version: "1.0"
+contexts:
+  default:
+    defaults:
+      prompts_dir: "prompts"
+      generate_output_path: "src/"
+      test_output_path: "tests/"
+      example_output_path: "examples/"
+      default_language: "rust"
+      max_attempts: 1
