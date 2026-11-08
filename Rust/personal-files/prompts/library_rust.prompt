@@ -1,0 +1,3 @@
+<pdd-reason>Export the cohesive Personal Files modules for independent acceptance tests.</pdd-reason>
+<pdd-dependency>ui_rust.prompt</pdd-dependency>
+Implement src/lib.rs declaring public modules appearance, core, ui. No other behavior.

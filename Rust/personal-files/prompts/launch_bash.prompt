@@ -1,0 +1,3 @@
+<pdd-reason>Make Personal Files directly runnable from its repository directory.</pdd-reason>
+<pdd-dependency>build_bash.prompt</pdd-dependency>
+Implement launch.sh with bash strict mode. Find cached release executable using XDG_CACHE_HOME/CARGO_TARGET_DIR consistently with build.sh. Build only if absent. exec the executable with all arguments intact, keeping the caller's working directory for relative CLI paths.
