@@ -1,0 +1,37 @@
+[
+  {
+    "filename": "src/native/engine_Rust.prompt",
+    "filepath": "src/native/engine.rs",
+    "dependencies": [],
+    "priority": 1,
+    "description": "Native candle/Metal inference adapter and memory lifecycle",
+    "tags": [
+      "voxcpm-tts",
+      "macos"
+    ]
+  },
+  {
+    "filename": "src/job_Rust.prompt",
+    "filepath": "src/job.rs",
+    "dependencies": [
+      "src/native/engine_Rust.prompt"
+    ],
+    "priority": 2,
+    "description": "Shared script, voice, chunk, retry, stitch, progress and cleanup workflow",
+    "tags": [
+      "voxcpm-tts",
+      "macos"
+    ]
+  },
+  {
+    "filename": "reference/voxcpm_worker_Python.prompt",
+    "filepath": "reference/voxcpm_worker.py",
+    "dependencies": [],
+    "priority": 3,
+    "description": "Optional MLX reference worker and JSON Lines protocol",
+    "tags": [
+      "voxcpm-tts",
+      "reference"
+    ]
+  }
+]

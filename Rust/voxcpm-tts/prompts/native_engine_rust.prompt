@@ -1,0 +1,13 @@
+% Native macOS VoxCPM2 adapter; output src/native/engine.rs.
+% Shared numerical contract: docs/PORTING_SPEC.md; model remains independently
+% checked research code, not an output owned by this adapter prompt.
+API: NativeEngine implements crate::engine::Engine; new(model_id) is cheap.
+<contract_rules>
+R-101 (MUST): load cached mlx-community/VoxCPM2-bf16 weights automatically, fetching missing model files when required; f32 computation is the default verified precision.
+R-102 (MUST): prepare mono reference audio at 16 kHz; cache right-padded reference patches and, with a transcript, left-padded continuation patches for reuse within a job.
+R-103 (MUST): generate each chunk with fresh KV caches and seeded noise, upstream token-length cap, configured diffusion steps and CFG; emit audio-duration progress once per 160 ms patch.
+R-104 (MUST): honor cancellation before load/generation/decode and during the patch loop; classify capped/non-stopped output as a retryable bad generation.
+R-105 (MUST): output finite mono 48 kHz audio; exclude continuation context from output.
+R-106 (MUST NOT): retain model weights, device allocator, or cached voice tensors after unload; unload is idempotent and dropping the adapter unloads.
+R-107 (MUST NOT): silently fall back to Python, upload text/voice, or construct a Metal device by indexing an empty device list.
+</contract_rules>

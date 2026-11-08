@@ -1,0 +1,6 @@
+dist/
+*.wav
+*.mp3
+*.safetensors
+.DS_Store
+

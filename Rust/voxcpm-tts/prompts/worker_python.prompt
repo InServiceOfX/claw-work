@@ -1,0 +1,13 @@
+% Optional Python MLX numerical reference/fallback; output reference/voxcpm_worker.py.
+API: JSON Lines ready, load, synthesize, unload, shutdown; request id echoed.
+<vocabulary>
+valid: finite nonempty audio whose model generation stopped before the configured patch cap.
+invalid: request with missing required fields, unsupported operations, empty text, nonfinite numeric settings, or settings outside documented ranges.
+</vocabulary>
+<contract_rules>
+R-301 (MUST): pin and use local mlx-audio reference implementation with the specified checkpoint; progress is a JSON event, diagnostics go to stderr.
+R-302 (MUST): honor supplied audio duration and token caps; bounded bad-case retry; explicit bad_generation error if no stopped valid output exists.
+R-303 (MUST): mono WAV/MP3 reference supports timbre cloning and optional transcript continuation; output mono 48 kHz WAV.
+R-304 (MUST NOT): write output on invalid requests or failed/capped generation, mix logs with protocol responses, or upload synthesis inputs.
+R-305 (MUST): unload drops weights and MLX cache; supervisor process exit is the final memory-release boundary.
+</contract_rules>

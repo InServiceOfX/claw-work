@@ -1,0 +1,16 @@
+% Shared CLI/GUI synthesis job; output src/job.rs.
+API: JobSpec, RetryPolicy, JobReport, ProgressSink, run_job, check_output.
+<vocabulary>
+valid: nonempty finite mono audio at the expected output rate returned without a safety-cap error.
+</vocabulary>
+<contract_rules>
+R-201 (MUST): accept a script, optional single-speaker voice/transcript and a WAV destination; validate before expensive model loading.
+R-202 (MUST): chunk text at sentence/clause/word boundaries, preserving all content; run chunks independently with the same reference voice; stitch one 48 kHz WAV with controlled gaps and edge fades.
+R-203 (MUST): display planned chunk count, progress, elapsed time and a calibrated time estimate; estimates are explicitly approximate.
+R-204 (MUST): retry implausible duration and explicit bad-generation errors a bounded number of times with new seeds; report failure if no valid synthesis exists.
+R-205 (MUST NOT): overwrite an existing destination without explicit overwrite; publish a partial WAV; modify the original reference; leave per-job temporary parts after success, error or catchable cancellation.
+R-206 (MUST): clean stale work from dead processes on the next run; document that SIGKILL and host failure defer cleanup.
+R-207 (MUST NOT): store user script/voice in versioned fixtures or send synthesis inputs to a remote service.
+R-208 (MUST): reports use fresh JSON destinations; retained parts use a fresh per-run folder; these must not replace the source reference or completed WAV.
+R-209 (MUST): reject nonfinite or out-of-range synthesis/stitch settings before loading weights or allocating audio gaps.
+</contract_rules>

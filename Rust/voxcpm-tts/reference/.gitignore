@@ -1,0 +1,8 @@
+.venv/
+out/
+golden/
+__pycache__/
+*.wav
+*.mp3
+*.npz
+*.safetensors

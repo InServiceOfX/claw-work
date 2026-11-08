@@ -39,3 +39,10 @@ __pycache__/
 
 # Project-local canvas renderer dependencies and generated media stay untracked.
 node_modules/
+
+# VoxCPM TTS: local environments, generated audio, and numerical dumps.
+# Regenerate golden tensors with the reference worker; do not publish them.
+Rust/voxcpm-tts/reference/.venv/
+Rust/voxcpm-tts/reference/golden/
+Rust/voxcpm-tts/dist/
+Rust/voxcpm-tts/**/*.wav
