@@ -12,10 +12,17 @@
   six independent cases, reasoning parsing and a separate actual addition tool.
 - Added a restart wrapper and one-model Pi setup with scoped thinking/compaction.
 - Shell/YAML checks and benchmark-grading regression tests pass.
+- Compared Qwythos Q5 with all three native Nemotron modes at common 16K context;
+  recorded streamed latency, generated tokens/sec and sampled device memory.
+- Restored the normal 64K Qwythos deployment and measured representative memory
+  use. Thinking remains low in Pi. See MODE_COMPARISON.md for caveats and errors.
+- Streaming measurement tests cover reasoning/answer separation, authoritative
+  usage counts, length limits and missing/error SSE streams.
 
 ## Verification and operation
 
-Read BENCHMARKS.md for actual settings, image digest, measurements and limits.
+Read BENCHMARKS.md and MODE_COMPARISON.md for actual settings, image digest,
+measurements and limits.
 `run-recommended.sh` starts Qwythos Q5 with bounded thinking; --stop releases GPU
 memory. The local profile uses 64K context; other copied text profiles use 32K and
 projector profiles 16K. Local YAML remains ignored and must never be staged.
@@ -28,10 +35,12 @@ model's default is low. A working transport does not guarantee correct answers.
 
 ## Migration and publication boundary
 
-Commit the reviewed destination before removing the source working copy. The
-Monoclaw cleanup is a separate removal commit on a feature branch, with a pointer
-to this deployment; private history is not imported or rewritten. Follow BOTS.md
-for remote identity, feature-branch publication and human merge requirements.
+The reviewed destination was committed before the source working copy was
+removed. Monoclaw cleanup is a separate removal commit on a feature branch, with
+a pointer to this deployment; private history is not imported or rewritten.
+Destination and cleanup branches were published. Default-branch cleanup awaits
+human review/merge. Follow BOTS.md for the scoped bot identity policy and shared
+feature-branch, privacy and human-merge requirements.
 
 Keep raw captures/host receipts outside public Git. The public aggregate report
 separates smoke tests from general quality/vision claims. No missing model was

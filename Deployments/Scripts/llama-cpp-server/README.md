@@ -66,6 +66,11 @@ See [BENCHMARKS.md](BENCHMARKS.md) for the measured local comparison, runtime
 version, tested settings, recommendation and limitations. It is a small smoke
 suite for this workflow, not a general model leaderboard.
 
+[MODE_COMPARISON.md](MODE_COMPARISON.md) compares Qwythos Q5 with all three
+native Nemotron modes on the same GPU, including first-text latency, sampled
+VRAM, normal-profile headroom and a larger-model candidate. `compare_modes.py`
+records streamed end-to-end token rates from an already-running local server.
+
 ```bash
 python3 -m unittest discover -s tests -v
 python3 benchmark.py --url http://127.0.0.1:8080 --out /tmp/local-model-benchmark
@@ -93,7 +98,7 @@ provider/authentication settings when merging a profile into Pi.
 - `launch.sh`, `chat.sh`: moved Bash deployment and interactive client.
 - `config.yml.example`, `profiles/*.yml.example`: public configuration templates.
 - `audit_profiles.py`: local mount/header audit.
-- `benchmark.py`, `tests/`: reproducible bounded acceptance and grading checks.
+- `benchmark.py`, `compare_modes.py`, `tests/`: bounded acceptance, streaming speed and grading checks.
 - `run-recommended.sh`, `examples/pi/`: measured single-model restart/client setup.
 - `vision_smoke.py`: synthetic image transport check for projector profiles.
 - `PROGRESS.md`: continuation state and verification scope.

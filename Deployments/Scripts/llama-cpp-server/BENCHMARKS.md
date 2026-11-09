@@ -4,6 +4,10 @@ Measured on a GeForce RTX 3060 12GB with the existing local GGUFs. This is one
 bounded workflow smoke suite, not a general model leaderboard or a guarantee
 about future generated code. No weights were downloaded or converted.
 
+For a common-context comparison with native Nemotron AR, block diffusion and
+self-speculation, including end-to-end speed and GPU memory, see
+[MODE_COMPARISON.md](MODE_COMPARISON.md).
+
 ## Recommendation
 
 Use **Qwythos 9B Q5_K_M**, API alias `qwythos-9b-q5-k-m`. It tied Q6 at all six
