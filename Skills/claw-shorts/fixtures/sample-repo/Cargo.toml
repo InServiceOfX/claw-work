@@ -1,0 +1,9 @@
+[package]
+name = "fastcli"
+version = "0.1.0"
+edition = "2021"
+description = "A blazing-fast CLI framework for building developer tools"
+license = "MIT"
+repository = "https://github.com/example/fastcli"
+
+[dependencies]

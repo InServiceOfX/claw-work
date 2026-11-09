@@ -1,11 +1,19 @@
 # claw-shorts dependencies
 # FFmpeg is required but installed via system package manager, not pip.
 
+# Core dependencies (none required beyond Python stdlib)
+
 # Optional: for advanced text rendering
-pillow>=10.0.0
+# pillow>=10.0.0
 
 # Optional: for word-level timestamps
 # openai-whisper>=20231117
 
-# Optional: for canvas animations
+# Optional: for readme_scroll template (capture scrolling README)
 # playwright>=1.40.0
+
+# Optional: for terminal_typer template
+# agg is installed via cargo: cargo install --git https://github.com/asciinema/agg
+
+# Optional: for local TTS
+# piper-tts (system package, see https://github.com/rhasspy/piper)
