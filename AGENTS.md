@@ -15,6 +15,15 @@ This is a public monorepo for agent-authored tools and experiments.
   inspect staged diffs, and audit Docker contexts and image exports separately.
 - Do not push, publish images or install global skills without authorization.
 
+## Local agents and GitHub identity
+
+Read [BOTS.md](BOTS.md) for the scoped identity policy. Only Cursor bots and
+Grok Bot/Grok Bits automation must use `yeung-assistant`. Human-directed local
+Codex, Claude Code, Grok Build, Hermes-Agent, Pi and other local harnesses use
+the human's configured Git/GitHub identity; they do not need that bot account
+or a separate identity exception for an already-authorized commit/push.
+Privacy, feature-branch and human-merge requirements still apply to everyone.
+
 ## PDD
 
 Use Prompt-Driven Development for explicitly prompt-owned parts. Ordinary requests
