@@ -1,0 +1,7 @@
+[
+  {"filename":"prompts/gguf_rust.prompt","filepath":"src/gguf.rs","dependencies":[],"priority":1,"description":"Bounded read-only GGUF inspection"},
+  {"filename":"prompts/edit_rust.prompt","filepath":"src/edit.rs","dependencies":["prompts/gguf_rust.prompt"],"priority":2,"description":"Sparse NPZ import, copy-only BF16 reconstruction and full-file audit"},
+  {"filename":"prompts/projection_rust.prompt","filepath":"src/projection.rs","dependencies":[],"priority":1,"description":"Validated rank-one residual projection"},
+  {"filename":"prompts/evaluation_rust.prompt","filepath":"src/evaluation.rs","dependencies":[],"priority":2,"description":"Deterministic synthetic cases, local inference and paired statistics"},
+  {"filename":"prompts/cli_rust.prompt","filepath":"src/main.rs","dependencies":["prompts/edit_rust.prompt","prompts/projection_rust.prompt","prompts/evaluation_rust.prompt"],"priority":3,"description":"Explicit local-path command-line experiment tools"}
+]

@@ -1,0 +1,11 @@
+% Rust local paired evaluation module and supporting server.rs.
+<contract_rules>
+R-401 (MUST): Generate deterministic nonduplicate synthetic integer math cases and unrelated instruction probes, with expected answers computed independently of model outputs, and separate practice/evaluation seeds.
+R-402 (MUST): Freeze and hash cases/settings before inference. Match case order, per-case seed, thinking template and token budget across base/edit/decoding arms. Use vendor-style sampling plus the declared decoding-only control.
+R-408 (MUST): Use an explicit nonnegative repetition-history window equal to the configured context length; verify returned seed, window and sampling parameters. Preserve HTTP status and backend diagnostic text on errors.
+R-403 (MUST): Grade only final output after thinking closes, with strict final boxed-integer extraction for math. Never count answers found only in incomplete reasoning or API errors as correct.
+R-404 (MUST): Retain each attempted request/response/error incrementally outside Git; report finish reason, cap hits, completed thinking, actual tokens, time and predeclared token repetition diagnostic separately from accuracy.
+R-405 (MUST): Pair by case ID and verify identical case hashes/settings before reporting wins/losses, paired difference and uncertainty. Missing/failed arms are explicit and cannot disappear from denominators.
+R-406 (MUST NOT): Contact a remote inference provider, use ambient credentials/proxies, alter normal provider settings, tune a patch on evaluation outputs or silently retry unsuccessful cases.
+R-407 (MUST): Use an explicitly selected local backend/GPU; manage only the isolated server created for this run and clean up that server on ordinary errors.
+</contract_rules>

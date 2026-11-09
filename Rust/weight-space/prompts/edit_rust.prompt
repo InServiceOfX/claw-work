@@ -1,0 +1,16 @@
+% Rust sparse checkpoint edit and audit module, with explicit local input/output paths.
+% Supporting code may be grouped in npz.rs and lib.rs. Public errors use anyhow::Result.
+<vocabulary>
+duplicate: the same target name or sparse index appears more than once.
+invalid: violates the format, dtype, bounds, finite-value or hash checks in this contract.
+complete: all bytes from offset zero to the identical end-of-file position are checked.
+successful: all validation and audit checks pass and the final checkpoint is published without replacing an existing file.
+</vocabulary>
+<contract_rules>
+R-201 (MUST): Import sparse little-endian NPY index/value arrays from a bounded NPZ archive without evaluating Python. Reject unsupported forms, dtypes, nonfinite BF16, invalid/duplicate indices, count mismatch and bad hashes.
+R-202 (MUST): Validate every base tensor against its manifest before creating a checkpoint. Map HF down_proj [out,in] to GGUF ffn_down [in,out] with identical contiguous bytes.
+R-203 (MUST): Create a true output copy in a fresh directory outside the input directory, apply replacement bits, verify edited tensor hashes, and publish the checkpoint only after a complete independent difference audit succeeds.
+R-204 (MUST NOT): Overwrite existing outputs, modify inputs, follow an output alias into a source/cache directory, silently accept another revision, or edit embeddings, norm, tokenizer or the output head.
+R-205 (MUST): Audit both entire files and every sparse changed entry, rejecting differences outside those exact entries, extra/missing changes, source changes or length changes; emit full file and per-tensor hashes and byte/entry counts.
+R-206 (MUST): Keep temporary output unpublished on failure and retain diagnostics. A no-op or invalid patch must not appear as a successful intervention.
+</contract_rules>

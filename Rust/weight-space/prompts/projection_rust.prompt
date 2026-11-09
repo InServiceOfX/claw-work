@@ -1,0 +1,11 @@
+% Rust validated FP32 row-major residual-output projection, no model runtime.
+<vocabulary>
+duplicate: a selected input-column index occurs more than once.
+invalid: zero dimensions, shape/length mismatch, empty selection, or an out-of-bounds selected index.
+</vocabulary>
+<contract_rules>
+R-301 (MUST): For W[out,in], normalized nonzero output direction u, finite alpha and selected input columns, return W - alpha*u*(u^T W M).
+R-302 (MUST): Reject invalid shapes, duplicate/out-of-bounds selections, zero/nonfinite direction, nonfinite inputs and nonfinite output before returning.
+R-303 (MUST NOT): Change unselected columns or mutate caller inputs. Use no optimizer, autograd or fitting loop.
+R-304 (MUST): At alpha=1 selected columns are orthogonal to u within FP32 numerical tolerance; alpha=0 returns unchanged values.
+</contract_rules>

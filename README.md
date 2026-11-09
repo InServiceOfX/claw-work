@@ -8,6 +8,10 @@ and [public/privacy boundary](PRIVACY.md).
 
 ## Projects
 
+- [Rust weight-space experiments](Rust/weight-space/README.md): audited BF16
+  checkpoint edits, published Qwen3.5 loop-patch reconstruction and paired local
+  CUDA inference comparisons.
+
 - [CUDA llama.cpp deployment](Deployments/Scripts/llama-cpp-server/README.md): moved
   profile-driven launcher, local GGUF auditing, measured model checks and Pi setup.
 
@@ -65,6 +69,10 @@ local harness may merge and ordinary non-force push to master when explicitly as
   TikTok/YouTube videos we studied by recorded interest signals and turn their
   best primary sources into a "5 things I'm reading this week" short.
   First edition: [2026-W45](docs/weekly-roundup/2026-W45.md).
+
+- [Weight-space programming](research/weight-space-programming/README.md):
+  primary-paper reading guide and an extended
+  [RTX 3060 experiment audit](research/weight-space-programming/rtx3060-research.md).
 
 - [Video production skills and workflows](docs/video-production/README.md):
   six-video breakdown, priority ranking, transcript editing and canvas modes (now

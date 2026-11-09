@@ -1,0 +1,11 @@
+% Rust CLI for the approved weight-space experiment. Subcommands inspect, patch,
+% audit, cases, evaluate, compare, fetch and serve. No implicit download/inference.
+<vocabulary>
+invalid: violates a required CLI argument or the format/bounds/hash conditions of the invoked library operation.
+</vocabulary>
+<contract_rules>
+R-501 (MUST): Require explicit file paths and output locations. Return nonzero on invalid input or failed validation, with actionable errors.
+R-502 (MUST): Fetch only explicitly requested pinned public assets over HTTPS, into fresh locations, recording/verifying hashes; inference is loopback-only.
+R-503 (MUST): Preserve all original checkpoints and other sessions' servers/settings. Reject generated model/evidence output under a Git checkout, including output aliases through symlinked ancestors.
+R-504 (MUST): Describe the implementation as Rust tools with llama.cpp CUDA inference, known-patch replay, and measured workload limits. Do not claim Rust-native inference or new edit discovery.
+</contract_rules>

@@ -1,0 +1,12 @@
+% Rust GGUF inspection module. Source: approved PRODUCT_INTENT and experiment plan.
+% Use std IO and checked arithmetic. Expose inspect(path)->Gguf and read tensor methods.
+<vocabulary>
+duplicate: an identical metadata key or tensor name appears twice.
+invalid: violates the version, count, type, shape, alignment or bounds checks listed in R-102.
+</vocabulary>
+<contract_rules>
+R-101 (MUST): Parse little-endian GGUF v3 metadata and tensor descriptors, exposing architecture, alignment, data start, names, dimensions, storage types and offsets.
+R-102 (MUST): Bound counts, nesting, strings, header size and tensor reads; reject truncation, invalid types, overflowing shapes/offsets, duplicate names, invalid alignment and overlapping tensor storage.
+R-103 (MUST NOT): Write to an inspected input, execute model code, or allocate a whole checkpoint merely to inspect its metadata.
+R-104 (MUST): Treat GGUF dimensions as fastest-axis first. Only unquantized BF16 tensors are eligible for the sparse editing workflow.
+</contract_rules>

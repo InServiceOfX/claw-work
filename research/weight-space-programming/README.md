@@ -2,6 +2,10 @@
 
 Research survey on weight-space programming (WSP), November 2026.
 
+Continuation: [Rust tools and RTX 3060 experiment](../../Rust/weight-space/README.md),
+with [primary-source audit](rtx3060-research.md) and
+[current verification](../../Rust/weight-space/docs/VERIFICATION.md).
+
 ## Summary
 
 **What WSP is.** A general-purpose LLM, used as shipped (no task-specific training),
@@ -37,6 +41,8 @@ exists yet. What can be reproduced locally:
 
 ## Contents
 
+- `rtx3060-research.md` — Extended primary-paper audit, exact released-patch
+  provenance, and Rust/RTX 3060 experiment
 - `sources.md` — Primary and arXiv sources with validation status
 - `reading-guide.md` — Ranked arXiv reading picks with prerequisites and caveats
 - `feasibility.md` — Local experiment design for Apple Silicon (generic hardware class)
@@ -56,7 +62,7 @@ exists yet. What can be reproduced locally:
 6. ThinkEdit (arXiv:2503.22048) addresses overly *short* reasoning in DeepSeek-R1
    distills, the opposite failure mode to loops. Gains are a few points, not tens.
 
-## Provenance
+## Original survey provenance (PR #8)
 
 - No models downloaded, loaded or modified.
 - No experiments executed.
