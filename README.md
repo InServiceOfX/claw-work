@@ -38,6 +38,15 @@ on any result. Git scope follows [AGENTS.md](AGENTS.md) and [BOTS.md](BOTS.md):
 Cursor and hosted Grok automation use feature branches, and a human-directed
 local harness may merge and ordinary non-force push to master when explicitly asked.
 
+## Publishing tools
+
+- [YouTube publishing CLI](Tools/social-publish/README.md): harness-neutral desktop
+  OAuth, channel checks, private uploads and separately confirmed publication.
+  Offline-tested; live authorization and uploads are not yet verified.
+- [YouTube/TikTok feasibility](docs/SOCIAL_PUBLISHING_FEASIBILITY.md): official API
+  constraints and practical alternatives, checked 2026-11-06. TikTok Direct Post's
+  intended-use rules exclude a private utility for managed accounts.
+
 ## Research
 
 - [Video production skills and workflows](docs/video-production/README.md):
