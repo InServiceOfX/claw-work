@@ -1,7 +1,7 @@
 # Personal Files — agent instructions
 
-Native Rust/GTK 3 Ubuntu desktop application. Work on feature branches; never
-commit to master/main. Tabs work uses `feat/personal-files-tabs`.
+Native Rust/GTK 3 Ubuntu desktop application. Git scope follows the repository
+`AGENTS.md` and `BOTS.md`. Tabs work uses `feat/personal-files-tabs`.
 
 Read `docs/PRODUCT_INTENT.md`, `user_stories/story__personal_places.md`, the
 affected `.prompt` source, and `PROGRESS.md` before changing behavior. This
