@@ -1,0 +1,7 @@
+% Approved product: docs/IMPLEMENTATION_REQUEST.md; evidence: docs/MODEL_PORT.md.
+API: Rust tokenizer from local JSON, chat formatter, incremental finalized text and tool-call conversion.
+<contract_rules>
+R-401 (MUST): match public model chat template for system/user/assistant/tools/Unicode and thinking-disabled suffix, normalize pure-text OpenAI content arrays and JSON-string arguments, accept schema-validated compact function blocks with closing tags observed from this checkpoint (including its empty positional marker only for zero-argument tools), preserve tool associations and schema types.
+R-402 (MUST NOT): execute tools, leak hidden reasoning/tentative tokens, emit partial UTF8/stop markers, or silently reinterpret unsupported modalities.
+R-403 (MUST): malformed calls fail explicitly; separate standalone tokenizer/template tests from real model/harness evidence.
+</contract_rules>

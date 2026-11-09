@@ -1,0 +1,67 @@
+[
+  {
+    "filename": "prompts/assets_rust.prompt",
+    "filepath": "crates/claw-lm/src/assets.rs",
+    "dependencies": [],
+    "priority": 1,
+    "description": "assets rust",
+    "tags": [
+      "claw-lm",
+      "native"
+    ]
+  },
+  {
+    "filename": "prompts/generation_rust.prompt",
+    "filepath": "crates/claw-lm/src/generation.rs",
+    "dependencies": [
+      "prompts/assets_rust.prompt"
+    ],
+    "priority": 2,
+    "description": "generation rust",
+    "tags": [
+      "claw-lm",
+      "native"
+    ]
+  },
+  {
+    "filename": "prompts/cuda_cpp.prompt",
+    "filepath": "crates/claw-lm/native/Source/Model/Decoder.cu",
+    "dependencies": [
+      "prompts/assets_rust.prompt"
+    ],
+    "priority": 3,
+    "description": "cuda cpp",
+    "tags": [
+      "claw-lm",
+      "native"
+    ]
+  },
+  {
+    "filename": "prompts/chat_rust.prompt",
+    "filepath": "crates/claw-lm/src/chat.rs",
+    "dependencies": [
+      "prompts/assets_rust.prompt"
+    ],
+    "priority": 4,
+    "description": "chat rust",
+    "tags": [
+      "claw-lm",
+      "native"
+    ]
+  },
+  {
+    "filename": "prompts/server_rust.prompt",
+    "filepath": "crates/claw-lm-server/src/main.rs",
+    "dependencies": [
+      "prompts/generation_rust.prompt",
+      "prompts/cuda_cpp.prompt",
+      "prompts/chat_rust.prompt"
+    ],
+    "priority": 5,
+    "description": "server rust",
+    "tags": [
+      "claw-lm",
+      "native"
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+version: "1.0"
+contexts:
+  default:
+    paths:
+      prompt_root: prompts
+    defaults:
+      generate_output_path: crates/
+      test_output_path: crates/claw-lm/tests/
+      default_language: rust

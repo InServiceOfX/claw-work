@@ -1,0 +1,106 @@
+{
+  "providers": {
+    "claw-lm": {
+      "baseUrl": "http://127.0.0.1:8093/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens"
+      },
+      "models": [
+        {
+          "id": "nemotron-labs-diffusion-3b-autoregressive",
+          "name": "Nemotron 3B — Autoregressive",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 16384,
+          "maxTokens": 512,
+          "samplingParams": {
+            "temperature": 0,
+            "max_tokens": 512
+          },
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    },
+    "claw-lm-diffusion": {
+      "baseUrl": "http://127.0.0.1:8093/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens"
+      },
+      "models": [
+        {
+          "id": "nemotron-labs-diffusion-3b-block-diffusion",
+          "name": "Nemotron 3B — Block Diffusion",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 16384,
+          "maxTokens": 512,
+          "samplingParams": {
+            "temperature": 0,
+            "max_tokens": 512
+          },
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    },
+    "claw-lm-self-speculation": {
+      "baseUrl": "http://127.0.0.1:8093/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens"
+      },
+      "models": [
+        {
+          "id": "nemotron-labs-diffusion-3b-self-speculation",
+          "name": "Nemotron 3B — Self-Speculation",
+          "reasoning": false,
+          "input": [
+            "text"
+          ],
+          "contextWindow": 16384,
+          "maxTokens": 512,
+          "samplingParams": {
+            "temperature": 0,
+            "max_tokens": 512
+          },
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}

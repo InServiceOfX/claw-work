@@ -1,0 +1,18 @@
+{
+  "compaction": {
+    "modelOverrides": {
+      "claw-lm/nemotron-labs-diffusion-3b-autoregressive": {
+        "reserveTokens": 2048,
+        "keepRecentTokens": 2048
+      },
+      "claw-lm-diffusion/nemotron-labs-diffusion-3b-block-diffusion": {
+        "reserveTokens": 2048,
+        "keepRecentTokens": 2048
+      },
+      "claw-lm-self-speculation/nemotron-labs-diffusion-3b-self-speculation": {
+        "reserveTokens": 2048,
+        "keepRecentTokens": 2048
+      }
+    }
+  }
+}

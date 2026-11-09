@@ -1,0 +1,9 @@
+% Approved product: docs/IMPLEMENTATION_REQUEST.md; evidence: docs/MODEL_PORT.md.
+API: Decoder explicit forward(mode, commit, logits policy), reset/crop/cache_len; generate(options, cancellation, committed-token callback).
+<contract_rules>
+R-201 (MUST): expose deterministic autoregressive, block diffusion and self-speculation with identical limits and stopping rules; count every actual forward including prefill.
+R-202 (MUST): causally prefill/commit, refine bidirectional blocks without mutating prefix cache, use unshifted diffusion logits, force threshold progress, honor partial final blocks and EOS, reject unresolved mask output.
+R-203 (MUST): self-speculation verifies drafts causally, accepts contiguous matches plus one causal bonus, crops rejected KV, and equals greedy AR for identical inputs.
+R-204 (MUST NOT): expose tentative/rejected tokens, exceed output/context limits, accept nonfinite logits/options, silently ignore unsupported temperature sampling or reuse request state.
+R-205 (MUST): cancellation is checked between forwards and callbacks, with request cache reset on all exits.
+</contract_rules>

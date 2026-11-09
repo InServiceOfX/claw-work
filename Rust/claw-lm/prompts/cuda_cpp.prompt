@@ -1,0 +1,9 @@
+% Approved product: docs/IMPLEMENTATION_REQUEST.md; evidence: docs/MODEL_PORT.md.
+API: native/Include/claw_lm.h C ABI, error buffers, owning Rust wrapper; CUDA C++ runtime/numerics/model modules.
+<contract_rules>
+R-301 (MUST): build only native sm_86 and sm_120 images ahead of time using nvcc; restrict devices to RTX 30/50 family, reject all other architectures before model allocation, no silent CPU/device fallback.
+R-302 (MUST): GPU weights and tensor-core inputs BF16, activations/residuals/logits/KV FP32, FP32 reductions including cuBLAS split-K (disallow reduced-precision reduction), explicit YaRN with magnitude ratio1 for this checkpoint, noninterleaved RoPE, position-dependent query scale, GQA and gated SiLU, checked CUDA/cuBLAS calls and RAII handles/buffers/streams.
+R-303 (MUST): read-only refinement cache, causal commits/cropping, bounded context/scratch sizing, meaningful OOM errors and resource release on every path.
+R-304 (MUST NOT): use PyTorch/LibTorch/Transformers/Candle/Triton/NVRTC, runtime graphs or project PTX fallback, copy private code, or claim Blackwell hardware validation from compilation.
+R-305 (MUST): independent scalar/NumPy and real GPU numerical tests; use NVIDIA matrix primitives directly through CUDA C++.
+</contract_rules>

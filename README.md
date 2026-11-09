@@ -9,6 +9,9 @@ See [BOTS.md](BOTS.md) for the rules bots follow when contributing.
 
 ## Projects
 
+- [Native Nemotron Rust library and server](Rust/claw-lm/README.md): original CUDA C++
+  kernels, three decoding modes and a local OpenAI-compatible API; no PyTorch.
+
 - [Lean agent toolkit](Rust/lean-agent/README.md): mathlib-enabled Docker environment,
   Rust-first isolated proof checking and mathematical code-review workflows.
   [Local setup for Claude Code, Codex, Grok Build, Hermes and Pi](Rust/lean-agent/docs/SETUP.md)

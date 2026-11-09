@@ -1,0 +1,11 @@
+% Approved product: docs/IMPLEMENTATION_REQUEST.md; evidence: docs/MODEL_PORT.md.
+API: separate Rust executable with loopback health, /v1/models and /v1/chat/completions including SSE and explicit generation-mode selection.
+<contract_rules>
+R-501 (MUST): bounded admission, per-request cache/cancellation, matching streamed/nonstreamed final text, usage/finish metadata, [DONE], clean Ctrl-C shutdown and unknown-model/client-option errors.
+R-502 (MUST NOT): silently ignore unsupported options, run tools, modify harness config without a user request or claim a mock proves real inference.
+R-503 (MUST): all three modes selectable; actual Pi or Hermes real-model chat and harmless tool round trip, independently reported; publish portable setup instructions.
+R-504 (MUST): portable Pi profiles explicitly request a bounded 512-token output budget even when Pi's conservative fixed context margin would clamp it to one; the server retains exact prompt-plus-output context validation. Verify a short no-tool reply with workspace instructions loaded, not only an isolated minimal system prompt.
+R-505 (MUST): expose distinct mode-specific model IDs in /v1/models, select the named mode without extra client options, and echo the requested ID in JSON/SSE/usage. Preserve the legacy base alias and explicit generation_mode; reject contradictory mode selection. All mode IDs share one engine/weight allocation and bounded admission.
+R-506 (MUST): context overflow returns HTTP 400 with the OpenAI-compatible context_length_exceeded code and actual prompt/output/limit counts, recognizable by Pi's standard compact-and-retry. Never silently discard history or shrink the declared context guard.
+R-507 (MUST): the recommended Pi profile and running context agree; provide model-specific compaction reserveTokens=2048 and keepRecentTokens=2048 for a 16384-token local window without changing other providers. Verify mode switching and history retention in one real Pi session, plus overflow classification and bounded recovery separately.
+</contract_rules>

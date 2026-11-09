@@ -1,0 +1,7 @@
+% Approved product: docs/IMPLEMENTATION_REQUEST.md; evidence: docs/MODEL_PORT.md.
+API: Config::load/validate, Assets::open, Weights::tensor.
+<contract_rules>
+R-101 (MUST): validate explicit local Nemotron configuration and exact BF16 safetensors names, shapes, byte sizes, contiguous offsets and EOF before device allocation; support reduced synthetic configurations using the same model equations.
+R-102 (MUST NOT): execute model Python, download assets, import Transformers/PyTorch, silently change dtype, accept unsupported architecture/bias/RoPE or publish private paths.
+R-103 (MUST): use bounded read-only mappings with checked arithmetic and explicit BF16 byte conversion, keep mappings alive for borrowed tensor views, and expose readable direct weight access.
+</contract_rules>
