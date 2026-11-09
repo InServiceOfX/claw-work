@@ -1,10 +1,9 @@
 # Weight-space programming: primary-source audit and RTX 3060 experiment
 
 Research dates: 2026-11-08–09. This extends the survey merged in PR #8. The Rust
-implementation and exact checkpoint reconstruction are now verified; the approved
-GPU comparison is running. See the current
-[verification record](../../Rust/weight-space/docs/VERIFICATION.md). No local
-improvement is claimed before the frozen comparisons finish.
+implementation, exact checkpoint reconstruction and approved GPU comparison are
+complete. See the [verification record](../../Rust/weight-space/docs/VERIFICATION.md)
+for measured results and limits.
 
 ## Findings
 
@@ -224,8 +223,17 @@ instruction probes. Do not tune the published patch on the held-out cases.
 Report paired wins/losses and uncertainty, and retain failures. A short-token
 pilot cannot establish the effect at the original 32,768-token budget.
 
-**Current status:** scope approved 2026-11-09. Rust tools are implemented and
-tested, the pinned model and patch were fetched outside Git, and exact sparse
-reconstruction passed both Rust and independent full-file audits. The corrected
-practice pilot ran on the RTX 3060; the frozen primary and confirmation arms are
-being evaluated. Results and their limits belong in the verification record.
+**Measured outcome:** the RTX 3060 ran the unquantized BF16 model at about
+2.1 GiB observed allocation. At an 8,192-token cap, the original completed 11/24
+synthetic cases correctly, the published weight edit 22/24, and the decoding
+control 22/24. The edit recovered 11 answers without regressions; the control
+recovered 12 and regressed one. On the fixed six-case 32,768-token confirmation,
+scores were 4/6, 6/6 and 6/6. Both base failures remained unfinished at the larger
+cap. All 90 outputs and matching requests passed independent validation.
+
+This establishes a reproducible direct-weight intervention and completion
+recovery on the tested workload. It does not establish a weight-editing advantage
+over the decoding control, independent edit discovery, or the original paper's
+MATH-500/GSM8K gains. The source model remained byte-identical and experiment
+servers were stopped. Detailed checks, uncertainty and limitations are in the
+verification record.

@@ -1,7 +1,8 @@
 # Verification
 
-Date: 2026-11-09. Runtime experiments are in progress; final results will be
-reported here after all frozen arms finish. No general capability gain is claimed.
+Date: 2026-11-09. All frozen primary and confirmation runs are complete. The
+published weight edit improved completion on this synthetic workload; a decoding
+control matched its aggregate scores. No general capability gain is claimed.
 
 ## Software checks
 
@@ -61,7 +62,7 @@ not fall back to a remote provider. No usable architecture/prompt graph was
 generated. The current graph, prompts, stories and tests were maintained directly
 under the approved scope. Automated PDD synchronization is not certified.
 
-## Runtime status
+## Runtime and artifact status
 
 The corrected practice pilot loaded and generated on the RTX 3060. Observed
 primary-run GPU allocation was approximately 2,145 MiB at context 40,960, with
@@ -107,5 +108,61 @@ penalty, and recomputed paired counts and exact McNemar values. All checks passe
 No external model judged answers. The validator is separate from the Rust
 pipeline; production grading and comparisons require no Python.
 
-The fixed 32,768-token confirmation is still running; the experiment is not
-closed until those results are reported.
+### Completed fixed confirmation (32,768-token cap)
+
+This uses the preselected first six primary cases: five integer math problems
+and one exact-string probe. It is a budget check on overlapping cases, not a
+new independent test set.
+
+| Arm | Math / 5 | Exact probe / 1 | Overall / 6 | Capped | Tokens | Request seconds |
+|---|---:|---:|---:|---:|---:|---:|
+| Base | 3 | 1 | 4 | 2 | 77,586 | 991.75 |
+| Published BF16 edit | 5 | 1 | 6 | 0 | 26,359 | 317.41 |
+| Base + repetition penalty 1.1 | 5 | 1 | 6 | 0 | 20,926 | 255.23 |
+
+Both interventions recovered the two base failures, with no regressions on this
+subset. One edited answer finished at 5,297 tokens while its base answer remained
+unfinished at 32,768; the other finished at 8,567 tokens. Thus the recovered
+completions are not explained solely by the original 8K cutoff. The latter also
+shows why an 8K cap hit alone is not proof of an endless semantic loop.
+
+For either intervention versus base, two discordant cases give exact McNemar
+p = 0.5; the sample is too small for a general statistical conclusion. Edit and
+decoding tie on all six outcomes. Their empirical all-ties bootstrap interval
+collapses to zero; that does **not** establish population equivalence or absence
+of uncertainty. No reliable advantage for weight editing over the decoding
+control is established.
+
+Independent validation passed for all 18 confirmation outputs as well. All 18
+short/long token-prefix comparisons across the three arms passed: every short
+sequence is an exact prefix of its long counterpart, and already completed
+answers are identical. Practice and evaluation prompts have no overlap.
+
+## Interpretation and closeout
+
+The Rust pipeline reconstructed the released BF16 patch exactly and ran it on
+the RTX 3060. On the 24-case workload it recovered unfinished answers without
+losing previously completed ones. The inexpensive repetition-penalty control
+matched its aggregate accuracy, with different per-case failures. These are
+completion and token-budget results, not evidence of newly learned mathematics.
+
+The fixed suite shares four elementary math templates and an exact-string
+template, uses one seed per case, and has only four unrelated instruction probes.
+It cannot establish broad capability preservation, safety behavior, realistic
+coding-agent quality, or the original paper's benchmark scores. Native llama.cpp
+penalty and numerical semantics are not certified equivalent to the authors'
+vLLM setup. Independently discovering a new direction/edit was not attempted;
+the standalone projection routine is only algebraic tooling for future work.
+
+All 90 frozen attempts have zero infrastructure/protocol errors. The initial
+two-request rejected pilot, the diagnostic reproduction of its negative-window
+error, the corrected practice pilot and output-collision/cancellation history
+are retained separately; none is silently counted as a successful primary run.
+
+The 14 software tests, strict Clippy, formatting, five deterministic prompt
+checks and full-index privacy gate passed. Runtime evidence and the executable
+with both verified model copies are preserved in private local storage outside
+Git. Final container inspection found no experiment server running; RTX 3060
+memory returned to 15 MiB. Normal provider settings and the original checkout
+were not changed. Local feature commits are recorded in Git; nothing was pushed
+or merged.

@@ -14,6 +14,20 @@ See the [research audit](../../research/weight-space-programming/rtx3060-researc
 [experiment protocol](docs/EXPERIMENT_PLAN.md), and
 [verification record](docs/VERIFICATION.md).
 
+Measured on the RTX 3060, with frozen synthetic math and exact-reply tasks:
+
+| Model/settings | Correct at 8,192 tokens (24 cases) | Correct at 32,768 tokens (fixed 6 cases) |
+|---|---:|---:|
+| Base | 11/24 | 4/6 |
+| Published weight edit | 22/24 | 6/6 |
+| Base + repetition penalty 1.1 | 22/24 | 6/6 |
+
+The weight edit recovered 11 primary answers without a baseline regression;
+the decoding control recovered 12 and regressed one. Both helped on this small
+workload; it does not establish an overall advantage for editing or reproduce
+MATH-500/GSM8K. All 90 frozen outputs passed independent arithmetic, grading and
+request checks. The source model remained unchanged.
+
 ## Build and test
 
 On Linux with Rust/Cargo:
@@ -144,6 +158,7 @@ direction, selected input columns and a finite alpha. It returns
 `W - alpha * u * (u^T W M)` using normalized `u`, FP32 inputs/outputs and wider
 accumulation. It rejects invalid/nonfinite inputs and preserves unselected
 columns. This algebra does not determine which direction has a useful meaning.
+The [geometry note](docs/EDIT_GEOMETRY.md) derives the operator and its limits.
 
 The `project` CLI reads JSON fields `weights`, `rows`, `cols`, `direction`,
 `selected`, `alpha` and writes a new JSON array. It does not modify a checkpoint.
