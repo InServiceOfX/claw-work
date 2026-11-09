@@ -1,7 +1,8 @@
 //! Native GTK UI. Directory scans run on a bounded, single background worker.
 use crate::{
-    appearance,
+    appearance, commands,
     core::{self, Entry, Preferences, SavedTab, Sort},
+    operations,
 };
 use gtk::{gdk, gdk_pixbuf, gio, glib, pango, prelude::*};
 use std::{
@@ -75,6 +76,16 @@ pub struct Browser {
     monitor: RefCell<Option<gio::FileMonitor>>,
     changed: Cell<Option<Instant>>,
     alive: Cell<bool>,
+    removal_sender: mpsc::Sender<(operations::Removal, operations::Report)>,
+    removal_busy: Cell<bool>,
+    command_toggle: gtk::ToggleButton,
+    command_panel: gtk::Box,
+    command_entry: gtk::Entry,
+    command_output: gtk::TextView,
+    command_run: gtk::Button,
+    command_stop: gtk::Button,
+    command_task: RefCell<Option<commands::Task>>,
+    command_context: RefCell<String>,
 }
 
 fn icon_button(icon: &str, tooltip: &str) -> gtk::Button {
@@ -205,6 +216,43 @@ impl Browser {
         empty.set_no_show_all(true);
         canvas.add_overlay(&empty);
         canvas.set_overlay_pass_through(&empty, true);
+        let command_panel = gtk::Box::new(gtk::Orientation::Vertical, 2);
+        command_panel.set_widget_name("commands");
+        let command_row = gtk::Box::new(gtk::Orientation::Horizontal, 6);
+        command_row.pack_start(&gtk::Label::new(Some("$")), false, false, 0);
+        let command_entry = gtk::Entry::builder()
+            .hexpand(true)
+            .placeholder_text("Short shell command in this folder · Enter to run")
+            .build();
+        command_entry.set_tooltip_text(Some("Runs in the displayed folder at submission. Noninteractive shell: no editors or password prompts. Use && or pipelines for short commands."));
+        let command_run = gtk::Button::with_label("Run");
+        let command_stop = gtk::Button::with_label("Stop");
+        command_stop.set_sensitive(false);
+        command_row.pack_start(&command_entry, true, true, 0);
+        command_row.pack_start(&command_run, false, false, 0);
+        command_row.pack_start(&command_stop, false, false, 0);
+        command_panel.pack_start(&command_row, false, false, 0);
+        let command_output = gtk::TextView::new();
+        command_output.set_editable(false);
+        command_output.set_cursor_visible(false);
+        command_output.set_monospace(true);
+        command_output.set_wrap_mode(gtk::WrapMode::None);
+        command_output
+            .buffer()
+            .unwrap()
+            .set_text("Output appears here. Commands run in the displayed folder.");
+        let output_scroll =
+            gtk::ScrolledWindow::new(None::<&gtk::Adjustment>, None::<&gtk::Adjustment>);
+        output_scroll.set_policy(gtk::PolicyType::Automatic, gtk::PolicyType::Automatic);
+        output_scroll.set_size_request(-1, 38);
+        output_scroll.set_min_content_height(38);
+        output_scroll.set_max_content_height(38);
+        output_scroll.add(&command_output);
+        command_panel.pack_start(&output_scroll, false, false, 0);
+        command_panel.show_all();
+        command_panel.set_no_show_all(true);
+        command_panel.hide();
+        root.pack_start(&command_panel, false, false, 0);
         let footer = gtk::Box::new(gtk::Orientation::Horizontal, 8);
         footer.set_widget_name("status");
         let status = gtk::Label::builder()
@@ -213,6 +261,9 @@ impl Browser {
             .ellipsize(pango::EllipsizeMode::Middle)
             .build();
         footer.pack_start(&status, true, true, 0);
+        let command_toggle = gtk::ToggleButton::with_label("Commands");
+        command_toggle.set_tooltip_text(Some("Show or hide short commands · Ctrl+`"));
+        footer.pack_end(&command_toggle, false, false, 0);
         let hint = gtk::Label::new(Some(
             "Hidden files visible · Ctrl+L: path · Ctrl+Shift+C: shell path",
         ));
@@ -227,6 +278,7 @@ impl Browser {
                 gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
             );
         }
+        let (removal_sender, removal_responses) = mpsc::channel();
         let (sender, receiver) = mpsc::channel::<Request>();
         let (results, responses) = mpsc::channel::<Scan>();
         thread::spawn(move || {
@@ -295,6 +347,16 @@ impl Browser {
             monitor: RefCell::new(None),
             changed: Cell::new(None),
             alive: Cell::new(true),
+            removal_sender,
+            removal_busy: Cell::new(false),
+            command_toggle,
+            command_panel,
+            command_entry,
+            command_output,
+            command_run,
+            command_stop,
+            command_task: RefCell::new(None),
+            command_context: RefCell::new(String::new()),
         });
         // Signals use weak references, so closing a window releases its state.
         macro_rules! connect_button {
@@ -321,6 +383,47 @@ impl Browser {
                 if let Some(b) = weak.upgrade() {
                     if !b.tab_mutation.get() {
                         b.switch_tab(index as usize);
+                    }
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&browser);
+            browser.command_toggle.connect_toggled(move |toggle| {
+                if let Some(b) = weak.upgrade() {
+                    b.command_panel.set_visible(toggle.is_active());
+                    if toggle.is_active() {
+                        b.command_entry.grab_focus();
+                    } else if b.command_entry.has_focus() || b.command_output.has_focus() {
+                        b.tree.grab_focus();
+                    }
+                }
+            });
+        }
+        let command_accelerators = gtk::AccelGroup::new();
+        browser.window.add_accel_group(&command_accelerators);
+        browser.command_toggle.add_accelerator(
+            "clicked",
+            &command_accelerators,
+            *gdk::keys::constants::grave,
+            gdk::ModifierType::CONTROL_MASK,
+            gtk::AccelFlags::VISIBLE,
+        );
+        connect_button!(browser.command_run, run_command);
+        {
+            let weak = Rc::downgrade(&browser);
+            browser.command_entry.connect_activate(move |_| {
+                if let Some(b) = weak.upgrade() {
+                    b.run_command();
+                }
+            });
+        }
+        {
+            let weak = Rc::downgrade(&browser);
+            browser.command_stop.connect_clicked(move |_| {
+                if let Some(b) = weak.upgrade() {
+                    if let Some(task) = b.command_task.borrow().as_ref() {
+                        task.cancel();
                     }
                 }
             });
@@ -402,11 +505,13 @@ impl Browser {
                     } else {
                         tree.selection().unselect_all();
                     }
-                    let mut paths = b.selected();
-                    if paths.is_empty() {
-                        paths.push(b.current());
-                    }
-                    b.path_menu(paths).popup_at_pointer(Some(event));
+                    let paths = b.selected();
+                    let menu = if paths.is_empty() {
+                        b.path_menu(vec![b.current()])
+                    } else {
+                        b.file_menu(paths)
+                    };
+                    menu.popup_at_pointer(Some(event));
                 }
                 glib::Propagation::Stop
             });
@@ -471,6 +576,7 @@ impl Browser {
             browser.window.connect_destroy(move |_| {
                 if let Some(b) = weak.upgrade() {
                     b.alive.set(false);
+                    b.command_task.borrow_mut().take();
                     if let Some(m) = b.monitor.borrow_mut().take() {
                         m.cancel();
                     }
@@ -495,6 +601,10 @@ impl Browser {
             while let Ok(scan) = responses.try_recv() {
                 b.finish(scan);
             }
+            while let Ok((mode, report)) = removal_responses.try_recv() {
+                b.finish_removal(mode, report);
+            }
+            b.poll_command();
             if b.changed
                 .get()
                 .is_some_and(|t| t.elapsed() > Duration::from_millis(250))
@@ -1250,6 +1360,210 @@ impl Browser {
         menu.show_all();
         menu
     }
+    fn file_menu(self: &Rc<Self>, paths: Vec<PathBuf>) -> gtk::Menu {
+        let menu = self.path_menu(paths.clone());
+        if !paths.is_empty() {
+            menu.append(&gtk::SeparatorMenuItem::new());
+            for (title, mode) in [
+                ("Move to Trash", operations::Removal::Trash),
+                ("Delete Permanently…", operations::Removal::Permanent),
+            ] {
+                let weak = Rc::downgrade(self);
+                let targets = paths.clone();
+                let item = gtk::MenuItem::with_label(title);
+                item.set_sensitive(!self.removal_busy.get());
+                item.connect_activate(move |_| {
+                    if let Some(b) = weak.upgrade() {
+                        if mode == operations::Removal::Permanent {
+                            b.confirm_delete(targets.clone());
+                        } else {
+                            b.start_removal(targets.clone(), mode);
+                        }
+                    }
+                });
+                menu.append(&item);
+            }
+        }
+        menu.show_all();
+        menu
+    }
+
+    fn confirm_delete(self: &Rc<Self>, paths: Vec<PathBuf>) {
+        if paths.is_empty() || self.removal_busy.get() {
+            return;
+        }
+        let dialog = gtk::MessageDialog::new(
+            Some(&self.window),
+            gtk::DialogFlags::MODAL | gtk::DialogFlags::DESTROY_WITH_PARENT,
+            gtk::MessageType::Warning,
+            gtk::ButtonsType::None,
+            "Delete selected items permanently?",
+        );
+        dialog.set_title("Delete Permanently");
+        dialog.set_widget_name("delete-confirmation");
+        let mut names = paths
+            .iter()
+            .take(12)
+            .map(|path| path.display().to_string())
+            .collect::<Vec<_>>()
+            .join("\n");
+        if paths.len() > 12 {
+            names.push_str(&format!("\n… and {} more", paths.len() - 12));
+        }
+        dialog.set_secondary_text(Some(&format!(
+            "These {} item(s) will not go to Trash. This cannot be undone.\n\n{names}",
+            paths.len()
+        )));
+        dialog.add_buttons(&[
+            ("Cancel", gtk::ResponseType::Cancel),
+            ("Delete Permanently", gtk::ResponseType::Accept),
+        ]);
+        dialog.set_default_response(gtk::ResponseType::Cancel);
+        if let Some(cancel) = dialog.widget_for_response(gtk::ResponseType::Cancel) {
+            cancel.grab_focus();
+        }
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(move |dialog, response| {
+            dialog.close();
+            if response == gtk::ResponseType::Accept {
+                if let Some(b) = weak.upgrade() {
+                    b.start_removal(paths.clone(), operations::Removal::Permanent);
+                }
+            }
+        });
+        dialog.show_all();
+    }
+
+    fn start_removal(self: &Rc<Self>, paths: Vec<PathBuf>, mode: operations::Removal) {
+        if paths.is_empty() || self.removal_busy.replace(true) {
+            return;
+        }
+        self.status.set_text(if mode == operations::Removal::Trash {
+            "Moving selected items to Trash…"
+        } else {
+            "Deleting selected items…"
+        });
+        let sender = self.removal_sender.clone();
+        thread::spawn(move || {
+            let _ = sender.send((mode, operations::remove(&paths, mode)));
+        });
+    }
+
+    fn finish_removal(self: &Rc<Self>, mode: operations::Removal, report: operations::Report) {
+        self.removal_busy.set(false);
+        self.refresh();
+        let verb = if mode == operations::Removal::Trash {
+            "Moved to Trash"
+        } else {
+            "Permanently deleted"
+        };
+        let summary = format!(
+            "{verb}: {} item(s). Failed: {}.",
+            report.completed,
+            report.errors.len()
+        );
+        self.status.set_text(&summary);
+        if !report.errors.is_empty() {
+            let dialog = gtk::MessageDialog::new(
+                Some(&self.window),
+                gtk::DialogFlags::DESTROY_WITH_PARENT,
+                gtk::MessageType::Error,
+                gtk::ButtonsType::Close,
+                &summary,
+            );
+            dialog.set_title("File operation errors");
+            dialog.set_widget_name("removal-errors");
+            let errors = report
+                .errors
+                .iter()
+                .take(12)
+                .cloned()
+                .collect::<Vec<_>>()
+                .join("\n");
+            dialog.set_secondary_text(Some(&errors));
+            dialog.connect_response(|dialog, _| dialog.close());
+            dialog.show_all();
+        }
+    }
+
+    fn run_command(self: &Rc<Self>) {
+        if self.command_task.borrow().is_some() {
+            return;
+        }
+        let command = self.command_entry.text();
+        if command.trim().is_empty() {
+            return;
+        }
+        let cwd = self.current();
+        *self.command_context.borrow_mut() = format!("{} $ {}", cwd.display(), command);
+        match commands::start(&command, &cwd) {
+            Ok(task) => {
+                self.command_output
+                    .buffer()
+                    .unwrap()
+                    .set_text(&format!("{}\nRunning…", self.command_context.borrow()));
+                *self.command_task.borrow_mut() = Some(task);
+                self.command_run.set_sensitive(false);
+                self.command_entry.set_sensitive(false);
+                self.command_stop.set_sensitive(true);
+            }
+            Err(error) => self.command_output.buffer().unwrap().set_text(&format!(
+                "{}\nCould not run command: {error}",
+                self.command_context.borrow()
+            )),
+        }
+    }
+
+    fn poll_command(self: &Rc<Self>) {
+        let result = self
+            .command_task
+            .borrow()
+            .as_ref()
+            .and_then(commands::Task::try_result);
+        let Some(result) = result else {
+            return;
+        };
+        self.command_task.borrow_mut().take();
+        self.command_run.set_sensitive(true);
+        self.command_entry.set_sensitive(true);
+        self.command_stop.set_sensitive(false);
+        let text = match result {
+            Ok(output) => {
+                let status = if output.cancelled {
+                    "Stopped".into()
+                } else {
+                    output.code.map_or_else(
+                        || "Terminated by signal".into(),
+                        |code| format!("Exit {code}"),
+                    )
+                };
+                let errors = if output.stderr.is_empty() {
+                    String::new()
+                } else {
+                    format!("\n[stderr]\n{}", output.stderr)
+                };
+                let truncated = if output.truncated {
+                    " · output truncated"
+                } else {
+                    ""
+                };
+                format!(
+                    "[{status}{truncated}] {}\n{}{}",
+                    self.command_context.borrow(),
+                    output.stdout,
+                    errors
+                )
+            }
+            Err(error) => format!("{}\nCommand error: {error}", self.command_context.borrow()),
+        };
+        let buffer = self.command_output.buffer().unwrap();
+        buffer.set_text(&text.replace('\0', "␀"));
+        let mut end = buffer.end_iter();
+        self.command_output
+            .scroll_to_iter(&mut end, 0., false, 0., 1.);
+        self.refresh();
+    }
+
     fn appearance_menu(self: &Rc<Self>) -> gtk::Menu {
         let menu = gtk::Menu::new();
         for (key, title) in [
@@ -1369,7 +1683,7 @@ impl Browser {
             gtk::ButtonsType::Close,
             "Personal Files · Keyboard Shortcuts",
         );
-        dialog.set_secondary_text(Some("Ctrl+T     New tab in current folder\nCtrl+W     Close tab (keep one open)\nCtrl+Tab / Ctrl+Shift+Tab     Next / previous tab\nCtrl+L     Focus path bar\nCtrl+C     Copy full path(s)\nCtrl+Shift+C     Copy shell-quoted path(s)\nCtrl+D     Toggle favorite folder\nCtrl+R / F5     Refresh\nAlt+Left / Right     Back / forward\nAlt+Up     Parent folder\nEnter     Open selected item\n\nDrop folders into the sidebar to favorite them.\nClick Name, Modified, or Size again to reverse sorting.\nHidden files are always visible."));
+        dialog.set_secondary_text(Some("Ctrl+T     New tab in current folder\nCtrl+W     Close tab (keep one open)\nCtrl+Tab / Ctrl+Shift+Tab     Next / previous tab\nCtrl+L     Focus path bar\nCtrl+`     Show / hide commands\nCtrl+C     Copy full path(s)\nCtrl+Shift+C     Copy shell-quoted path(s)\nCtrl+D     Toggle favorite folder\nCtrl+R / F5     Refresh\nAlt+Left / Right     Back / forward\nAlt+Up     Parent folder\nEnter     Open selected item\n\nDrop folders into the sidebar to favorite them.\nClick Name, Modified, or Size again to reverse sorting.\nHidden files are always visible."));
         dialog.run();
         dialog.close();
     }
@@ -1380,6 +1694,10 @@ impl Browser {
         let key = event.keyval().to_lower();
         if self.tab_shortcut(event.keyval(), event.state()) {
             return glib::Propagation::Stop;
+        }
+        // Command widgets retain their native editing/Enter/Ctrl+C behavior.
+        if self.command_entry.has_focus() || self.command_output.has_focus() {
+            return glib::Propagation::Proceed;
         }
         if ctrl && key == gdk::keys::constants::l {
             self.address.grab_focus();
@@ -1508,6 +1826,218 @@ mod tests {
         let row = gtk::TreePath::from_indicesv(&[index as i32]);
         browser.tree.selection().select_path(&row);
         row
+    }
+
+    fn menu_activate(menu: &gtk::Menu, title: &str) {
+        let item = menu
+            .children()
+            .into_iter()
+            .filter_map(|w| w.downcast::<gtk::MenuItem>().ok())
+            .find(|item| item.label().as_deref() == Some(title))
+            .expect("menu action missing");
+        item.emit_activate();
+        drain();
+    }
+    fn owned_dialog(browser: &Browser, name: &str) -> gtk::MessageDialog {
+        gtk::Window::list_toplevels()
+            .into_iter()
+            .filter_map(|w| w.downcast::<gtk::MessageDialog>().ok())
+            .find(|d| {
+                d.widget_name() == name
+                    && d.transient_for().as_ref() == Some(browser.window.upcast_ref())
+            })
+            .expect("dialog missing")
+    }
+    fn removal_wait(browser: &Browser) {
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while browser.removal_busy.get() && Instant::now() < deadline {
+            drain();
+            thread::sleep(Duration::from_millis(10));
+        }
+        assert!(!browser.removal_busy.get(), "file operation timed out");
+        wait(browser);
+    }
+    fn command_wait(browser: &Browser) -> String {
+        let deadline = Instant::now() + Duration::from_secs(6);
+        while browser.command_task.borrow().is_some() && Instant::now() < deadline {
+            drain();
+            thread::sleep(Duration::from_millis(10));
+        }
+        assert!(browser.command_task.borrow().is_none(), "command timed out");
+        wait(browser);
+        let buffer = browser.command_output.buffer().unwrap();
+        buffer
+            .text(&buffer.start_iter(), &buffer.end_iter(), true)
+            .unwrap()
+            .to_string()
+    }
+    fn actions_story(browser: &Rc<Browser>, root: &Path) {
+        use std::os::unix::fs::symlink;
+        let folder = root.join("Actions Δ a b's $folder");
+        fs::create_dir(&folder).unwrap();
+        let target = folder.join("keep target");
+        fs::create_dir(&target).unwrap();
+        fs::write(target.join("keep"), "important").unwrap();
+        let doomed = folder.join("remove folder");
+        fs::create_dir(&doomed).unwrap();
+        fs::write(doomed.join("nested"), "fixture").unwrap();
+        let link = folder.join("remove link");
+        symlink(&target, &link).unwrap();
+        browser.navigate(&folder, true, None, false);
+        wait(browser);
+        let menu = browser.file_menu(vec![doomed.clone(), link.clone()]);
+        assert!(doomed.exists());
+        assert!(link.exists());
+        menu_activate(&menu, "Delete Permanently…");
+        let dialog = owned_dialog(browser, "delete-confirmation");
+        assert!(dialog.secondary_text().unwrap().contains("remove folder"));
+        assert!(dialog.secondary_text().unwrap().contains("remove link"));
+        assert!(doomed.exists());
+        dialog.response(gtk::ResponseType::Cancel);
+        drain();
+        assert!(doomed.exists());
+        assert!(link.exists());
+        assert!(!browser.removal_busy.get());
+        menu_activate(&menu, "Delete Permanently…");
+        owned_dialog(browser, "delete-confirmation").response(gtk::ResponseType::Accept);
+        removal_wait(browser);
+        assert!(!doomed.exists());
+        assert!(fs::symlink_metadata(&link).is_err());
+        assert!(target.join("keep").exists());
+        assert!(!browser.displayed.borrow().contains(&doomed));
+        menu.detach();
+        let menu = browser.path_menu(vec![folder.clone()]);
+        assert!(!menu
+            .children()
+            .into_iter()
+            .filter_map(|w| w.downcast::<gtk::MenuItem>().ok())
+            .any(|i| i.label().as_deref() == Some("Delete Permanently…")));
+        menu.detach();
+        let good = folder.join("partial success");
+        fs::write(&good, "fixture").unwrap();
+        browser.start_removal(
+            vec![good.clone(), folder.join("missing")],
+            operations::Removal::Permanent,
+        );
+        removal_wait(browser);
+        let dialog = owned_dialog(browser, "removal-errors");
+        assert!(dialog.secondary_text().unwrap().contains("missing"));
+        assert!(!good.exists());
+        dialog.response(gtk::ResponseType::Close);
+        drain();
+        let trashed = folder.join("gui trash fixture");
+        fs::write(&trashed, "fixture").unwrap();
+        let menu = browser.file_menu(vec![trashed.clone()]);
+        menu_activate(&menu, "Move to Trash");
+        removal_wait(browser);
+        menu.detach();
+        assert!(!trashed.exists());
+        assert!(!browser.displayed.borrow().contains(&trashed));
+        let trash = PathBuf::from(std::env::var_os("XDG_DATA_HOME").unwrap()).join("Trash/files");
+        assert!(trash.join("gui trash fixture").exists());
+        eprintln!("PASS file menus: explicit selection, cancel/confirm, real isolated Trash, nonempty folders, symlink target preserved, refresh and partial-error dialog");
+
+        assert!(!browser.command_panel.is_visible());
+        assert!(gtk::accel_groups_activate(
+            &browser.window,
+            *gdk::keys::constants::grave,
+            gdk::ModifierType::CONTROL_MASK
+        ));
+        drain();
+        assert!(
+            browser.command_panel.is_visible(),
+            "Ctrl+grave accelerator must show the command area"
+        );
+        browser.command_entry.grab_focus();
+        assert!(gtk::accel_groups_activate(
+            &browser.window,
+            *gdk::keys::constants::grave,
+            gdk::ModifierType::CONTROL_MASK
+        ));
+        drain();
+        assert!(
+            !browser.command_panel.is_visible(),
+            "Ctrl+grave accelerator must hide it while input has focus"
+        );
+        browser.command_toggle.set_active(true);
+        drain();
+        assert!(browser.command_panel.is_visible());
+        browser
+            .command_entry
+            .set_text("printf first >> once; printf 'hello\\n'; printf issue >&2; exit 7");
+        browser.command_entry.emit_activate();
+        browser.command_toggle.set_active(false);
+        let other = root.join("other-command-tab");
+        fs::create_dir(&other).unwrap();
+        browser.new_tab(other.clone());
+        wait(browser);
+        let output = command_wait(browser);
+        assert_eq!(fs::read_to_string(folder.join("once")).unwrap(), "first");
+        assert!(!other.join("once").exists());
+        assert!(output.contains("hello"));
+        assert!(output.contains("issue"));
+        assert!(output.contains("Exit 7"));
+        assert!(output.contains(folder.to_str().unwrap()));
+        browser.command_toggle.set_active(true);
+        drain();
+        assert!(
+            browser.command_panel.allocated_height() < 110,
+            "command panel should remain compact"
+        );
+        assert_eq!(fs::read_to_string(folder.join("once")).unwrap(), "first");
+        browser
+            .command_entry
+            .set_text("printf second > here && printf 'active tab\\n'");
+        browser.command_run.emit_clicked();
+        let output = command_wait(browser);
+        assert!(output.contains("active tab"));
+        assert!(other.join("here").exists());
+        assert!(!folder.join("here").exists());
+        assert!(browser.displayed.borrow().contains(&other.join("here")));
+        // Submission must be asynchronous: navigate while a command is sleeping.
+        browser.command_entry.set_text("sleep 1; printf finished");
+        browser.command_entry.emit_activate();
+        browser.navigate(&folder, true, None, false);
+        wait(browser);
+        assert!(browser.command_task.borrow().is_some());
+        assert_eq!(browser.current(), folder);
+        assert!(command_wait(browser).contains("finished"));
+        browser
+            .command_entry
+            .set_text("sleep 20; printf bad > late");
+        browser.command_run.emit_clicked();
+        browser.command_stop.emit_clicked();
+        assert!(command_wait(browser).contains("Stopped"));
+        assert!(!folder.join("late").exists());
+        browser.command_entry.set_text("printf '\\377'");
+        browser.command_run.emit_clicked();
+        assert!(command_wait(browser).contains('�'));
+        browser.command_entry.set_text("head -c 131072 /dev/zero");
+        browser.command_run.emit_clicked();
+        assert!(command_wait(browser).contains("output truncated"));
+        browser
+            .command_entry
+            .set_text("printf 'Ready for short commands\\n'");
+        browser.command_entry.emit_activate();
+        command_wait(browser);
+        if let Some(path) = std::env::var_os("PERSONAL_FILES_ACTIONS_SCREENSHOT") {
+            screenshot(browser, &PathBuf::from(path));
+        }
+        let prefs = fs::read_to_string(&browser.prefs.borrow().path).unwrap();
+        assert!(
+            !prefs.contains("printf"),
+            "command text must not enter preferences"
+        );
+        browser
+            .command_entry
+            .set_text("sleep 1; printf bad > after-close");
+        browser.command_run.emit_clicked();
+        browser.window.close();
+        drain();
+        assert!(browser.command_task.borrow().is_none());
+        thread::sleep(Duration::from_millis(1200));
+        assert!(!folder.join("after-close").exists());
+        eprintln!("PASS compact commands: toggle, entry/Run signals, exact active-folder cwd, stderr/exit, responsive navigation, Stop/close cancellation, no saved commands, invalid UTF-8, bounded output and listing refresh");
     }
 
     fn sidebar_story(browser: &Rc<Browser>, root: &Path, physics: &Path) {
@@ -1729,6 +2259,26 @@ mod tests {
     #[test]
     #[ignore = "Needs a real graphical display or xvfb-run; uses only temporary fixture files"]
     fn desktop_story() {
+        // Isolate the real trash service before GLib caches XDG directories.
+        if std::env::var_os("PERSONAL_FILES_DESKTOP_FIXTURE").is_none() {
+            let fixture = TempDir::new().unwrap();
+            fs::create_dir(fixture.path().join("data")).unwrap();
+            let status = std::process::Command::new(std::env::current_exe().unwrap())
+                .args([
+                    "--exact",
+                    "ui::tests::desktop_story",
+                    "--ignored",
+                    "--nocapture",
+                    "--test-threads=1",
+                ])
+                .env("PERSONAL_FILES_DESKTOP_FIXTURE", fixture.path())
+                .env("XDG_DATA_HOME", fixture.path().join("data"))
+                .env("XDG_CONFIG_HOME", fixture.path().join("config"))
+                .status()
+                .unwrap();
+            assert!(status.success(), "isolated GTK desktop story failed");
+            return;
+        }
         gtk::init().expect("GTK must connect to a graphical display");
         let app = gtk::Application::new(
             Some("io.monoclaw.PersonalFiles.Tests"),
@@ -1939,6 +2489,15 @@ mod tests {
         eprintln!("PASS clearing visits retains favorites");
         sidebar_story(&browser, root, &physics);
         tabs_story(&app, &browser, root, &physics, &prefs_path);
+        let action_browser = Browser::new(
+            &app,
+            Some(root.into()),
+            Preferences::load(root.join("actions/preferences.json")),
+        );
+        wait(&action_browser);
+        actions_story(&action_browser, root);
+        action_browser.window.close();
+        drain();
         browser.window.close();
         drain();
     }

@@ -41,8 +41,9 @@ local background image is supported and persists. Images stay outside Git.
 - Rust is authoritative. The human corrected the initially proposed Python
   technology after approving the behavior, and requested removal/sunsetting of
   Python after Rust parity. Rust passes the acceptance checks; Python is retired.
-- File creation, rename, move, delete, thumbnails and recursive folder
-  sizes are outside this first browsing-focused iteration.
+- File creation, rename, general move, thumbnails and recursive folder sizes
+  remain outside this iteration. Explicit Trash/permanent deletion and short
+  command execution were approved on 2026-11-08; see the current additions below.
 - No telemetry, network content processing, or automatic OS-default replacement.
 - Existing unrelated repository files must be preserved; feature branch only.
 
@@ -91,3 +92,32 @@ previous session. See user_stories/story__tabs.md and docs/intents/tabs-approval
 The tabs `intent apply` captured its event but failed incremental architecture
 because no model provider was configured. Prompts, story and Rust changes were
 maintained directly; automated apply/sync/semantic detection is not claimed.
+
+<!-- pdd-intent-entry:hi-for-personal-files-in-8ca1da20:start -->
+## Hi, for personal files in...
+
+- Intent event: [`docs/intents/intent__hi-for-personal-files-in-8ca1da20.md`](intents/intent__hi-for-personal-files-in-8ca1da20.md)
+- Change kind: `add`
+- Supersedes: none
+- Scope: `existing_pdd_subproject_change`
+- Technology: `not stated`
+
+> Hi, for personal files in <repository-root>
+> <local-shell>:<repository-root> make sure it was rebuilt with the code from this repo, and rebuilt for here locally Ubunut Linux so that it's a application I can find from Applications folder AND when I search for it after pressing the "Super" button, I can find it. and after verifying that, please, if you can when I right click on a file or folder there, allow for option to send to trash or delete, just like the Finder in Mac OS or in Ubunut Linux the Files application. Make those 2 a user story please. And then as a user, I find myself once I'm on a directory to need to have to do at most 1 or 2 small terminal command line commands, maybe show in 2 or 3 lines, very small at the bottom a place to run commands please and i can run them. and make it be toggle, I can toggle showing it or not please
+<!-- pdd-intent-entry:hi-for-personal-files-in-8ca1da20:end -->
+
+## Approved local desktop improvements — 2026-11-08
+
+The user approved three stories in conversation ("approve please"): rebuild
+from this subproject and verify Ubuntu Applications/search discovery; explicit
+right-click Move to Trash or separately confirmed permanent deletion; and an
+initially hidden, toggleable compact bottom command area running short commands
+in the active folder with output/status. Deletion must preserve symlink targets,
+never convert a trash failure into permanent deletion, and surface partial
+failures. Commands must not block browsing or run on navigation/toggling.
+The runner closes stdin and is not a full interactive terminal.
+
+The exact approved PDD intake was attempted with local-only routing. It captured
+the event but failed at the local model request, with no provider fallback.
+Prompts, independent stories and implementation are maintained directly.
+Automated sync and generated contracts are not claimed.

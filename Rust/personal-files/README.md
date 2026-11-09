@@ -47,6 +47,22 @@ is needed for installation, and it does not replace Ubuntu's default Files app.
   **Ctrl+R** or **F5** refreshes. Local folder changes also refresh automatically.
 - Double-click or press **Enter** to open a folder/document. Documents use
   Ubuntu's registered default application.
+- Right-click selected files or folders for **Move to Trash** or **Delete
+  Permanently…**. Trash uses Ubuntu's recoverable Trash. Permanent deletion
+  requires confirmation and defaults to Cancel. Multiple selections and nonempty
+  folders work; deleting a symlink preserves its target. Operation errors appear
+  in a dialog. Right-clicking empty space does not offer removal of the folder.
+- Click **Commands** at the bottom, or press **Ctrl+`**, to show/hide a compact
+  command area. Enter a short command and press **Enter** or **Run**. It runs
+  in the active tab's displayed folder at submission time; output, errors and
+  exit status appear below. **Stop** cancels the command and its ordinary child
+  processes. Navigation remains available, and hiding the panel lets the command
+  finish. Each submission starts a fresh `/bin/sh`; use `&&` or a pipeline to
+  combine commands. This is a noninteractive runner with closed input, suitable
+  for commands such as `pwd` or `git status`, rather than an interactive editor
+  or password prompt. Output capture is bounded to 16 KiB per stream; commands
+  and output are not saved in preferences. Closing the window stops a running
+  command. The panel starts hidden.
 - **Appearance** offers Silver, Midnight, Aurora and Automatic skins, plus a
   background image picker. Automatic uses file extensions, not document content:
   mostly pictures → Aurora; mostly code → Midnight; otherwise Silver.
@@ -87,7 +103,8 @@ export CARGO_TARGET_DIR="$HOME/.cache/personal-files/target"
 
 ## PDD
 
-The reviewed story is in `user_stories/story__personal_places.md`; versioned
+The approved stories are in `user_stories/`: personal places, tabs, Ubuntu
+installation/discovery, Trash/permanent deletion and compact commands. Versioned
 `.prompt` files and `architecture.json` map the implementation. See
 `docs/PRODUCT_INTENT.md` for decisions and `docs/VERIFICATION.md` for exact
 verification scope and the interrupted automated PDD run. The initial Python

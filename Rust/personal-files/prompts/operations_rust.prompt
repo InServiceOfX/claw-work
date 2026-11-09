@@ -1,0 +1,8 @@
+<pdd-reason>Perform only explicit, user-requested file removal with recoverable trash and symlink-safe permanent deletion.</pdd-reason>
+Implement src/operations.rs in safe Rust using std and the existing GIO bindings. Expose Removal::{Trash,Permanent}, Report {completed: usize, errors: Vec<String>}, remove(paths: &[PathBuf], mode: Removal) -> Report and remove_with with an injectable trash service for independent failure tests. These are blocking operations called only on a worker after UI authorization.
+<contract_rules>
+R1 (MUST): Trash uses the desktop GIO trash service, including normal system trash metadata. Trash failure MUST NOT fall back to permanent deletion.
+R2 (MUST): Permanent deletion removes selected files and nonempty folders. Symbolic and broken links MUST be unlinked without following their targets, including links inside removed folders.
+R3 (MUST): Reject root and relative/parent-traversal targets. Attempt every explicitly selected target and return completed count plus per-path failures, including partial success. Empty selection does nothing.
+R4 (MUST NOT): Merely importing this module, browsing, copying, or opening a menu must never remove anything. The UI must obtain explicit confirmation before invoking Permanent.
+</contract_rules>

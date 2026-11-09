@@ -1,0 +1,8 @@
+<pdd-reason>Run explicitly submitted short shell commands with bounded output while the native browser remains responsive.</pdd-reason>
+Implement src/commands.rs in safe Rust on Ubuntu. Expose start(command: &str, cwd: &Path) -> io::Result<Task>; Task::try_result() -> Option<io::Result<Output>> and Task::cancel(). Output contains stdout/stderr strings, optional exit code, truncated/cancelled flags. Drop cancels outstanding work. This module performs no GTK work or preference/history writes.
+<contract_rules>
+R1 (MUST): Invoke /bin/sh -c on the explicit command with the supplied cwd set through the process API. Never interpolate the path into shell syntax. Spaces, Unicode and metacharacters in directory names stay literal. A nonexistent or inaccessible cwd fails before command execution.
+R2 (MUST): Close stdin; this is a noninteractive runner. Capture stdout and stderr concurrently, draining both without pipe deadlock. Bound retained output per stream to OUTPUT_LIMIT (16 KiB input bytes), flag truncation and render arbitrary output as lossy UTF-8 text.
+R3 (MUST): Run without blocking GTK. Poll results without waiting. Report failure status, signals/cancellation and spawn/read errors. No command executes as a side effect of constructing UI or changing tabs.
+R4 (MUST): Stop and dropping a running task terminate its owned process group including ordinary shell pipelines/children and reap the shell. Hiding the panel does not cancel or repeat work. No durable command history/output or network service is created by the runner itself.
+</contract_rules>

@@ -30,7 +30,9 @@
     "description": "Native Ubuntu GTK browser with independent tabs and real desktop acceptance",
     "dependencies": [
       "core_rust.prompt",
-      "appearance_rust.prompt"
+      "appearance_rust.prompt",
+      "operations_rust.prompt",
+      "commands_rust.prompt"
     ],
     "priority": 3,
     "filename": "ui_rust.prompt",
@@ -103,6 +105,30 @@
     "priority": 8,
     "filename": "install_bash.prompt",
     "filepath": "install.sh",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Bounded asynchronous short shell commands",
+    "description": "Bounded asynchronous short shell commands",
+    "dependencies": [],
+    "priority": 2,
+    "filename": "commands_rust.prompt",
+    "filepath": "src/commands.rs",
+    "tags": [
+      "ubuntu",
+      "personal-files"
+    ]
+  },
+  {
+    "reason": "Explicit trash and permanent file removal",
+    "description": "Explicit trash and permanent file removal",
+    "dependencies": [],
+    "priority": 2,
+    "filename": "operations_rust.prompt",
+    "filepath": "src/operations.rs",
     "tags": [
       "ubuntu",
       "personal-files"

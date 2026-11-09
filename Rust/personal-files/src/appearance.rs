@@ -106,6 +106,8 @@ pub fn stylesheet(theme: &str, image: &Path) -> String {
     treeview.view {{ background: {panel}; color: {ink}; }}
     treeview.view:selected {{ background: #3879df; color: white; }}
     treeview.view header button {{ background: {base}; border-radius: 0; border-width: 0 0 1px 0; color: {muted}; padding: 9px; }}
+    #commands {{ padding: 2px 14px; background: {base}; }}
+    #commands textview, #commands textview text {{ background: {panel}; color: {ink}; font-size: 11px; }}
     #status {{ padding: 8px 16px; background: {base}; }}
     menu, menuitem, popover {{ background: {base}; color: {ink}; }}
     menuitem:hover {{ background: #3879df; color: white; }}
