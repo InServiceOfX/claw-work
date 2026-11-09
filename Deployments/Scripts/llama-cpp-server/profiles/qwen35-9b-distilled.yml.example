@@ -1,0 +1,102 @@
+# Profile: Qwen3.5-9B Claude 4.6 Opus Reasoning Distilled v2 (Q4_K_M)
+# Source: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+#
+# Tested config from @sudoingX: RTX 3060 12GB, 128K context, 50 tok/s baseline,
+# 30-45 tok/s under agent workloads. 8.2GB VRAM at 256K ctx with q4_0 KV cache.
+# Wrote a full space shooter (3,263 lines, 13 files) autonomously + self-debugged.
+#
+# Full server options: https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+
+# ─── Model ────────────────────────────────────────────────────────────────────
+# Path to the GGUF file relative to the mounted /models volume.
+# The volume mount in config.yml maps the host LLM dir → /models inside container.
+model_path: /models/Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF/Qwen3.5-9B.Q4_K_M.gguf
+
+# Host-side absolute path (reference only, not used by launch.sh)
+host_model_path: /path/to/local/models/Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF/Qwen3.5-9B.Q4_K_M.gguf
+
+# ─── Server ───────────────────────────────────────────────────────────────────
+server:
+  host: 127.0.0.1        # --host: bind address inside container (always 0.0.0.0 for Docker)
+  port: 8080            # --port: server listen port (mapped to host via -p)
+
+# ─── GPU & Layers ─────────────────────────────────────────────────────────────
+# -ngl, --n-gpu-layers N: How many model layers to offload to GPU VRAM.
+#   99 = all layers on GPU (no CPU offload). If your model doesn't have 99 layers
+#   it just means "everything". Reduce if VRAM is tight (e.g. 20 for partial offload).
+n_gpu_layers: 99
+
+# ─── Context & Batching ──────────────────────────────────────────────────────
+# -c, --ctx-size N: Total context window in tokens. 0 = use model default.
+#   131072 = 128K context. This is how much text the model can "see" at once.
+#   With q4_0 KV cache quantization, 128K fits on 12GB VRAM.
+ctx_size: 32768
+
+# -np, --parallel N: Number of server slots (concurrent request streams).
+#   1 = single user. Saves ~190MB VRAM vs multiple slots. You're one person
+#   talking to one model — you don't need multiple slots.
+parallel: 1
+
+# -b, --batch-size N: Logical max batch size for prompt processing (default: 2048).
+#   Larger = faster prefill but more VRAM spike. 2048 is a good default.
+# batch_size: 2048
+
+# -ub, --ubatch-size N: Physical max batch size (default: 512).
+#   Controls the actual GPU kernel batch dimension. Rarely needs tuning.
+# ubatch_size: 512
+
+# ─── Flash Attention ──────────────────────────────────────────────────────────
+# -fa, --flash-attn [on|off|auto]: Flash Attention for constant-speed generation.
+#   Without it, generation slows as context fills (50 tok/s at 4K → much slower at 128K).
+#   With it, speed stays flat regardless of context length. Always use "on" for CUDA.
+flash_attn: "on"
+
+# ─── KV Cache Quantization ───────────────────────────────────────────────────
+# -ctk, --cache-type-k TYPE: Data type for the KV cache K values.
+# -ctv, --cache-type-v TYPE: Data type for the KV cache V values.
+#   Allowed: f32, f16, bf16, q8_0, q4_0, q4_1, iq4_nl, q5_0, q5_1
+#   Default is f16. Using q4_0 compresses the KV cache ~4x, which is how you
+#   fit 128K+ context on 12GB. Without it, KV cache eats VRAM before 32K.
+#   q4_0 has minimal quality loss for most tasks.
+cache_type_k: q4_0
+cache_type_v: q4_0
+
+# ─── Token Prediction ────────────────────────────────────────────────────────
+# -n, --n-predict N: Max tokens to generate per request (-1 = infinite).
+#   Set a sane limit to prevent runaway generation. -1 if you want no limit.
+n_predict: -1
+
+# ─── CPU Threads ──────────────────────────────────────────────────────────────
+# -t, --threads N: CPU threads for generation (fallback / mixed offload).
+#   -1 = auto-detect. Only matters if n_gpu_layers < total layers.
+# threads: -1
+
+# ─── Reasoning / Thinking ────────────────────────────────────────────────────
+# --reasoning [on|off|auto]: Enable <think>...</think> reasoning tags.
+#   "auto" detects from chat template. Qwen3.5 supports thinking mode.
+reasoning: auto
+
+# --reasoning-format FORMAT: How to return thinking content.
+#   "deepseek" = puts thoughts in message.reasoning_content (OpenAI extension)
+#   "none" = leaves <think> tags in message.content
+# reasoning_format: deepseek
+
+# ─── Jinja Templates ─────────────────────────────────────────────────────────
+# --jinja: Use Jinja template engine for chat (default: enabled in recent llama.cpp).
+#   The GGUF usually embeds the correct chat template. Override only if needed.
+# jinja: true
+
+# ─── Monitoring ───────────────────────────────────────────────────────────────
+# --metrics: Enable Prometheus-compatible /metrics endpoint.
+# metrics: true
+
+# ─── Advanced (rarely needed) ────────────────────────────────────────────────
+# --mlock: Force model to stay in RAM (no swap). Good for dedicated servers.
+# --rope-scaling {none,linear,yarn}: RoPE scaling for extended context.
+# --rope-freq-base N: RoPE base freq for NTK-aware scaling.
+# --cache-reuse N: Min chunk for KV cache reuse via shifting.
+# --slot-save-path PATH: Save/restore slot KV cache to disk.
+# --api-key KEY: Require API key for all requests.
+# --tools all: Enable built-in agentic tools (file I/O, shell, etc.)
+#
+# Full list: https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md

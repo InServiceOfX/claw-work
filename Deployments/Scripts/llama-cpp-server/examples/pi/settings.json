@@ -1,0 +1,13 @@
+{
+  "compaction": {
+    "modelOverrides": {
+      "llama-cpp-local/qwythos-9b-q5-k-m": {
+        "reserveTokens": 8192,
+        "keepRecentTokens": 8192
+      }
+    }
+  },
+  "modelThinkingLevels": {
+    "llama-cpp-local/qwythos-9b-q5-k-m": "low"
+  }
+}

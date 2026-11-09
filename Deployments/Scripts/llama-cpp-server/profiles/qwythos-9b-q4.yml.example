@@ -1,0 +1,44 @@
+# Profile: Empero Qwythos-9B Claude Mythos 5 1M (Q4_K_M)
+# Source: https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF
+# Recommended default quant when the full Q4_K_M GGUF is downloaded.
+#
+# Copy to qwythos-9b-q4.yml and set host_model_path for your machine.
+# model_path is inside the container (/models mount from config.yml).
+
+model_path: /models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf
+# Host-side absolute path (documentation / sanity check only; launch.sh uses model_path)
+host_model_path: /path/to/local/models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q4_K_M.gguf
+alias: qwythos-9b-q4-k-m
+
+server:
+  host: 127.0.0.1
+  port: 8080
+
+# Offload the whole model. If startup reports CUDA OOM, first lower ctx_size,
+# then reduce this value to spill some layers to system RAM.
+n_gpu_layers: 99
+
+# The GGUF declares a 1,048,576-token YaRN context, but allocating that is not
+# practical on consumer GPUs. 32K is a useful local default; raise incrementally.
+ctx_size: 32768
+parallel: 1
+batch_size: 1024
+ubatch_size: 256
+
+flash_attn: "on"
+cache_type_k: q4_0
+cache_type_v: q4_0
+
+# Qwythos reasoning can be long. This is a server default; requests may supply
+# a smaller max_tokens value.
+n_predict: 16384
+reasoning: auto
+reasoning_format: deepseek
+
+# Model-card thinking-mode recommendations. min_p is disabled because the card
+# specifies top-k/top-p sampling without an additional min-p filter.
+temperature: 0.6
+top_p: 0.95
+top_k: 20
+min_p: 0.0
+repeat_penalty: 1.05

@@ -135,3 +135,14 @@ Rust server routing/error handling and profiles, not CUDA math. No push/commit,
 model conversion or automatic PDD sync was performed. The exact correction's
 read-only intent plan identified the server prompt; approved harness repair
 meaning was maintained directly in the existing prompt and independent stories.
+
+## Runtime hand-over to the llama.cpp deployment
+
+The native server was later shut down gracefully to release the shared GPU for
+local model comparison. Its source and weights were retained. The active Pi
+selection now belongs to the separate
+[CUDA llama.cpp deployment](../../../Deployments/Scripts/llama-cpp-server/README.md).
+The native Pi examples remain available for a future restart; do not assume the
+old endpoint is currently running. Stop the active runtime before loading
+another model onto the same device. Machine-local current process/container
+receipts remain private.

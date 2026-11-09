@@ -1,0 +1,45 @@
+# Profile: Empero Qwythos-9B Claude Mythos 5 1M (Q5_K_M)
+# Source: https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF
+# Higher-quality quant (~6.1 GB weights).
+#
+# Copy to qwythos-9b-q5.yml and set host_model_path for your machine.
+# model_path is inside the container (/models mount from config.yml).
+#
+# Context (model card):
+#   max_position_embeddings / YaRN max = 1,048,576 tokens
+#   native architecture = 262,144; YaRN factor 4× → 1M
+#   llama-cli full window: -c 1010000 (or any value ≤ 1048576)
+#   Full 1M: multi-GPU or KV offload; H100 class ~256k–512k comfortably
+#
+#   Start lower on 8 GB cards (16384–32768) and raise with -c.
+
+model_path: /models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q5_K_M.gguf
+# Host-side absolute path (documentation / sanity check only; launch.sh uses model_path)
+host_model_path: /path/to/local/models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q5_K_M.gguf
+alias: qwythos-9b-q5-k-m
+
+server:
+  host: 127.0.0.1
+  port: 8080
+
+n_gpu_layers: 99
+ctx_size: 65536
+parallel: 1
+batch_size: 1024
+ubatch_size: 256
+
+flash_attn: "on"
+cache_type_k: q4_0
+cache_type_v: q4_0
+
+# Model-card max_new_tokens for <think>+answer. Generation budget ≠ context.
+# Do not set this to 1M; clients override max_tokens per request as needed.
+n_predict: 16384
+reasoning: auto
+reasoning_format: deepseek
+
+temperature: 0.6
+top_p: 0.95
+top_k: 20
+min_p: 0.0
+repeat_penalty: 1.05

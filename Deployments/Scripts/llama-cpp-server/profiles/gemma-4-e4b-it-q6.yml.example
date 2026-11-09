@@ -1,0 +1,67 @@
+# Profile: Gemma-4 E4B IT Q6_K (Unsloth)
+# Source: unsloth/gemma-4-E4B-it-GGUF
+# GGUF: gemma-4-E4B-it-Q6_K.gguf (~7.1 GB)
+#
+# Gemma 4 E4B: ~4.5B effective parameters (8B with embeddings), 128K context.
+# Strong reasoning, multimodal (text+image+audio), native system role and thinking mode.
+#
+# Best sampling (apply in client / chat request, not here):
+#   temperature=1.0
+#   top_p=0.95
+#   top_k=64
+#
+# Thinking mode: llama.cpp should handle via chat template.
+#   - Enable thinking by including  at start of system prompt (or let template do it).
+#   - Model outputs reasoning inside <|channel>thought ... <channel|> tags.
+#   - For multi-turn: only keep final response in history (no thinking tags).
+#
+# Tested on RTX 3060 12GB: expect ~50-65 tok/s depending on context.
+
+# ─── Model ────────────────────────────────────────────────────────────────────
+model_path: /models/unsloth/gemma-4-E4B-it-GGUF/gemma-4-E4B-it-Q6_K.gguf
+
+# Host-side absolute path (for reference only)
+host_model_path: /path/to/local/models/unsloth/gemma-4-E4B-it-GGUF/gemma-4-E4B-it-Q6_K.gguf
+
+# ─── Server ───────────────────────────────────────────────────────────────────
+server:
+  host: 127.0.0.1
+  port: 8080
+
+# ─── GPU & Layers ─────────────────────────────────────────────────────────────
+n_gpu_layers: 99
+
+# ─── Context & Batching ──────────────────────────────────────────────────────
+ctx_size: 32768
+parallel: 1
+# batch_size: 2048
+# ubatch_size: 512
+
+# Sampling (from model card best practices)
+temperature: 1.0
+top-p: 0.95
+top-k: 64
+
+# ─── Flash Attention & KV Cache ──────────────────────────────────────────────
+flash_attn: "on"
+cache_type_k: q4_0
+cache_type_v: q4_0
+
+# ─── Generation ───────────────────────────────────────────────────────────────
+n_predict: -1
+# threads: -1
+
+# ─── Reasoning / Thinking ────────────────────────────────────────────────────
+reasoning: auto
+# reasoning_format: deepseek   # or "none" if you want raw tags in content
+
+# ─── Jinja / Chat Template ───────────────────────────────────────────────────
+# jinja: true   # usually auto-detected from GGUF
+
+# ─── Optional / Advanced ─────────────────────────────────────────────────────
+metrics: true # <--- ADDED THIS LINE
+# rope_scaling: "yarn"     # if you need to push beyond 128K
+# rope_freq_base: 1000000
+
+# Full server flag reference:
+# https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md

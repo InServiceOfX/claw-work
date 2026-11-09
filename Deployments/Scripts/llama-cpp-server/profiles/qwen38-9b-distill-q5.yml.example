@@ -1,0 +1,27 @@
+# Copy to the matching .yml file and edit host paths/mounts for your machine.
+# Source: https://huggingface.co/empero-ai/Qwen3.8-9B-Distill-GGUF
+# Qwen3.5 hybrid architecture; use a runtime with nextn/MTP-layer handling.
+# The validated image build is recorded in BENCHMARKS.md. Start at 32K context.
+# model_path is inside the container; host_model_path is documentation only.
+model_path: /models/empero-ai/Qwen3.8-9B-Distill-GGUF/Qwen3.8-9B-Q5_K_M.gguf
+host_model_path: /path/to/local/models/empero-ai/Qwen3.8-9B-Distill-GGUF/Qwen3.8-9B-Q5_K_M.gguf
+alias: qwen38-9b-q5-k-m
+server:
+  host: 127.0.0.1
+  port: 8080
+n_gpu_layers: 99
+ctx_size: 32768
+parallel: 1
+batch_size: 1024
+ubatch_size: 256
+flash_attn: 'on'
+cache_type_k: q4_0
+cache_type_v: q4_0
+n_predict: 16384
+reasoning: auto
+reasoning_format: deepseek
+jinja: true
+temperature: 0.6
+top_p: 0.95
+top_k: 20
+min_p: 0.0

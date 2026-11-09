@@ -1,0 +1,21 @@
+# Profile: Qwen3.5-9B Claude 4.6 Opus Reasoning Distilled v2 (Q5_K_M)
+# Source: Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF
+#
+# Q5_K_M: better quality than Q4_K_M, ~6.5GB weights, still fits 128K on 12GB.
+# ~9.1GB total VRAM with q4_0 KV cache at 128K context, ~2.9GB headroom on 3060.
+
+model_path: /models/Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF/Qwen3.5-9B.Q5_K_M.gguf
+host_model_path: /path/to/local/models/Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-GGUF/Qwen3.5-9B.Q5_K_M.gguf
+
+server:
+  host: 127.0.0.1
+  port: 8080
+
+n_gpu_layers: 99
+ctx_size: 32768
+parallel: 1
+flash_attn: "on"
+cache_type_k: q4_0
+cache_type_v: q4_0
+n_predict: -1
+reasoning: auto

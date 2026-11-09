@@ -1,0 +1,10 @@
+# Copy to config.yml and edit for your host. No weights are downloaded.
+docker:
+  image: ghcr.io/ggml-org/llama.cpp:server-cuda
+  container_name: llama-cpp-server
+  # Select the supported NVIDIA GPU shown by nvidia-smi.
+  gpu_id: 0
+  volumes:
+    - host: /path/to/local/models
+      container: /models
+      readonly: true

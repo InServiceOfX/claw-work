@@ -1,0 +1,50 @@
+# Profile: Empero Qwythos-9B Claude Mythos 5 1M (Q5_K_M + vision mmproj)
+# Source: https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF
+#
+# Enables image input via the official F16 multimodal projector (~918 MB).
+# Pairs with any text quant; Q5 is the recommended local balance on 12 GB GPUs.
+#
+# Copy to qwythos-9b-q5-vision.yml and set host paths for your machine.
+# Requires a REAL mmproj GGUF (not a Git LFS pointer):
+#   git lfs pull --include="mmproj-Qwythos-9B-Claude-Mythos-5-1M-F16.gguf"
+#
+# Vision notes (model card):
+#   - SFT was text-only; vision tower is frozen Qwen3.5-9B base quality.
+#   - mmproj uses extra VRAM — keep ctx below the text-only max.
+#   - OpenAI-compatible image payloads work on /v1/chat/completions.
+#
+# Context (reference RTX 3060 host RTX 3060 12GB empirical):
+#   text-only Q5 max ~589824; with mmproj prefer ≤262144 (start here).
+
+model_path: /models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q5_K_M.gguf
+host_model_path: /path/to/local/models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/Qwythos-9B-Claude-Mythos-5-1M-Q5_K_M.gguf
+
+# Vision projector (inside container /models mount)
+mmproj_path: /models/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/mmproj-Qwythos-9B-Claude-Mythos-5-1M-F16.gguf
+
+alias: qwythos-9b-q5-vision
+
+server:
+  host: 127.0.0.1
+  port: 8080
+
+n_gpu_layers: 99
+# Conservative for Q5 + mmproj on 12 GB. Raise with -c if VRAM allows.
+ctx_size: 16384
+parallel: 1
+batch_size: 1024
+ubatch_size: 256
+
+flash_attn: "on"
+cache_type_k: q4_0
+cache_type_v: q4_0
+
+n_predict: 16384
+reasoning: auto
+reasoning_format: deepseek
+
+temperature: 0.6
+top_p: 0.95
+top_k: 20
+min_p: 0.0
+repeat_penalty: 1.05

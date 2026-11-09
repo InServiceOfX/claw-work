@@ -1,0 +1,44 @@
+{
+  "providers": {
+    "llama-cpp-local": {
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "local",
+      "compat": {
+        "supportsStore": false,
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": true,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens"
+      },
+      "models": [
+        {
+          "id": "qwythos-9b-q5-k-m",
+          "name": "Local Qwythos 9B Q5 (CUDA)",
+          "reasoning": true,
+          "thinkingLevelMap": {
+            "off": "none"
+          },
+          "input": [
+            "text"
+          ],
+          "contextWindow": 65536,
+          "maxTokens": 4096,
+          "samplingParams": {
+            "temperature": 0.6,
+            "top_p": 0.95,
+            "top_k": 20,
+            "min_p": 0.0,
+            "repeat_penalty": 1.05
+          },
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          }
+        }
+      ]
+    }
+  }
+}

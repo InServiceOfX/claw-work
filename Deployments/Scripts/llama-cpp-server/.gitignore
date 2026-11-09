@@ -1,0 +1,6 @@
+# Machine-specific runtime configuration. Commit templates only.
+config.yml
+profiles/*.yml
+# Private captures and build/runtime artifacts never belong in the project.
+__pycache__/
+*.pyc

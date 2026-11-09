@@ -9,6 +9,9 @@ See [BOTS.md](BOTS.md) for the rules bots follow when contributing.
 
 ## Projects
 
+- [CUDA llama.cpp deployment](Deployments/Scripts/llama-cpp-server/README.md): moved
+  profile-driven launcher, local GGUF auditing, measured model checks and Pi setup.
+
 - [Native Nemotron Rust library and server](Rust/claw-lm/README.md): original CUDA C++
   kernels, three decoding modes and a local OpenAI-compatible API; no PyTorch.
 
