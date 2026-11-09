@@ -123,12 +123,13 @@ def fetch_github_repo_metadata(repo_url: str) -> RepoMetadata:
     Fetch metadata from a GitHub repository URL.
     
     Works offline if the repo is cloned locally; otherwise makes API calls.
+    Accepts local paths (with or without .git directory), or GitHub URLs.
     """
     parsed = urlparse(repo_url)
     
     if parsed.scheme == "" or parsed.netloc == "":
         path = Path(repo_url)
-        if path.exists() and (path / ".git").exists():
+        if path.exists() and path.is_dir():
             return _fetch_local_repo(path)
     
     if "github.com" in parsed.netloc:
