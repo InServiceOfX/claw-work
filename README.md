@@ -57,6 +57,11 @@ local harness may merge and ordinary non-force push to master when explicitly as
 
 ## Research
 
+- [Weekly reading roundup](docs/weekly-roundup/README.md): each week, rank the
+  TikTok/YouTube videos we studied by recorded interest signals and turn their
+  best primary sources into a "5 things I'm reading this week" short.
+  First edition: [2026-W45](docs/weekly-roundup/2026-W45.md).
+
 - [Video production skills and workflows](docs/video-production/README.md):
   six-video breakdown, priority ranking, transcript editing and canvas modes (now
   part of `claw-shorts`), plus a local [Rust cut-list helper](Rust/claw-edit/README.md).
