@@ -1,6 +1,6 @@
 # claw-edit
 
-Read the repository AGENTS.md and PRIVACY.md. Use a feature branch.
+Read the repository AGENTS.md, BOTS.md, and PRIVACY.md. Git scope follows those files.
 
 This is a new conventional Rust utility, outside the explicitly prompt-owned Lean
 and public-boundary dev units. No existing architecture maps its outputs. Do not

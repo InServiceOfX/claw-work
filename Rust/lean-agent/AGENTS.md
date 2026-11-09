@@ -1,6 +1,8 @@
 # Lean agent toolkit
 
-Read ../../AGENTS.md and ../../PRIVACY.md. This subproject is PDD-owned by the local
+Read ../../AGENTS.md, ../../BOTS.md, and ../../PRIVACY.md. Git publication follows
+that root scope, including the local-harness exception to a mandatory pull request.
+This subproject is PDD-owned by the local
 .prompt suite, .pddrc and architecture.json. Story meaning is independent of code.
 
 - Default image includes pinned mathlib and its compatible Lean release, offline.

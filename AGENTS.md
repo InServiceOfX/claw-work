@@ -2,7 +2,7 @@
 
 This is a public monorepo for agent-authored tools and experiments.
 
-- Work on feature branches. Never commit/push to master/main or merge your own work.
+- Cursor bots and hosted Grok Bot/Grok Bits automation work on feature branches. They do not commit or push to master/main or merge their own work. Human-directed local harnesses follow BOTS.md.
 - Preserve other agents' changes. Never bulk-stage untracked files.
 - Read PRIVACY.md before writing examples, fixtures, documentation or reports.
 - No secrets, private data, personal absolute paths, agent transcripts or private
@@ -17,12 +17,13 @@ This is a public monorepo for agent-authored tools and experiments.
 
 ## Local agents and GitHub identity
 
-Read [BOTS.md](BOTS.md) for the scoped identity policy. Only Cursor bots and
-Grok Bot/Grok Bits automation must use `yeung-assistant`. Human-directed local
-Codex, Claude Code, Grok Build, Hermes-Agent, Pi and other local harnesses use
-the human's configured Git/GitHub identity; they do not need that bot account
-or a separate identity exception for an already-authorized commit/push.
-Privacy, feature-branch and human-merge requirements still apply to everyone.
+Read [BOTS.md](BOTS.md). Only Cursor bots and hosted Grok Bot/Grok Bits
+automation must use `yeung-assistant`, feature branches, and pull requests.
+Human-directed local harnesses, including Codex, Claude Code, Grok Build,
+Hermes-Agent, and Pi, use the human's configured Git/GitHub identity. They
+do not need that bot account or a mandatory pull request. When the human
+explicitly asks, they may merge locally and ordinary non-force push to
+`master`. Privacy, verification, and preservation still apply.
 
 ## PDD
 

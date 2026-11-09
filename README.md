@@ -31,7 +31,9 @@ See [BOTS.md](BOTS.md) for the rules bots follow when contributing.
 
 The Lean toolkit distinguishes proofs about mathematical models from verification
 that source code implements those models. Read its verification status before relying
-on any result. Development happens on feature branches; the repository owner merges.
+on any result. Git scope follows [AGENTS.md](AGENTS.md) and [BOTS.md](BOTS.md):
+Cursor and hosted Grok automation use feature branches, and a human-directed
+local harness may merge and ordinary non-force push to master when explicitly asked.
 
 ## Research
 

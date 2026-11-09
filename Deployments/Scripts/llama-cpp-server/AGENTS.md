@@ -24,7 +24,7 @@ This directory contains a profile-driven Docker launcher for a local CUDA
 - Prefer conservative single-user context defaults; document how to scale up.
 - Never commit `config.yml`, local `profiles/*.yml`, model weights, logs, or
   generated outputs.
-- Follow the repository rule: commits and pushes only from a feature branch.
+- Follow the repository AGENTS.md and BOTS.md for Git scope.
 
 ## Acceptance and continuation
 
