@@ -190,7 +190,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -u 1000 lean
 USER lean
-ENV PATH=/home/lean/.elan/bin:$PATH
+ENV PATH=$HOME/.elan/bin:$PATH
 # Pin elan-init by commit/SHA-256 in the real version.
 RUN curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
       | sh -s -- -y --default-toolchain "$LEAN_TOOLCHAIN" --no-modify-path \
