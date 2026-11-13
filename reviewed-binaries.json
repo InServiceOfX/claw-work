@@ -545,6 +545,21 @@
       "max_bytes": 131072,
       "note": "Public TikTok screenshot (720x1280)"
     },
+    "research/tiktok-venturewhys-2026-11-07/videos/venturewhys-7703211604229246221/screenshots/001.0s.jpg": {
+      "sha256": "a04e7c259cad9e01a50956b37c2d2d14f22ac3e5f37a1029c523a92076eed32e",
+      "max_bytes": 53598,
+      "note": "Public TikTok screenshot"
+    },
+    "research/tiktok-venturewhys-2026-11-07/videos/venturewhys-7703211604229246221/screenshots/005.0s.jpg": {
+      "sha256": "d2d76d15180ab46f92513fccf0a9930289151e4cbf9a9078c4ddce2e58656d0b",
+      "max_bytes": 50743,
+      "note": "Public TikTok screenshot"
+    },
+    "research/tiktok-venturewhys-2026-11-07/videos/venturewhys-7703211604229246221/screenshots/012.0s.jpg": {
+      "sha256": "2af95a2ed4f760f28f75cd1bf6e3fb82a282d2eba2ae1e3e7e72ad90bd4e3b32",
+      "max_bytes": 46863,
+      "note": "Public TikTok screenshot"
+    },
     "research/weight-space-programming/video-analysis/j09uV1oAuIo/screenshots/11-50.jpg": {
       "sha256": "80c80d4a210be388e46d12c263feb22ab9bf469c33aaf27571ef6d1e757377ea",
       "max_bytes": 180000,
