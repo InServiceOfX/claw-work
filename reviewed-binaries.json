@@ -1,5 +1,120 @@
 {
   "reviewed": {
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/000.9s.jpg": {
+      "sha256": "fb0ad335e939877a9e2a978d5fd5b2ac0bc689420e2f0b58631a02b31c2cc62f",
+      "max_bytes": 70478,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/003.5s.jpg": {
+      "sha256": "066be15fc2a136dda2b2f59b8d0937bfc048c0d4ea767c163254eb6f417391ec",
+      "max_bytes": 90893,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/005.5s.jpg": {
+      "sha256": "cb5f1d525be2f08699c78c68fa459071dd30f00a9c0851ae9d0714f9f75b0cfa",
+      "max_bytes": 95178,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/006.5s.jpg": {
+      "sha256": "508ad55421aabefedafffd8b83d87ab6b8165c9cdf4d392d9ba7802f205f101c",
+      "max_bytes": 69413,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/008.5s.jpg": {
+      "sha256": "096caf3ef55b934f3c59a78e79e9e8d69aca0818857675f316649890b5e7c048",
+      "max_bytes": 89573,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/014.0s.jpg": {
+      "sha256": "93351fcdeae01c07525043af647fc19d2a3cb4a50386460b516154d3289e4e2a",
+      "max_bytes": 83747,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/017.5s.jpg": {
+      "sha256": "41ba58bce5383bcea37abf6c89032d0322f72f9339c3c0d8b8a9ac28574fc501",
+      "max_bytes": 80254,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/021.5s.jpg": {
+      "sha256": "49638b018f5ceee68bed80361878f4e934a78baf0627eca56b3290a335757ab9",
+      "max_bytes": 85315,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/026.0s.jpg": {
+      "sha256": "4b0b59c97d2cb432f1f3de2289b360986e4ce1695e68f740b3164568ef482e9e",
+      "max_bytes": 87541,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/028.0s.jpg": {
+      "sha256": "d56c266904edd8766b3e2ce1c99e36c9b95af3ae4e8ce981fe3241374cc44812",
+      "max_bytes": 145733,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/032.0s.jpg": {
+      "sha256": "03e1fc8bc57fd81f59e6a7857ff294864d6419bfd0508d76ca65a8db6c841dfc",
+      "max_bytes": 147248,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/038.5s.jpg": {
+      "sha256": "b23e0f44515f98a6801bb9cf862d5585858cb53d3240c2623cd811cf1951b57a",
+      "max_bytes": 92588,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/044.5s.jpg": {
+      "sha256": "b4767941361aae2b234ffffec3648118f439f96500c598249e97609a3c2a6673",
+      "max_bytes": 98037,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/048.5s.jpg": {
+      "sha256": "6908a46f4c8f35d618c95716397e530e1724542d8af8805386dfdceb45931755",
+      "max_bytes": 82172,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/050.2s.jpg": {
+      "sha256": "d9d3617288265a36928ab797f98cdbd6c0084694d0876714887195e7e2c584f9",
+      "max_bytes": 96284,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/052.5s.jpg": {
+      "sha256": "3723a1b9fa171e8c56f020a77e0c381090e2b5060b775005e34d5ff222cdb773",
+      "max_bytes": 61466,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/056.5s.jpg": {
+      "sha256": "5ff4a9ee1896551259dfdbb66f2760946f8763f774f91854e8240c636fc54eb3",
+      "max_bytes": 87300,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/062.5s.jpg": {
+      "sha256": "52e7df4b09f5e04759740723f018ea9698a69932af19bd363d91e070804f298f",
+      "max_bytes": 97027,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/068.5s.jpg": {
+      "sha256": "e84efcbe8c5d7d88d23e8f128a751d6597e1f620183b1eb226f5a06216d57635",
+      "max_bytes": 81198,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/072.5s.jpg": {
+      "sha256": "87e14fddae964ff3061054d47a6e8b8b2f76b41c0c22442225e53620dba6e14f",
+      "max_bytes": 87250,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/076.5s.jpg": {
+      "sha256": "7a193bfdf4ca2d7492c2caff2140e5fd558a0e69e5d32a77a15a442e13031ca4",
+      "max_bytes": 91094,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/080.5s.jpg": {
+      "sha256": "fe164570b637729f3e6b002e127f5383915f7cb32b9a83606380b43080ba73d9",
+      "max_bytes": 94288,
+      "note": "Public TikTok screenshot"
+    },
+    "research/lean4-optimization-2026-11-01/arjay_mccandless-7702491737293327629/screenshots/086.8s.jpg": {
+      "sha256": "feea241e1691bc4731936302b8cc6221ccbfe2ac0df89254b10ddba1daae97c4",
+      "max_bytes": 91256,
+      "note": "Public TikTok screenshot"
+    },
     "research/model-news/2026-11-05-M62vWrZh54/screenshots/03-40.jpg": {
       "sha256": "9bc1fde6fe87601a945c2d77e4901939f5c000d09fe1d091d24369eb716e7dc7",
       "max_bytes": 200000,
