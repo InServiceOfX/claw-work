@@ -26,6 +26,10 @@ from claw_shorts import (
     SAFE_SIDE,
     check_ffmpeg,
     check_ffprobe,
+    check_playwright,
+    check_agg,
+    check_whisper,
+    check_piper,
     generate_output_name,
     get_video_duration,
     get_video_info,
@@ -360,6 +364,165 @@ class TestNonDestructive(unittest.TestCase):
 
         finally:
             shutil.rmtree(temp_dir)
+
+
+@unittest.skipUnless(ffmpeg_available(), "FFmpeg not available")
+class TestRenderDemoZoom(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_path = Path(self.temp_dir)
+        self.input_dir = self.temp_path / "input"
+        self.output_dir = self.temp_path / "output"
+        self.input_dir.mkdir()
+        self.output_dir.mkdir()
+        self.input_video = self.input_dir / "source.mp4"
+        create_synthetic_video(self.input_video, duration=3.0)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_render_creates_video(self):
+        from claw_shorts import render_demo_zoom
+        video, metadata = render_demo_zoom(
+            self.input_video,
+            self.output_dir,
+            hook_text="Watch this demo",
+            cta_text="Link in bio",
+            title="Demo Title",
+            zoom_factor=1.5,
+            seed=42,
+        )
+        self.assertTrue(video.exists())
+        self.assertTrue(metadata.exists())
+        self.assertTrue(str(video).endswith(".mp4"))
+
+    def test_render_metadata_content(self):
+        from claw_shorts import render_demo_zoom
+        video, metadata = render_demo_zoom(
+            self.input_video,
+            self.output_dir,
+            hook_text="Zoom hook",
+            cta_text="Zoom CTA",
+            title="Zoom Title",
+            seed=42,
+        )
+        with open(metadata) as f:
+            data = json.load(f)
+        self.assertEqual(data["template"], "demo_zoom")
+        self.assertEqual(data["zoom_factor"], 1.5)
+        self.assertIn("audio_rights", data)
+
+
+@unittest.skipUnless(ffmpeg_available(), "FFmpeg not available")
+class TestRenderBeforeAfter(unittest.TestCase):
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+        self.temp_path = Path(self.temp_dir)
+        self.input_dir = self.temp_path / "input"
+        self.output_dir = self.temp_path / "output"
+        self.input_dir.mkdir()
+        self.output_dir.mkdir()
+        self.before_video = self.input_dir / "before.mp4"
+        self.after_video = self.input_dir / "after.mp4"
+        create_synthetic_video(self.before_video, duration=2.0)
+        create_synthetic_video(self.after_video, duration=2.0)
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
+
+    def test_render_sequential(self):
+        from claw_shorts import render_before_after
+        video, metadata = render_before_after(
+            self.before_video,
+            self.after_video,
+            self.output_dir,
+            hook_text="Before vs After",
+            cta_text="Get the tool",
+            title="Comparison",
+            split_mode="sequential",
+            seed=42,
+        )
+        self.assertTrue(video.exists())
+        self.assertTrue(metadata.exists())
+
+    def test_render_side_by_side(self):
+        from claw_shorts import render_before_after
+        video, metadata = render_before_after(
+            self.before_video,
+            self.after_video,
+            self.output_dir,
+            hook_text="Side by side",
+            cta_text="Compare now",
+            title="Comparison",
+            split_mode="side_by_side",
+            seed=43,
+        )
+        self.assertTrue(video.exists())
+        with open(metadata) as f:
+            data = json.load(f)
+        self.assertEqual(data["split_mode"], "side_by_side")
+
+
+class TestDependencyChecks(unittest.TestCase):
+    def test_check_ffmpeg_returns_bool(self):
+        result = check_ffmpeg()
+        self.assertIsInstance(result, bool)
+
+    def test_check_ffprobe_returns_bool(self):
+        result = check_ffprobe()
+        self.assertIsInstance(result, bool)
+
+    def test_check_playwright_returns_bool(self):
+        result = check_playwright()
+        self.assertIsInstance(result, bool)
+
+    def test_check_agg_returns_bool(self):
+        result = check_agg()
+        self.assertIsInstance(result, bool)
+
+    def test_check_whisper_returns_bool(self):
+        result = check_whisper()
+        self.assertIsInstance(result, bool)
+
+    def test_check_piper_returns_bool(self):
+        result = check_piper()
+        self.assertIsInstance(result, bool)
+
+
+@unittest.skipUnless(ffmpeg_available(), "FFmpeg not available")
+class TestCLIDoctor(unittest.TestCase):
+    def setUp(self):
+        self.cli_path = Path(__file__).parent.parent / "scripts" / "claw_shorts.py"
+
+    def test_doctor_command(self):
+        result = subprocess.run(
+            [sys.executable, str(self.cli_path), "doctor"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("FFmpeg", result.stdout)
+        self.assertIn("dependency check", result.stdout.lower())
+
+
+@unittest.skipUnless(ffmpeg_available(), "FFmpeg not available")
+class TestCLITemplates(unittest.TestCase):
+    def setUp(self):
+        self.cli_path = Path(__file__).parent.parent / "scripts" / "claw_shorts.py"
+
+    def test_templates_includes_new_templates(self):
+        result = subprocess.run(
+            [sys.executable, str(self.cli_path), "templates"],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0)
+        data = json.loads(result.stdout)
+        self.assertIn("hook_reveal", data)
+        self.assertIn("step_breakdown", data)
+        self.assertIn("demo_zoom", data)
+        self.assertIn("before_after", data)
+        self.assertIn("readme_scroll", data)
+        self.assertIn("terminal_typer", data)
 
 
 if __name__ == "__main__":

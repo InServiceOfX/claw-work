@@ -1,6 +1,6 @@
 ---
 name: claw-shorts
-description: Create and edit 9:16 vertical short-form videos (TikTok, Reels, Shorts) from raw takes, screen recordings, HTML/Canvas animations, or audio. Non-destructive workflow with Whisper timestamps, FFmpeg filtergraphs, paced captions, and safe-zone margins. Local/offline rendering only; never auto-posts to social platforms.
+description: Create and edit 9:16 vertical short-form videos (TikTok, Reels, Shorts) from raw takes, screen recordings, HTML/Canvas animations, or audio. Includes Launch Kit for generating 5 captioned launch Shorts from a GitHub repo. Non-destructive workflow with paced captions and safe-zone margins. Local/offline rendering only; never auto-posts to social platforms.
 ---
 
 # Vertical short-form video creation
@@ -10,6 +10,48 @@ timestamps) or Playwright (HTML canvas animations). Verify FFmpeg is available
 with `ffmpeg -version`. This skill is local/offline; it never auto-posts to or
 makes network calls to social platforms.
 
+## Launch Kit (for dev tools and indie apps)
+
+Point your coding agent at a GitHub repo URL or product URL, optionally with a
+screen recording, and get 5 captioned vertical Shorts plus a posting kit.
+
+```sh
+# Generate launch plan from a GitHub repo
+claw-shorts launch --repo https://github.com/user/project --output ./output/
+
+# Generate and render clips immediately
+claw-shorts launch --repo https://github.com/user/project \
+  --output ./output/ \
+  --recording ~/demo.mp4 \
+  --render
+
+# With disclosure for sponsored content
+claw-shorts launch --repo ./my-local-repo \
+  --output ./output/ \
+  --sponsored
+```
+
+The launch command:
+1. Fetches README, package metadata, and screenshots from the repo
+2. Generates `launch_plan.json` with hooks, beats, and CTAs for 5 clips
+3. Creates `posting_kit.json` with titles, captions, hashtags, and posting order
+4. Optionally renders the clips with `--render`
+
+### Launch Kit Templates
+
+| Clip | Template | Purpose |
+|------|----------|---------|
+| 1 | `hook_reveal` | Pain point hook to grab attention |
+| 2 | `demo_zoom` | Screen recording with zoom effect |
+| 3 | `step_breakdown` | 3-step "how to use" explainer |
+| 4 | `before_after` | Before/after comparison |
+| 5 | `hook_reveal` | Social proof (stars, usage) |
+
+### Disclosure
+
+For sponsored or affiliate content, the launch kit includes on-screen and spoken
+disclosure text. Use `--sponsored` or `--affiliate` flags.
+
 ## Non-destructive principles
 
 1. **Never overwrite source files.** Copy inputs to a work directory and write
@@ -18,138 +60,102 @@ makes network calls to social platforms.
 2. **All renders are offline.** No network calls to TikTok, YouTube, Instagram,
    or any social platform. Uploading is a deliberate manual step by the user.
 3. **Respect music rights.** Track audio licensing in the output metadata. Only
-   use royalty-free or properly licensed audio for monetized uploads.
+   use royalty-free or properly licensed audio for monetized uploads. No music
+   is added by default.
+4. **No AI faces or personas.** The kit does not generate AI avatars or UGC-style
+   talking heads.
 
-## Workflow overview
-
-### 1. Prepare inputs
-
-Collect source files in a single input directory:
-
-- Raw video takes (MP4/MOV) — record multiple takes per line in one file.
-- Screen recordings or demo captures.
-- Audio tracks (voice-over, music).
-- Brand assets (logo, color palette JSON).
-
-### 2. Generate a cut list from transcription
-
-For talking-head edits with multiple takes, use Whisper to get word timestamps:
+## Check dependencies
 
 ```sh
-whisper input.mp4 --output_format json --output_dir ./work/
+claw-shorts doctor
 ```
 
-The JSON contains word-level timestamps. Use these to:
+This checks for FFmpeg (required), Playwright (optional), agg (optional), 
+Whisper (optional), and Piper TTS (optional).
 
-- Identify the last (best) take of each spoken line.
-- Find pauses longer than 0.5s to trim as dead air.
-- Build a cut list for FFmpeg.
-
-### 3. Choose a template
-
-Built-in templates:
+## Templates
 
 | Template | Use case | Structure |
 |----------|----------|-----------|
 | `hook_reveal` | Hook + reveal format | 2s hook card, content body, end CTA card |
 | `step_breakdown` | Tutorial/explainer | Numbered steps with paced captions |
+| `demo_zoom` | Screen recording highlight | Keyframed zoom/pan effect |
+| `before_after` | Transformation showcase | Sequential or side-by-side comparison |
+| `readme_scroll` | README walkthrough | Scrolling capture (requires Playwright) |
+| `terminal_typer` | CLI demo | Asciinema cast rendered to video (requires agg) |
 
-Custom templates: provide a JSON spec with timing, text, and asset references.
+### hook_reveal
 
-### 4. Render with safe zones
+```sh
+claw-shorts render \
+  --input ./video.mp4 \
+  --output ./output/ \
+  --template hook_reveal \
+  --hook "Stop scrolling if you want to learn X" \
+  --cta "Follow for more"
+```
+
+### step_breakdown
+
+```sh
+claw-shorts render \
+  --input ./video.mp4 \
+  --output ./output/ \
+  --template step_breakdown \
+  --title "Build an API" \
+  --steps "Setup,Code,Deploy"
+```
+
+### demo_zoom
+
+```sh
+claw-shorts render \
+  --input ./screen-recording.mp4 \
+  --output ./output/ \
+  --template demo_zoom \
+  --hook "Watch this in action" \
+  --zoom 1.5
+```
+
+### before_after
+
+```sh
+claw-shorts render \
+  --output ./output/ \
+  --template before_after \
+  --before ./old-way.mp4 \
+  --after ./new-way.mp4 \
+  --split sequential  # or side_by_side
+```
+
+### readme_scroll (requires Playwright)
+
+```sh
+claw-shorts render \
+  --output ./output/ \
+  --template readme_scroll \
+  --url "https://github.com/user/repo" \
+  --scroll-duration 10
+```
+
+### terminal_typer (requires agg)
+
+```sh
+claw-shorts render \
+  --output ./output/ \
+  --template terminal_typer \
+  --cast ./demo.cast \
+  --hook "Watch this CLI magic"
+```
+
+## Safe zones
 
 TikTok, Reels, and Shorts overlay UI elements on the video. Reserve margins:
 
 - **Top safe zone**: 150px (status bar, search icons)
 - **Bottom safe zone**: 300px (captions, action buttons, usernames)
 - **Side margins**: 50px left/right
-
-All burned-in captions and hook cards stay within these bounds.
-
-### 5. Run the render
-
-```sh
-claw-shorts render \
-  --input ./input/ \
-  --output ./output/ \
-  --template hook_reveal \
-  --title "How to build X" \
-  --hook "Stop scrolling if you want to learn X" \
-  --cta "Follow for more"
-```
-
-Output:
-- `output/<timestamp>_<hash>.mp4` — 1080×1920 30fps H.264/AAC
-- `output/<timestamp>_<hash>.json` — metadata sidecar (title, caption, hashtags,
-  duration, audio rights checklist)
-
-## Template details
-
-### hook_reveal
-
-1. **Hook card (0–2s)**: Full-screen text overlay on a solid/gradient background
-   or first frame. Bold sans-serif, centered in safe zone.
-2. **Content (2s–end-3s)**: Main video with optional burned-in captions (word-
-   paced from Whisper timestamps or fixed timing). Captions use a simple sans-
-   serif font, positioned in lower safe zone.
-3. **CTA card (last 3s)**: End screen with call-to-action text, optional logo.
-
-### step_breakdown
-
-1. **Title card (0–2s)**: "5 steps to X" or similar.
-2. **Step cards**: Each step is introduced with a numbered overlay ("Step 1:")
-   that fades in before the spoken content.
-3. **Summary/CTA (last 3s)**: Recap or follow prompt.
-
-### Audio/DJ showcase (music mode)
-
-For tracks or mixes:
-1. Waveform or spectrum visualization (FFmpeg showwaves/showspectrum).
-2. Track title, BPM, and key overlay (if provided).
-3. Transition reasoning card (optional, for DJ educational content).
-4. Rights checklist in JSON sidecar: license type, source, attribution.
-
-## Procedural HTML canvas animations
-
-For motion graphics (explainers, branded animations):
-
-1. Author a `frame(t)` function in JavaScript that draws to an HTML canvas.
-2. Use Playwright to capture frames at 30fps.
-3. Mux frames with FFmpeg.
-4. Generate a contact sheet for visual QA before final render.
-
-Example workflow:
-
-```sh
-claw-shorts canvas \
-  --script explainer.js \
-  --duration 15 \
-  --fps 30 \
-  --output ./output/
-```
-
-See [references/canvas-workflow.md](references/canvas-workflow.md) for the
-JavaScript template and Playwright setup.
-
-## Integration with HyperFrames
-
-If HyperFrames (from HeyGen) is installed (`npx skills add heygen-com/hyperframes`),
-you can use it as an alternative renderer for HTML-based animations. The claw-shorts
-workflow is compatible: generate the edit plan locally, then invoke HyperFrames for
-rendering if preferred.
-
-## Quality guidelines (anti-slop)
-
-1. **No duplicates**: Seeded filenames prevent near-duplicate outputs. Delete or
-   archive old renders before publishing.
-2. **Caption pacing**: Match caption timing to speech (use Whisper word stamps).
-   Do not display 10 words instantly.
-3. **Audio levels**: Normalize audio; human voice and AI voice on separate tracks
-   if applicable.
-4. **Visual clarity**: Fix dark/grainy footage or reshoot. Do not publish
-   artifacts that are hard to read.
-5. **Music rights**: Never use unlicensed copyrighted music for monetized content.
-   Document the license in the metadata sidecar.
 
 ## Harness integration
 
@@ -160,6 +166,7 @@ rendering if preferred.
 | Grok Build | `~/.agents/skills/claw-shorts/` | `/claw-shorts` or `/skill:claw-shorts` |
 | Hermes Agent | `~/.hermes/skills/claw-shorts/` | `skills_list` then `skill_view` |
 | Pi | `~/.agents/skills/claw-shorts/` | `/skill:claw-shorts` |
+| Cursor | Read this skill file | Ask for launch kit or video help |
 
 Install the skill by copying the `skills/claw-shorts/` folder to the appropriate
 location, or use the install script:
@@ -170,15 +177,16 @@ location, or use the install script:
 
 ## Example requests
 
+> Generate launch Shorts for my CLI tool at https://github.com/me/mytool.
+> I have a screen recording at ~/demo.mp4.
+
 > Use claw-shorts to edit my talking-head recording into a TikTok. Use the
 > hook_reveal template with hook "This changed everything" and CTA "Follow for
-> more tips". My input is in ~/Desktop/raw-video.mp4.
+> more tips".
 
-> Create a 15-second explainer animation for how DNS works using the canvas
-> workflow. Output 9:16 vertical format.
+> Create a before/after comparison video showing the old workflow vs the new one.
 
-> Edit this screen recording into a step_breakdown tutorial. Add numbered step
-> overlays and burned-in captions.
+> Edit this screen recording into a step_breakdown tutorial with 3 steps.
 
 ## Safety reminders
 
@@ -186,3 +194,4 @@ location, or use the install script:
 - Do not include personal information, private repo names, or credentials in
   captions or overlays.
 - Music rights are your responsibility; the sidecar is a reminder, not legal advice.
+- For sponsored/affiliate content, always include proper disclosure.
