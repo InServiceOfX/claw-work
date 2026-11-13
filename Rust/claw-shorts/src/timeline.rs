@@ -52,6 +52,12 @@ pub fn srt_time(ms: u64) -> String {
     )
 }
 
+/// Scenes longer than `limit_ms`: a long hold with one idea is where viewers
+/// leave, so callers warn about them.
+pub fn long_scenes(timings: &[SceneTiming], limit_ms: u64) -> Vec<usize> {
+    timings.iter().filter(|t| t.duration_ms() > limit_ms).map(|t| t.index).collect()
+}
+
 /// How long the typed command takes to appear: 40 ms per character, at least
 /// 600 ms, and never more than 40% of the scene.
 pub fn typing_ms(chars: usize, scene_ms: u64) -> u64 {
@@ -78,6 +84,13 @@ mod tests {
         assert_eq!(secs(1005), "1.005");
         assert_eq!(secs(60_000), "60.000");
         assert_eq!(srt_time(3_723_456), "01:02:03,456");
+    }
+
+    #[test]
+    fn finds_long_scenes() {
+        let t = build(&[3000, 11_000, 9_000], 350);
+        assert_eq!(long_scenes(&t, 10_000), vec![1]);
+        assert!(long_scenes(&t, 20_000).is_empty());
     }
 
     #[test]

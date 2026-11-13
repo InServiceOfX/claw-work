@@ -231,7 +231,7 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
 
 /// One frame from the middle of each scene, side by side. A reviewer's first
 /// check: clipping, contrast, safe zones and text hold time.
-fn contact_sheet(video: &Path, timings: &[SceneTiming], work: &Path, out_dir: &Path) -> Result<PathBuf, String> {
+pub fn contact_sheet(video: &Path, timings: &[SceneTiming], work: &Path, out_dir: &Path) -> Result<PathBuf, String> {
     let frames = work.join("contact");
     fs::create_dir_all(&frames).map_err(|e| format!("cannot create {}: {e}", frames.display()))?;
     let mut paths = Vec::new();

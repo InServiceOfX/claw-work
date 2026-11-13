@@ -34,3 +34,16 @@ fn errors_are_distinguished_from_warnings() {
     let issues = spec.validate();
     assert!(issues.iter().any(|i| i.severity == Severity::Error && i.message.contains("killer")));
 }
+
+#[test]
+fn the_canvas_example_is_complete_and_uses_the_research_levers() {
+    let json = std::fs::read_to_string("examples/voxcpm-tts.canvas.short.json").unwrap();
+    assert!(!json.contains("/Users/") && !json.contains("/home/"));
+    let spec = spec::parse(&json).unwrap();
+    assert_eq!(spec.validate(), vec![], "the example must be clean even under --strict");
+    assert!(spec.scenes.iter().any(|s| s.kind == spec::SceneKind::Cloning));
+    assert!(spec.scenes.iter().any(|s| s.kind == spec::SceneKind::Endcard));
+    assert!(!spec.scoreboard.is_empty() && spec.engagement.is_some());
+    let first_words: usize = spec.scenes[0].lines.iter().map(|l| l.split_whitespace().count()).sum();
+    assert!(first_words <= 8, "the on-screen hook must stay short");
+}

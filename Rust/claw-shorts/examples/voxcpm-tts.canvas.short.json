@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "project": "voxcpm-tts",
+  "repo_url": "github.com/InServiceOfX/claw-work/tree/master/Rust/voxcpm-tts",
+  "title": "This voice isn't real. My laptop made it.",
+  "caption": "Local voice cloning: an 8 s public-domain clip in, 21 s of speech out in 32 s, $0, no API key. Open code (MIT), open weights (Apache 2.0). Could you tell? Comment the second it sounded fake.",
+  "hashtags": [
+    "opensource",
+    "tts",
+    "voiceclone",
+    "rust",
+    "applesilicon",
+    "shorts"
+  ],
+  "disclosure": "AI-generated voice",
+  "credits": [
+    "Voice: Steve Jackson, LibriVox (CC0), via voice-zero",
+    "Model: VoxCPM2 (OpenBMB), MLX port by mlx-community"
+  ],
+  "scoreboard": [
+    "8 s clip in",
+    "21 s of speech out",
+    "$0"
+  ],
+  "engagement": {
+    "device": "judgment invite: could you tell?",
+    "token": "comment",
+    "prompt": "Could you tell it was fake? Comment the second you knew.",
+    "pinned_comment": "Where did it sound fake to you? Give me the timestamp. The voice is a public-domain LibriVox sample; the code and weights are open."
+  },
+  "voice": {
+    "reference": "reference.flac",
+    "seed": 42
+  },
+  "scenes": [
+    {
+      "kind": "title",
+      "narration": "This voice isn't real. My laptop made it.",
+      "lines": [
+        "THIS VOICE",
+        "ISN'T REAL"
+      ]
+    },
+    {
+      "kind": "clone",
+      "narration": "All it heard was eight seconds of a public domain voice. Now it says anything I type.",
+      "lines": [
+        "8 seconds of public-domain voice",
+        "Anything I type"
+      ]
+    },
+    {
+      "kind": "terminal",
+      "narration": "Real run. Twenty one seconds of speech, in thirty two seconds, on a MacBook. Zero dollars.",
+      "command": "voxcpm-tts say script.txt -v ref.flac",
+      "output": [
+        "Wrote voice.wav (21s of audio)",
+        "generated in 32s, 1.49x real time",
+        "cost: $0, API keys: none"
+      ]
+    },
+    {
+      "kind": "verdict",
+      "narration": "Fact: it runs locally, for free, on open code and open weights. How does it compare to ElevenLabs? I haven't tested that.",
+      "rows": [
+        {
+          "mark": "FACT",
+          "tone": "pass",
+          "text": "Runs locally. $0, no API key."
+        },
+        {
+          "mark": "FACT",
+          "tone": "pass",
+          "text": "Code: MIT. Weights: Apache 2.0."
+        },
+        {
+          "mark": "UNTESTED",
+          "tone": "warn",
+          "text": "Quality vs ElevenLabs."
+        }
+      ]
+    },
+    {
+      "kind": "endcard",
+      "narration": "Could you tell it was fake? Comment the second you knew. The code is on GitHub.",
+      "lines": [
+        "voxcpm-tts"
+      ],
+      "url": "github.com/InServiceOfX/claw-work/tree/master/Rust/voxcpm-tts"
+    }
+  ]
+}

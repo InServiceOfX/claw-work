@@ -16,7 +16,17 @@ pub struct Kit {
     pub caption: String,
     pub hashtags: Vec<String>,
     pub duration_ms: Option<u64>,
+    /// The designed engagement device, when the spec has one.
+    pub engagement: Option<EngagementKit>,
     pub checklist: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+pub struct EngagementKit {
+    pub device: String,
+    pub token: String,
+    pub prompt: String,
+    pub pinned_comment: Option<String>,
 }
 
 pub fn build(spec: &Spec, duration_ms: Option<u64>) -> Kit {
@@ -49,6 +59,11 @@ pub fn build(spec: &Spec, duration_ms: Option<u64>) -> Kit {
     if spec.credits.is_empty() {
         checklist.push("No credits are set; credit any voice, model or source whose license asks for it.".into());
     }
+    if let Some(e) = &spec.engagement {
+        if e.pinned_comment.is_some() {
+            checklist.push("Pin the suggested comment right after posting, and reply to early answers.".into());
+        }
+    }
     checklist.push("Post by hand. This tool never uploads.".into());
 
     Kit {
@@ -57,6 +72,12 @@ pub fn build(spec: &Spec, duration_ms: Option<u64>) -> Kit {
         caption,
         hashtags,
         duration_ms,
+        engagement: spec.engagement.as_ref().map(|e| EngagementKit {
+            device: e.device.clone(),
+            token: e.token.clone(),
+            prompt: e.prompt.clone(),
+            pinned_comment: e.pinned_comment.clone(),
+        }),
         checklist,
     }
 }
@@ -67,7 +88,17 @@ pub fn markdown(kit: &Kit) -> String {
         out.push_str(&format!("Length: {:.1} s\n\n", ms as f64 / 1000.0));
     }
     out.push_str(&format!("## Title\n\n{}\n\n## Caption\n\n{}\n\n", kit.title, kit.caption));
-    out.push_str(&format!("## Hashtags\n\n{}\n\n## Before you post\n\n", kit.hashtags.join(" ")));
+    out.push_str(&format!("## Hashtags\n\n{}\n\n", kit.hashtags.join(" ")));
+    if let Some(e) = &kit.engagement {
+        out.push_str(&format!(
+            "## Engagement\n\nDevice: {} (earns a {})\n\nOn the end card: {}\n\n",
+            e.device, e.token, e.prompt
+        ));
+        if let Some(pinned) = &e.pinned_comment {
+            out.push_str(&format!("Pinned comment:\n\n> {pinned}\n\n"));
+        }
+    }
+    out.push_str("## Before you post\n\n");
     for item in &kit.checklist {
         out.push_str(&format!("- [ ] {item}\n"));
     }
@@ -123,6 +154,19 @@ mod tests {
         let list = kit.checklist.join("\n");
         assert!(list.contains("no disclosure") && list.contains("No credits"), "{list}");
         assert!(!list.contains("LICENSE"));
+    }
+
+    #[test]
+    fn engagement_device_and_pinned_comment_reach_the_kit() {
+        let kit = build(
+            &spec(r#","engagement":{"device":"judgment invite","token":"comment","prompt":"Could you tell?","pinned_comment":"Timestamp it."}"#),
+            None,
+        );
+        let md = markdown(&kit);
+        assert!(md.contains("Device: judgment invite (earns a comment)"), "{md}");
+        assert!(md.contains("> Timestamp it."), "{md}");
+        assert!(kit.checklist.iter().any(|c| c.contains("Pin the suggested comment")));
+        assert!(build(&spec(""), None).engagement.is_none());
     }
 
     #[test]

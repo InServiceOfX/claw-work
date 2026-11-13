@@ -7,6 +7,7 @@
 //! uploads or posts anything.
 
 pub mod brief;
+pub mod canvas;
 pub mod filters;
 pub mod kit;
 pub mod media;

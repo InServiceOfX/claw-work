@@ -259,24 +259,30 @@ pub fn build(spec: &Spec, timings: &[SceneTiming]) -> FilterPlan {
     b.chrome(spec, timings, total);
     for (scene, t) in spec.scenes.iter().zip(timings) {
         match scene.kind {
-            SceneKind::Title | SceneKind::Endcard => b.title_like(scene, t),
+            SceneKind::Title | SceneKind::Cloning | SceneKind::Endcard => b.title_like(scene, t),
             SceneKind::Terminal => b.terminal(scene, t),
             SceneKind::Verdict => b.verdict(scene, t),
         }
     }
     let video = format!("[0:v]{}[v]", b.filters.join(","));
+    let filter_complex = format!("{};{video}", audio_graph(timings, 1));
+    FilterPlan { text_files: b.files, filter_complex, total_ms: total }
+}
+
+/// Filter-graph text that pads each scene's narration to its exact length and
+/// joins them into `[aout]`. Scene audio inputs start at input index `first_input`.
+pub fn audio_graph(timings: &[SceneTiming], first_input: usize) -> String {
     let mut parts: Vec<String> = Vec::new();
     for (i, t) in timings.iter().enumerate() {
         let dur = timeline::secs(t.duration_ms());
         parts.push(format!(
             "[{}:a]aformat=sample_rates=48000:channel_layouts=mono,apad=whole_dur={dur},atrim=end={dur}[a{i}]",
-            i + 1
+            first_input + i
         ));
     }
     let labels: String = (0..timings.len()).map(|i| format!("[a{i}]")).collect();
     parts.push(format!("{labels}concat=n={}:v=0:a=1[aout]", timings.len()));
-    parts.push(video);
-    FilterPlan { text_files: b.files, filter_complex: parts.join(";"), total_ms: total }
+    parts.join(";")
 }
 
 #[cfg(test)]

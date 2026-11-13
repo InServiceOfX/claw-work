@@ -65,6 +65,13 @@ pub struct Spec {
     /// Evidence for every claim term used in the text.
     #[serde(default)]
     pub claims: Vec<Claim>,
+    /// The close-reel "scoreboard": a few short real numbers shown from the
+    /// first seconds and again on the end card, so a replay starts on the result.
+    #[serde(default)]
+    pub scoreboard: Vec<String>,
+    /// The deliberate engagement device (a "viral token" design).
+    #[serde(default)]
+    pub engagement: Option<Engagement>,
     /// Voice used to narrate scenes that have no `audio` file.
     #[serde(default)]
     pub voice: Option<Voice>,
@@ -79,6 +86,36 @@ pub struct Claim {
     pub term: String,
     pub evidence: String,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Engagement {
+    /// What the device is, e.g. "judgment invite".
+    pub device: String,
+    /// Which token it earns: like, comment, save or share.
+    pub token: String,
+    /// Shown on the end card, so it must be short.
+    pub prompt: String,
+    /// Suggested pinned comment for the posting kit.
+    #[serde(default)]
+    pub pinned_comment: Option<String>,
+}
+
+pub const ENGAGEMENT_TOKENS: &[&str] = &["like", "comment", "save", "share"];
+
+/// Openers that waste the first three seconds. Matched at the start of the
+/// first scene's narration or on-screen text.
+pub const GREETINGS: &[&str] = &[
+    "hey guys",
+    "hey you guys",
+    "hi guys",
+    "hello everyone",
+    "welcome back",
+    "welcome to my channel",
+    "today we're going to",
+    "today we are going to",
+    "in this video",
+];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -98,6 +135,9 @@ pub struct Voice {
 #[serde(rename_all = "snake_case")]
 pub enum SceneKind {
     Title,
+    /// Reference voice in, generated voice out (two labels in `lines`).
+    #[serde(rename = "clone")]
+    Cloning,
     Terminal,
     Verdict,
     Endcard,
@@ -185,6 +225,10 @@ impl Spec {
             out.push(d);
         }
         out.extend(self.credits.iter().map(String::as_str));
+        out.extend(self.scoreboard.iter().map(String::as_str));
+        if let Some(e) = &self.engagement {
+            out.push(&e.prompt);
+        }
         for scene in &self.scenes {
             out.extend(scene.lines.iter().map(String::as_str));
             if let Some(c) = &scene.command {
@@ -211,6 +255,9 @@ impl Spec {
         out.extend(self.scenes.iter().map(|s| s.narration.as_str()));
         if let Some(u) = &self.repo_url {
             out.push(u);
+        }
+        if let Some(pinned) = self.engagement.as_ref().and_then(|e| e.pinned_comment.as_deref()) {
+            out.push(pinned);
         }
         out
     }
@@ -296,6 +343,7 @@ impl Spec {
         for (index, scene) in self.scenes.iter().enumerate() {
             self.validate_scene(index, scene, &mut issues);
         }
+        self.hook_and_engagement(&mut issues);
 
         self.fact_or_hype_warnings(&mut issues);
         issues
@@ -314,7 +362,7 @@ impl Spec {
             }
         };
         match scene.kind {
-            SceneKind::Title => {
+            SceneKind::Title | SceneKind::Cloning => {
                 forbid(scene.command.is_some(), "command");
                 forbid(!scene.output.is_empty(), "output");
                 forbid(!scene.rows.is_empty(), "rows");
@@ -340,6 +388,11 @@ impl Spec {
         match scene.kind {
             SceneKind::Title if scene.lines.is_empty() || scene.lines.len() > 6 => {
                 issues.push(Issue::error(format!("{label}: needs 1 to 6 lines")));
+            }
+            SceneKind::Cloning if scene.lines.len() != 2 => {
+                issues.push(Issue::error(format!(
+                    "{label}: a clone scene needs exactly 2 lines (input label, output label)"
+                )));
             }
             SceneKind::Terminal => match &scene.command {
                 None => issues.push(Issue::error(format!("{label}: needs a command"))),
@@ -384,6 +437,58 @@ impl Spec {
                     "{label}: mark {:?} is too long for its badge (14 characters max)",
                     row.mark
                 )));
+            }
+        }
+    }
+
+    /// Part 1 lessons: no greeting opens, a short on-screen hook, a scoreboard
+    /// of real numbers, and a deliberately designed engagement device.
+    fn hook_and_engagement(&self, issues: &mut Vec<Issue>) {
+        if let Some(first) = self.scenes.first() {
+            let mut openers: Vec<&str> = vec![first.narration.as_str()];
+            openers.extend(first.lines.iter().map(String::as_str));
+            for opener in openers {
+                let lowered = opener.trim_start().to_lowercase();
+                if let Some(greeting) = GREETINGS.iter().find(|g| lowered.starts_with(**g)) {
+                    issues.push(Issue::error(format!(
+                        "the opening starts with the greeting {greeting:?}; open mid-claim instead"
+                    )));
+                }
+            }
+            let hook_words: usize = first.lines.iter().map(|l| l.split_whitespace().count()).sum();
+            if hook_words > 8 {
+                issues.push(Issue::warn(format!(
+                    "the on-screen hook is {hook_words} words; about 8 or fewer reads at a glance when muted"
+                )));
+            }
+        }
+        if self.scoreboard.len() > 4 {
+            issues.push(Issue::error("the scoreboard holds at most 4 short numbers"));
+        }
+        for part in &self.scoreboard {
+            if part.trim().is_empty() || part.chars().count() > 24 {
+                issues.push(Issue::error(format!(
+                    "scoreboard entry {part:?} must be 1 to 24 characters"
+                )));
+            }
+        }
+        match &self.engagement {
+            None => issues.push(Issue::warn(
+                "no engagement device; design at least one reason to comment, save or share",
+            )),
+            Some(e) => {
+                if !ENGAGEMENT_TOKENS.contains(&e.token.as_str()) {
+                    issues.push(Issue::error(format!(
+                        "engagement token {:?} must be one of {ENGAGEMENT_TOKENS:?}",
+                        e.token
+                    )));
+                }
+                if e.device.trim().is_empty() || e.prompt.trim().is_empty() {
+                    issues.push(Issue::error("engagement needs a device and a prompt"));
+                }
+                if e.prompt.chars().count() > 64 {
+                    issues.push(Issue::error("the engagement prompt must be 64 characters or fewer"));
+                }
             }
         }
     }
@@ -462,6 +567,9 @@ mod tests {
               "title": "Local voice cloning", "caption": "Runs on a Mac.",
               "hashtags": ["#opensource"], "disclosure": "AI-generated voice",
               "credits": ["Voice: A Reader, LibriVox (CC0)"],
+              "scoreboard": ["8 s in", "$0"],
+              "engagement": {"device": "judgment invite", "token": "comment",
+                             "prompt": "Could you tell? Comment the second you knew."},
               "voice": {"reference": "ref.flac", "seed": 42},
               "scenes": [
                 {"kind": "title", "narration": "No cloud.", "lines": ["No cloud.", "Fact or hype?"]},
@@ -569,6 +677,52 @@ mod tests {
         let text = format!("{issues:?}");
         assert!(text.contains("no disclosure") && text.contains("no visible source URL"));
         assert!(spec.footer_text().is_none());
+    }
+
+    #[test]
+    fn greeting_opens_are_errors() {
+        let mut spec = good();
+        spec.scenes[0].narration = "Hey guys, welcome back to my channel.".into();
+        assert!(errors(&spec).iter().any(|e| e.contains("hey guys")));
+        let mut spec = good();
+        spec.scenes[0].lines = vec!["Welcome back".into()];
+        assert!(errors(&spec).iter().any(|e| e.contains("welcome back")));
+    }
+
+    #[test]
+    fn long_hooks_and_missing_engagement_warn() {
+        let mut spec = good();
+        spec.scenes[0].lines = vec!["one two three four five".into(), "six seven eight nine".into()];
+        spec.engagement = None;
+        let warnings: Vec<String> = spec.validate().into_iter()
+            .filter(|i| i.severity == Severity::Warn).map(|i| i.message).collect();
+        assert!(warnings.iter().any(|w| w.contains("9 words")), "{warnings:?}");
+        assert!(warnings.iter().any(|w| w.contains("no engagement device")), "{warnings:?}");
+    }
+
+    #[test]
+    fn engagement_and_scoreboard_are_validated() {
+        let mut spec = good();
+        spec.engagement = Some(Engagement {
+            device: "judgment invite".into(), token: "comment".into(),
+            prompt: "Could you tell? Comment the second you knew.".into(), pinned_comment: None,
+        });
+        spec.scoreboard = vec!["8 s in".into(), "$0".into()];
+        assert_eq!(errors(&spec), Vec::<String>::new());
+        spec.engagement.as_mut().unwrap().token = "scream".into();
+        spec.scoreboard.push("x".repeat(30));
+        let errs = errors(&spec).join("\n");
+        assert!(errs.contains("token") && errs.contains("scoreboard entry"), "{errs}");
+    }
+
+    #[test]
+    fn a_clone_scene_needs_two_labels() {
+        let mut spec = good();
+        spec.scenes[0].kind = SceneKind::Cloning;
+        spec.scenes[0].lines = vec!["only one".into()];
+        assert!(errors(&spec).iter().any(|e| e.contains("exactly 2 lines")));
+        spec.scenes[0].lines = vec!["8 s clip".into(), "anything".into()];
+        assert_eq!(errors(&spec), Vec::<String>::new());
     }
 
     #[test]

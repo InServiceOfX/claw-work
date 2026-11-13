@@ -26,8 +26,8 @@
       "kind": "title",
       "narration": "Local voice cloning. No cloud. No A P I key. Fact or hype?",
       "lines": [
-        "Local voice cloning.",
-        "No cloud. No API key.",
+        "No cloud.",
+        "No API key.",
         "Fact or hype?"
       ]
     },
@@ -78,5 +78,16 @@
       ],
       "url": "github.com/InServiceOfX/claw-work/tree/master/Rust/voxcpm-tts"
     }
-  ]
+  ],
+  "scoreboard": [
+    "8 s clip in",
+    "21 s of speech out",
+    "$0"
+  ],
+  "engagement": {
+    "device": "judgment invite: could you tell?",
+    "token": "comment",
+    "prompt": "Could you tell it was fake? Comment the second you knew.",
+    "pinned_comment": "Where did it sound fake to you? Give me the timestamp. The voice is a public-domain LibriVox sample; the code and weights are open."
+  }
 }

@@ -7,7 +7,7 @@ use clap::{Parser, Subcommand};
 use claw_shorts::render::{self, RenderOptions};
 use claw_shorts::spec::{self, Severity, Spec};
 use claw_shorts::style::Style;
-use claw_shorts::{brief, kit};
+use claw_shorts::{brief, canvas, kit};
 
 #[derive(Parser)]
 #[command(name = "claw-shorts", version, about = "Plan, validate and render voiced vertical Shorts. Never uploads.")]
@@ -65,6 +65,40 @@ enum Command {
         force_tts: bool,
         #[arg(long)]
         strict: bool,
+    },
+    /// Prepare the canvas path: narration, loudness, captions data and a
+    /// self-contained scene.html for skills/canvas-explainer's renderer.
+    Canvas {
+        #[arg(long)]
+        spec: PathBuf,
+        #[arg(long)]
+        work: PathBuf,
+        /// New directory for scene.html, narration.wav, scene_data.json, timeline.json.
+        #[arg(long)]
+        output: PathBuf,
+        /// Word timings JSON ([{text,start_ms,end_ms}]) for burned-in captions.
+        #[arg(long)]
+        words: Option<PathBuf>,
+        #[arg(long)]
+        style: Option<PathBuf>,
+        #[arg(long)]
+        force_tts: bool,
+        #[arg(long)]
+        strict: bool,
+    },
+    /// Join a silent canvas video with its narration and verify the result.
+    Mux {
+        #[arg(long)]
+        video: PathBuf,
+        #[arg(long)]
+        audio: PathBuf,
+        /// New output file (must not exist).
+        #[arg(long)]
+        output: PathBuf,
+        /// timeline.json from `canvas`; when given, a contact sheet is written
+        /// next to the output.
+        #[arg(long)]
+        timeline: Option<PathBuf>,
     },
     /// Write only the posting kit (no render).
     Kit {
@@ -152,6 +186,31 @@ fn run(cli: Cli) -> Result<(), String> {
             println!("posting kit:  {}", report.posting_kit_md.display());
             println!("length:       {:.1} s", report.total_ms as f64 / 1000.0);
             println!("\nStructure verified. Listen to the audio and view contact.png before posting.");
+            Ok(())
+        }
+        Command::Canvas { spec: path, work, output, words, style, force_tts, strict } => {
+            let (spec, dir) = load(&path, style.as_deref())?;
+            report_issues(&spec, strict)?;
+            let opts = RenderOptions { spec_dir: dir, work_dir: work, output_dir: output, force_tts };
+            let report = canvas::prepare(&spec, &opts, words.as_deref())?;
+            for warning in &report.warnings {
+                eprintln!("warning: {warning}");
+            }
+            let seconds = report.total_ms as f64 / 1000.0;
+            println!("scene:       {}", report.scene_html.display());
+            println!("narration:   {}", report.narration_wav.display());
+            println!("timeline:    {}", report.timeline_json.display());
+            println!("length:      {seconds:.2} s at {} fps\n", report.fps);
+            println!("Next: render the frames with the canvas-explainer renderer, then mux.");
+            println!("  render.mjs scene.html NEW_DIR {:.2} {}", seconds + 0.05, report.fps);
+            println!("  claw-shorts mux --video NEW_DIR/video.mp4 --audio narration.wav --output short.mp4 --timeline timeline.json");
+            Ok(())
+        }
+        Command::Mux { video, audio, output, timeline } => {
+            for note in canvas::mux(&video, &audio, &output, timeline.as_deref())? {
+                println!("{note}");
+            }
+            println!("\nStructure verified. Listen to the audio and view the contact sheet before posting.");
             Ok(())
         }
         Command::Kit { spec: path, output } => {
