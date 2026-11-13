@@ -9,6 +9,15 @@ Shorts plus a posting kit with titles, captions, hashtags, and posting order.
 
 Local/offline rendering only; never auto-posts to social platforms.
 
+> **Voiced explainer Shorts: use the Rust tool.** [`Rust/claw-shorts`](../../Rust/claw-shorts)
+> validates the copy (no placeholders, no unsupported claims), narrates each scene
+> with a local TTS such as `voxcpm-tts`, renders the video, and writes a contact
+> sheet and posting kit. The generic `launch` plan below emits template text
+> ("Tired of the old way?") that must be rewritten by hand; prefer the Rust
+> `brief` then `check` flow for anything you will post. The Python templates
+> (`demo_zoom`, `before_after`, `readme_scroll`, `terminal_typer`) are not ported
+> and remain here.
+
 ## Quick Start (60 seconds)
 
 ```bash

@@ -10,6 +10,15 @@ timestamps) or Playwright (HTML canvas animations). Verify FFmpeg is available
 with `ffmpeg -version`. This skill is local/offline; it never auto-posts to or
 makes network calls to social platforms.
 
+## Voiced explainer Shorts: prefer the Rust tool
+
+For a narrated Short you intend to post, use `Rust/claw-shorts` in this repo
+(`claw-shorts brief`, then `check --strict`, then `render`). It rejects placeholder
+copy and unsupported claims ("killer", "best", "beats") unless the spec records
+evidence, narrates with a local TTS, and writes a contact sheet and posting kit.
+The Python `launch` plan below produces generic template text that needs
+rewriting before use.
+
 ## Launch Kit (for dev tools and indie apps)
 
 Point your coding agent at a GitHub repo URL or product URL, optionally with a

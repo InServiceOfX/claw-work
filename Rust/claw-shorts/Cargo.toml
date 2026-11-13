@@ -1,0 +1,15 @@
+[package]
+name = "claw-shorts"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+description = "Plan, validate and render voiced vertical Shorts for open-source projects via local FFmpeg and voxcpm-tts"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"

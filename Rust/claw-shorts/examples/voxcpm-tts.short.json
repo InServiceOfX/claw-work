@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "project": "voxcpm-tts",
+  "repo_url": "github.com/InServiceOfX/claw-work/tree/master/Rust/voxcpm-tts",
+  "title": "Fact or hype: local voice cloning, no cloud",
+  "caption": "Open code, open weights, public-domain voice. Runs on a Mac: 21 s of speech in 32 s, $0, no API key.",
+  "hashtags": [
+    "opensource",
+    "tts",
+    "voiceclone",
+    "rust",
+    "applesilicon",
+    "shorts"
+  ],
+  "disclosure": "AI-generated voice",
+  "credits": [
+    "Voice: Steve Jackson, LibriVox (CC0), via voice-zero",
+    "Model: VoxCPM2 (OpenBMB), MLX port by mlx-community"
+  ],
+  "voice": {
+    "reference": "reference.flac",
+    "seed": 42
+  },
+  "scenes": [
+    {
+      "kind": "title",
+      "narration": "Local voice cloning. No cloud. No A P I key. Fact or hype?",
+      "lines": [
+        "Local voice cloning.",
+        "No cloud. No API key.",
+        "Fact or hype?"
+      ]
+    },
+    {
+      "kind": "title",
+      "narration": "The code is M I T. The weights are Apache two point oh.",
+      "lines": [
+        "Open code: MIT",
+        "Open weights: Apache 2.0"
+      ]
+    },
+    {
+      "kind": "terminal",
+      "narration": "Here is the real run. Eight seconds of a public domain voice goes in. Twenty one seconds of speech comes out, in thirty two seconds, on a MacBook.",
+      "command": "voxcpm-tts say script.txt -v ref.flac",
+      "output": [
+        "Wrote voice.wav (21s of audio)",
+        "generated in 32s, 1.49x real time",
+        "cost: $0, API keys: none"
+      ]
+    },
+    {
+      "kind": "verdict",
+      "narration": "Verdict. It runs locally, on open code and open weights, for zero dollars. How does it compare to ElevenLabs? I have not benchmarked it. You tell me.",
+      "rows": [
+        {
+          "mark": "FACT",
+          "tone": "pass",
+          "text": "Runs locally. $0, no API key."
+        },
+        {
+          "mark": "FACT",
+          "tone": "pass",
+          "text": "Open code, open weights."
+        },
+        {
+          "mark": "UNTESTED",
+          "tone": "warn",
+          "text": "Quality vs ElevenLabs. You judge."
+        }
+      ]
+    },
+    {
+      "kind": "endcard",
+      "narration": "Code and weights are on GitHub. Voice: Steve Jackson, from LibriVox.",
+      "lines": [
+        "voxcpm-tts"
+      ],
+      "url": "github.com/InServiceOfX/claw-work/tree/master/Rust/voxcpm-tts"
+    }
+  ]
+}

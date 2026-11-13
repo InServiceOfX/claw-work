@@ -1,0 +1,18 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "bg": "#0b0f14",
+  "fg": "#ffffff",
+  "accent": "#4ade80",
+  "muted": "#9aa4b2",
+  "panel": "#18202b",
+  "pass": "#4ade80",
+  "warn": "#fbbf24",
+  "fail": "#f87171",
+  "font": "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+  "mono_font": "/System/Library/Fonts/Supplemental/Courier New Bold.ttf",
+  "pad_ms": 350,
+  "title_size": 96,
+  "body_size": 54
+}
