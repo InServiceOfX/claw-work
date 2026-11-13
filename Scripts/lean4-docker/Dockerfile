@@ -20,8 +20,8 @@ RUN apt-get update \
 
 RUN groupadd -g ${GID} lean && useradd -m -u ${UID} -g ${GID} -s /bin/bash lean
 USER lean
-ENV ELAN_HOME=/home/lean/.elan
-ENV PATH=/home/lean/.elan/bin:${PATH}
+ENV ELAN_HOME=$HOME/.elan
+ENV PATH=$HOME/.elan/bin:${PATH}
 
 # elan installs per-project toolchains from each repo's lean-toolchain file; we
 # pre-fetch the pinned one so `lake build` works offline / without a cold start.
