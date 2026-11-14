@@ -138,6 +138,6 @@ Printify print-on-demand shop.
 
 - [ ] Template the 4-touch cold sequence for the first app we market.
 - [ ] Draft the app's entity map page + JSON-LD (a small generator script could live in `Python/`).
-- [ ] Add caption and hook safe-zone defaults and a "B-roll space" layout to the short-form generator (see `../MONEYPRINTERTURBO_ASSESSMENT.md`). Done since: safe zones and an 8-word hook rule in `Rust/claw-shorts`; Ken Burns stills in `Rust/shortform-video`. The B-roll space layout is still open.
+- [ ] Add caption and hook safe-zone defaults and a "B-roll space" layout to the short-form generator (see `../MONEYPRINTERTURBO_ASSESSMENT.md`). Done since: safe zones and an 8-word hook rule in `Rust/claw-shorts`; Ken Burns stills and the B-roll space layout (`--still-layout frame`) in `Rust/shortform-video`.
 - [ ] Pilot a faceless "I have N apps / part N of launching the next one" series with a list-card hook.
 - [ ] Start a numbered faceless series (for example "closing lines that work") using these notes as the script bank.

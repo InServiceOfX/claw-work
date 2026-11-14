@@ -83,6 +83,15 @@ pub fn still_frames(duration: f64, fps: u32) -> u32 {
 /// stills alternate. The still is first cover-fitted at twice the canvas size,
 /// which keeps zoompan's whole-pixel crop steps from showing as jitter.
 pub fn ken_burns_filter(width: u32, height: u32, fps: u32, frames: u32, variant: usize) -> String {
+    format!(
+        "{},{}",
+        fit_filter(FitMode::Cover, width * 2, height * 2),
+        ken_burns_motion(width, height, fps, frames, variant)
+    )
+}
+
+/// The zoompan half of [`ken_burns_filter`], applied to a 2x-canvas image.
+fn ken_burns_motion(width: u32, height: u32, fps: u32, frames: u32, variant: usize) -> String {
     let last = frames.saturating_sub(1).max(1);
     let progress = format!("on/{last}");
     let zoom = if variant.is_multiple_of(2) {
@@ -96,10 +105,89 @@ pub fn ken_burns_filter(width: u32, height: u32, fps: u32, frames: u32, variant:
         format!("0.75-0.5*{progress}")
     };
     format!(
-        "{},zoompan=z='{zoom}':x='(iw-iw/zoom)*({drift})':y='(ih-ih/zoom)/2':d={frames}:s={width}x{height}:fps={fps},setsar=1",
-        fit_filter(FitMode::Cover, width * 2, height * 2)
+        "zoompan=z='{zoom}':x='(iw-iw/zoom)*({drift})':y='(ih-ih/zoom)/2':d={frames}:s={width}x{height}:fps={fps},setsar=1"
     )
 }
+
+/// How a still fills the canvas.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "lowercase")]
+pub enum StillLayout {
+    /// Crop to fill the frame (good for photos).
+    Cover,
+    /// "B-roll space" (ginyboi): the whole image as a bordered card on a
+    /// brand-colored background, above the caption area. Good for app
+    /// screenshots and wide images that a 9:16 crop would cut apart.
+    Frame,
+}
+
+/// Still-image look: layout plus the brand colors the frame layout uses.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StillStyle {
+    pub layout: StillLayout,
+    pub background: String,
+    pub accent: String,
+}
+
+impl StillStyle {
+    /// Colors must be `#rrggbb`; they are pasted into an ffmpeg filter graph.
+    pub fn new(layout: StillLayout, background: &str, accent: &str) -> Result<Self> {
+        for (name, value) in [("frame_background", background), ("frame_accent", accent)] {
+            let hex = value.strip_prefix('#').unwrap_or("");
+            if hex.len() != 6 || !hex.chars().all(|c| c.is_ascii_hexdigit()) {
+                return Err(Error::Config(format!("render.{name} must be #rrggbb, got {value:?}")));
+            }
+        }
+        Ok(Self { layout, background: background.to_string(), accent: accent.to_string() })
+    }
+}
+
+/// One still's look and its position-dependent Ken Burns move.
+#[derive(Debug, Clone, Copy)]
+pub struct StillMove<'a> {
+    pub style: &'a StillStyle,
+    pub variant: usize,
+}
+
+fn even(value: f64) -> u32 {
+    ((value / 2.0).floor() as u32) * 2
+}
+
+/// Full `-filter_complex` graph for one still: input `[0:v]`, output `[v]`.
+pub fn still_graph(style: &StillStyle, width: u32, height: u32, fps: u32, frames: u32, variant: usize) -> String {
+    let motion = ken_burns_motion(width, height, fps, frames, variant);
+    match style.layout {
+        StillLayout::Cover => format!("[0:v]{},{motion}[v]", fit_filter(FitMode::Cover, width * 2, height * 2)),
+        StillLayout::Frame => {
+            // Work at 2x like the cover path. The card sits in the band from
+            // 12% to 70% of the height, clear of the platform UI on top and
+            // the burned-in captions at the bottom, with 8% side margins.
+            let (w2, h2) = (f64::from(width * 2), f64::from(height * 2));
+            let border = even(w2 / 180.0).max(4);
+            let card_w = even(w2 * 0.84) - 2 * border;
+            let card_h = even(h2 * 0.52) - 2 * border;
+            let top = even(h2 * 0.12);
+            let band = even(h2 * 0.58);
+            format!(
+                "color=c={bg}:s={w}x{h}:r=1:d=1[base];\
+                 [0:v]scale=w={card_w}:h={card_h}:force_original_aspect_ratio=decrease:force_divisible_by=2,setsar=1,\
+                 pad=iw+{b2}:ih+{b2}:{border}:{border}:color={accent}[card];\
+                 [base][card]overlay=x=(W-w)/2:y={top}+({band}-h)/2,trim=end_frame=1,{motion}[v]",
+                bg = style.background,
+                accent = style.accent,
+                w = width * 2,
+                h = height * 2,
+                b2 = 2 * border,
+            )
+        }
+    }
+}
+
+/// Every segment leaves as limited-range ("tv") yuv420p. JPEGs decode as
+/// full-range yuvj420p; segments are joined with stream copy, so one
+/// full-range segment would make the decoder misread the colors of the
+/// segments after it (seen as a washed-out background after a JPEG still).
+pub const SEGMENT_PIXELS: &str = "scale=out_range=tv,format=yuv420p";
 
 /// ffmpeg video filter that fits any source frame onto the target canvas.
 pub fn fit_filter(fit: FitMode, width: u32, height: u32) -> String {
@@ -236,18 +324,19 @@ pub fn normalize_segment(
     aspect: Aspect,
     fit: FitMode,
     transition: Transition,
-    variant: usize,
+    still: StillMove,
     output: &Path,
 ) -> Result<()> {
     let (width, height) = aspect.resolution();
     if is_still(&plan.source) {
-        return normalize_still(render, plan, (width, height), transition, variant, output);
+        return normalize_still(render, plan, (width, height), transition, still, output);
     }
     let mut filter = format!(
         "{},fps={},setsar=1",
         fit_filter(fit, width, height),
         render.fps
     );
+    filter.push_str(&format!(",{SEGMENT_PIXELS}"));
     if transition == Transition::Fade {
         filter.push_str(",fade=t=in:st=0:d=0.5");
     }
@@ -269,6 +358,8 @@ pub fn normalize_segment(
         render.crf.to_string(),
         "-pix_fmt".to_string(),
         "yuv420p".to_string(),
+        "-color_range".to_string(),
+        "tv".to_string(),
         output.display().to_string(),
     ];
     run_ffmpeg(&render.ffmpeg_path, &args)
@@ -280,19 +371,25 @@ fn normalize_still(
     plan: &SegmentPlan,
     (width, height): (u32, u32),
     transition: Transition,
-    variant: usize,
+    still: StillMove,
     output: &Path,
 ) -> Result<()> {
     let frames = still_frames(plan.duration, render.fps);
-    let mut filter = ken_burns_filter(width, height, render.fps, frames, variant);
+    let mut tail = String::new();
     if transition == Transition::Fade {
-        filter.push_str(",fade=t=in:st=0:d=0.5");
+        tail.push_str(",fade=t=in:st=0:d=0.5");
     }
+    tail.push_str(&format!(",{SEGMENT_PIXELS}[v]"));
+    // still_graph has exactly one "[v]": its output label.
+    let graph = still_graph(still.style, width, height, render.fps, frames, still.variant)
+        .replacen("[v]", &tail, 1);
     let args = vec![
         "-i".to_string(),
         plan.source.display().to_string(),
-        "-vf".to_string(),
-        filter,
+        "-filter_complex".to_string(),
+        graph,
+        "-map".to_string(),
+        "[v]".to_string(),
         "-frames:v".to_string(),
         frames.to_string(),
         "-an".to_string(),
@@ -304,6 +401,8 @@ fn normalize_still(
         render.crf.to_string(),
         "-pix_fmt".to_string(),
         "yuv420p".to_string(),
+        "-color_range".to_string(),
+        "tv".to_string(),
         output.display().to_string(),
     ];
     run_ffmpeg(&render.ffmpeg_path, &args)
@@ -397,31 +496,37 @@ pub fn build_audio_filter(
     voice_volume: f64,
     bgm_input: Option<usize>,
     bgm_volume: f64,
+    sfx_input: Option<usize>,
+    sfx_volume: f64,
     total_duration: f64,
 ) -> (String, String) {
-    match bgm_input {
-        Some(input) => {
-            let fade_start = (total_duration - 3.0).max(0.0);
-            (
-                format!(
-                    "[1:a]volume={voice_volume:.3}[voice];\
-                     [{input}:a]volume={bgm_volume:.3},afade=t=out:st={fade_start:.3}:d=3[bgm];\
-                     [voice][bgm]amix=inputs=2:duration=first:normalize=0[aout]"
-                ),
-                "aout".to_string(),
-            )
-        }
-        None => (
-            format!("[1:a]volume={voice_volume:.3}[aout]"),
-            "aout".to_string(),
-        ),
+    if bgm_input.is_none() && sfx_input.is_none() {
+        return (format!("[1:a]volume={voice_volume:.3}[aout]"), "aout".to_string());
     }
+    let mut chains = vec![format!("[1:a]volume={voice_volume:.3}[voice]")];
+    let mut labels = String::from("[voice]");
+    if let Some(input) = bgm_input {
+        let fade_start = (total_duration - 3.0).max(0.0);
+        chains.push(format!(
+            "[{input}:a]volume={bgm_volume:.3},afade=t=out:st={fade_start:.3}:d=3[bgm]"
+        ));
+        labels.push_str("[bgm]");
+    }
+    if let Some(input) = sfx_input {
+        chains.push(format!("[{input}:a]volume={sfx_volume:.3}[sfx]"));
+        labels.push_str("[sfx]");
+    }
+    let count = labels.matches('[').count();
+    chains.push(format!("{labels}amix=inputs={count}:duration=first:normalize=0[aout]"));
+    (chains.join(";"), "aout".to_string())
 }
 
 pub struct RenderJob<'a> {
     pub combined_video: &'a Path,
     pub voice_audio: &'a Path,
     pub bgm_audio: Option<&'a Path>,
+    /// Synthesized shutter track (see `sfx`), mixed at `render.sfx_volume`.
+    pub sfx_audio: Option<&'a Path>,
     pub overlays: &'a [CaptionOverlay],
     pub output: &'a Path,
     pub duration: f64,
@@ -429,15 +534,42 @@ pub struct RenderJob<'a> {
     pub position: CaptionPosition,
 }
 
-/// Final composition: captions overlaid on the combined video, narration and
-/// optional BGM mixed and normalized to -14 LUFS / -1 dBTP (two passes: measure
-/// the mix, then linear `loudnorm`), cut to the narration duration. Returns the
-/// loudness measured on the finished file.
+/// Final composition, in two ffmpeg runs:
+///
+/// 1. Audio: narration, optional BGM and optional shutter track mixed and
+///    normalized to -14 LUFS / -1 dBTP (measure, optional limiter step, linear
+///    `loudnorm`; see `claw_shorts::loudness::plan`) into `<output>.audio.wav`.
+/// 2. Video: captions overlaid on the combined video, muxed with that audio.
+///
+/// The audio has its own run because sharing one filter graph with the caption
+/// overlays made the mixed audio differ from run to run (identical inputs gave
+/// a different track each time, sometimes shifted ~50 ms and losing a shutter
+/// click), while the audio-only graph is deterministic. Returns the loudness
+/// measured on the finished file.
 pub fn render_final(render: &RenderConfig, job: &RenderJob) -> Result<Loudness> {
-    let (_, canvas_height) = job.aspect.resolution();
+    let mix = job.output.with_extension("audio.wav");
+    render_audio(render, job, &mix)?;
+    let result = render_video(render, job, &mix);
+    let _ = std::fs::remove_file(&mix);
+    result?;
+
+    // Check the finished file, not the plan.
+    let finished = loudness::measure_file(job.output).map_err(Error::Ffmpeg)?;
+    let problems = loudness::problems(&finished);
+    if !problems.is_empty() {
+        return Err(Error::Ffmpeg(format!("final loudness is off target: {}", problems.join("; "))));
+    }
+    Ok(finished)
+}
+
+/// Audio inputs in the order `build_audio_filter` expects: input 0 is an
+/// unused placeholder so the voice stays input 1, as in the filter tests.
+fn audio_inputs(job: &RenderJob) -> (Vec<String>, Option<usize>, Option<usize>) {
     let mut args: Vec<String> = vec![
+        "-f".to_string(),
+        "lavfi".to_string(),
         "-i".to_string(),
-        job.combined_video.display().to_string(),
+        "anullsrc=r=48000:cl=mono".to_string(),
         "-i".to_string(),
         job.voice_audio.display().to_string(),
     ];
@@ -453,25 +585,24 @@ pub fn render_final(render: &RenderConfig, job: &RenderJob) -> Result<Loudness> 
         next_input += 1;
         index
     });
-    let caption_first_input = next_input;
-    for overlay in job.overlays {
-        args.extend(["-i".to_string(), overlay.png_path.display().to_string()]);
-    }
+    let sfx_input = job.sfx_audio.map(|sfx| {
+        args.extend(["-i".to_string(), sfx.display().to_string()]);
+        next_input
+    });
+    (args, bgm_input, sfx_input)
+}
 
-    let (overlay_filter, video_label) = build_overlay_filter(
-        job.overlays,
-        caption_first_input,
-        canvas_height,
-        job.position,
-    );
+fn render_audio(render: &RenderConfig, job: &RenderJob, mix: &Path) -> Result<()> {
+    let (inputs, bgm_input, sfx_input) = audio_inputs(job);
     let (audio_filter, audio_label) = build_audio_filter(
         render.voice_volume,
         bgm_input,
         render.bgm_volume,
+        sfx_input,
+        render.sfx_volume,
         job.duration,
     );
-    // Measure the mix exactly as it will be encoded (after an optional limiter
-    // step), then normalize it; see claw_shorts::loudness::plan.
+    let duration = format!("{:.3}", job.duration);
     let normalization = loudness::plan(|pre| {
         let chain = match pre {
             Some(pre) => format!("{pre},{}", loudness::measure_filter()),
@@ -480,29 +611,50 @@ pub fn render_final(render: &RenderConfig, job: &RenderJob) -> Result<Loudness> 
         let mut measure = Command::new(&render.ffmpeg_path);
         measure
             .args(["-hide_banner", "-nostats"])
-            .args(&args)
+            .args(&inputs)
             .arg("-filter_complex")
             .arg(format!("{audio_filter};[{audio_label}]{chain}[measured]"))
-            .args(["-map", "[measured]", "-t", &format!("{:.3}", job.duration), "-f", "null", "-"]);
+            .args(["-map", "[measured]", "-t", &duration, "-f", "null", "-"]);
         loudness::measure_with(&mut measure)
     })
     .map_err(Error::Ffmpeg)?;
-    let audio_filter = format!("{audio_filter};[{audio_label}]{}[anorm]", normalization.filter);
-    let audio_label = "anorm".to_string();
 
-    let filter_complex = if overlay_filter.is_empty() {
-        audio_filter
-    } else {
-        format!("{overlay_filter};{audio_filter}")
-    };
-
+    let mut args = inputs;
     args.extend([
         "-filter_complex".to_string(),
-        filter_complex,
+        format!("{audio_filter};[{audio_label}]{}[anorm]", normalization.filter),
+        "-map".to_string(),
+        "[anorm]".to_string(),
+        "-t".to_string(),
+        duration,
+        "-c:a".to_string(),
+        "pcm_s16le".to_string(),
+        mix.display().to_string(),
+    ]);
+    run_ffmpeg(&render.ffmpeg_path, &args)
+}
+
+fn render_video(render: &RenderConfig, job: &RenderJob, mix: &Path) -> Result<()> {
+    let (_, canvas_height) = job.aspect.resolution();
+    let mut args: Vec<String> = vec![
+        "-i".to_string(),
+        job.combined_video.display().to_string(),
+        "-i".to_string(),
+        mix.display().to_string(),
+    ];
+    for overlay in job.overlays {
+        args.extend(["-i".to_string(), overlay.png_path.display().to_string()]);
+    }
+    let (overlay_filter, video_label) =
+        build_overlay_filter(job.overlays, 2, canvas_height, job.position);
+    if !overlay_filter.is_empty() {
+        args.extend(["-filter_complex".to_string(), overlay_filter]);
+    }
+    args.extend([
         "-map".to_string(),
         format!("[{video_label}]").replace("[0:v]", "0:v"),
         "-map".to_string(),
-        format!("[{audio_label}]"),
+        "1:a".to_string(),
         "-t".to_string(),
         format!("{:.3}", job.duration),
         "-c:v".to_string(),
@@ -521,15 +673,7 @@ pub fn render_final(render: &RenderConfig, job: &RenderJob) -> Result<Loudness> 
         "+faststart".to_string(),
         job.output.display().to_string(),
     ]);
-    run_ffmpeg(&render.ffmpeg_path, &args)?;
-
-    // Pass 2 check: the finished file, not the plan.
-    let finished = loudness::measure_file(job.output).map_err(Error::Ffmpeg)?;
-    let problems = loudness::problems(&finished);
-    if !problems.is_empty() {
-        return Err(Error::Ffmpeg(format!("final loudness is off target: {}", problems.join("; "))));
-    }
-    Ok(finished)
+    run_ffmpeg(&render.ffmpeg_path, &args)
 }
 
 #[cfg(test)]
@@ -644,13 +788,44 @@ mod tests {
     }
 
     #[test]
+    fn frame_layout_is_a_bordered_card_on_brand_color_above_captions() {
+        let style = StillStyle::new(StillLayout::Frame, "#0f141b", "#f5b83d").unwrap();
+        let g = still_graph(&style, 1080, 1920, 30, 120, 0);
+        assert!(g.starts_with("color=c=#0f141b:s=2160x3840:r=1:d=1[base];[0:v]scale=w="), "{g}");
+        // 12 px border (2160/180); card 84% of width minus borders; 52% of height.
+        assert!(g.contains("scale=w=1790:h=1972"), "{g}");
+        assert!(g.contains("pad=iw+24:ih+24:12:12:color=#f5b83d[card]"), "{g}");
+        assert!(g.contains("overlay=x=(W-w)/2:y=460+(2226-h)/2,trim=end_frame=1,zoompan="), "{g}");
+        assert!(g.ends_with(":d=120:s=1080x1920:fps=30,setsar=1[v]"), "{g}");
+        assert_eq!(g.matches("[v]").count(), 1);
+
+        let cover = StillStyle::new(StillLayout::Cover, "#000000", "#ffffff").unwrap();
+        let c = still_graph(&cover, 1080, 1920, 30, 120, 0);
+        assert_eq!(c, format!("[0:v]{}[v]", ken_burns_filter(1080, 1920, 30, 120, 0)));
+    }
+
+    #[test]
+    fn frame_colors_must_be_plain_hex() {
+        assert!(StillStyle::new(StillLayout::Frame, "#0f141b", "#F5B83D").is_ok());
+        for bad in ["red", "#12345", "#0f141b[x]", "0f141b", "#gggggg"] {
+            assert!(StillStyle::new(StillLayout::Frame, bad, "#ffffff").is_err(), "{bad}");
+        }
+    }
+
+    #[test]
     fn audio_filter_with_and_without_bgm() {
-        let (voice_only, label) = build_audio_filter(1.0, None, 0.2, 30.0);
+        let (voice_only, label) = build_audio_filter(1.0, None, 0.2, None, 0.25, 30.0);
         assert_eq!(label, "aout");
         assert!(!voice_only.contains("amix"));
 
-        let (mixed, _) = build_audio_filter(1.0, Some(2), 0.2, 30.0);
+        let (mixed, _) = build_audio_filter(1.0, Some(2), 0.2, None, 0.25, 30.0);
         assert!(mixed.contains("amix=inputs=2"));
         assert!(mixed.contains("afade=t=out:st=27.000:d=3"));
+
+        let (all, _) = build_audio_filter(1.0, Some(2), 0.2, Some(3), 0.25, 30.0);
+        assert!(all.contains("[3:a]volume=0.250[sfx]"), "{all}");
+        assert!(all.contains("[voice][bgm][sfx]amix=inputs=3:duration=first:normalize=0[aout]"), "{all}");
+        let (sfx_only, _) = build_audio_filter(1.0, None, 0.2, Some(2), 0.25, 30.0);
+        assert!(sfx_only.contains("[voice][sfx]amix=inputs=2"), "{sfx_only}");
     }
 }

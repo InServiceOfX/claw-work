@@ -74,6 +74,11 @@ pub struct RenderConfig {
     pub crf: u32,
     pub voice_volume: f64,
     pub bgm_volume: f64,
+    /// Shutter clicks on cuts to stills (`--still-sfx`); the track peaks at 1.0.
+    pub sfx_volume: f64,
+    /// Brand colors of the `--still-layout frame` "B-roll space", as #rrggbb.
+    pub frame_background: String,
+    pub frame_accent: String,
 }
 
 impl Default for RenderConfig {
@@ -87,6 +92,9 @@ impl Default for RenderConfig {
             crf: 20,
             voice_volume: 1.0,
             bgm_volume: 0.2,
+            sfx_volume: 0.25,
+            frame_background: "#0f141b".to_string(),
+            frame_accent: "#f5b83d".to_string(),
         }
     }
 }

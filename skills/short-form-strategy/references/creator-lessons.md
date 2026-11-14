@@ -25,10 +25,10 @@ is a planning rule for you or the agent.
 
 | Lesson | Source | Status |
 | --- | --- | --- |
-| Change the picture every 3-5 seconds. No footage? Build a branded "B-roll space" frame for screenshots, icons and assets. | @ginyboi 5-step pipeline (2026-08) | Plan; scene holds over 10 s warn in `claw-shorts canvas`. B-roll space layout not built yet |
+| Change the picture every 3-5 seconds. No footage? Build a branded "B-roll space" frame for screenshots, icons and assets. | @ginyboi 5-step pipeline (2026-08) | Applied when asked: `shortform-video --still-layout frame` (bordered card on brand colors). Scene holds over 10 s warn in `claw-shorts canvas` |
 | Stills need motion: slow zoom or sideways pan (4-8% over 3-5 s) so momentum never dies. | @ginyboi, editing without B-roll (2026-08-25) | Applied: Ken Burns on local stills in `shortform-video` |
-| A camera-shutter sound on each cut to a photo reads as "looking through memories" (storytelling, travel, finance). | same | Plan; not automated (needs a licensed SFX file) |
-| When cutting fast between portraits, keep the eyes on one line so viewers don't tire. | same | Plan; not automated |
+| A camera-shutter sound on each cut to a photo reads as "looking through memories" (storytelling, travel, finance). | same | Applied when asked: `shortform-video --still-sfx` (click synthesized, no SFX file to license) |
+| When cutting fast between portraits, keep the eyes on one line so viewers don't tire. | same | Plan only: automating it needs a face-detection model, and faceless explainers rarely cut between portraits |
 | Never leave a visible jump at a cut: overlap the audio across it and cover both sides with B-roll. | @ginyboi jump cuts (2026-08-05) | Applied by design: narration is one continuous track under the visuals |
 | Keep effects light; too many steal from the message. | @ginyboi 5-step pipeline | Plan |
 

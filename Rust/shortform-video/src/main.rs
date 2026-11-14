@@ -4,7 +4,7 @@ use shortform_video::error::Result;
 use shortform_video::llm::LlmClient;
 use shortform_video::material::Aspect;
 use shortform_video::pipeline::{MaterialSource, Pipeline, RunOptions, default_task_dir};
-use shortform_video::video::{ConcatMode, FitMode, Transition};
+use shortform_video::video::{ConcatMode, FitMode, StillLayout, Transition};
 use shortform_video::{subtitle, tts};
 use std::path::PathBuf;
 
@@ -98,6 +98,13 @@ enum Command {
         bgm: Option<PathBuf>,
         #[arg(long)]
         no_subtitles: bool,
+        /// How local photos fill the frame: cover (crop) or frame (bordered
+        /// card on render.frame_background, for screenshots and wide images)
+        #[arg(long, value_enum, default_value_t = StillLayout::Cover)]
+        still_layout: StillLayout,
+        /// Add a synthesized camera-shutter click on every cut to a photo
+        #[arg(long)]
+        still_sfx: bool,
         /// Task directory for all artifacts (default: ./shortform-tasks/<ts>)
         #[arg(long)]
         task_dir: Option<PathBuf>,
@@ -190,6 +197,8 @@ fn run() -> Result<()> {
             terms_amount,
             bgm,
             no_subtitles,
+            still_layout,
+            still_sfx,
             task_dir,
         } => {
             let material_source = match source.as_str() {
@@ -214,6 +223,8 @@ fn run() -> Result<()> {
                 script_file,
                 bgm_file: bgm,
                 subtitles_enabled: !no_subtitles,
+                still_layout,
+                still_sfx,
             };
             let output = pipeline.run(&options)?;
             println!("{}", output.display());

@@ -74,6 +74,9 @@ fps = 30
 crf = 20
 voice_volume = 1.0
 bgm_volume = 0.2
+sfx_volume = 0.25           # shutter clicks (--still-sfx)
+frame_background = "#0f141b" # --still-layout frame: brand background
+frame_accent = "#f5b83d"     # --still-layout frame: card border
 ```
 
 `<think>…</think>` blocks are stripped from LLM responses automatically, so
@@ -94,6 +97,23 @@ Each `run` writes into a task directory (default `./shortform-tasks/<ts>/`):
   cover-fitted at twice the canvas size first, so zoompan's whole-pixel steps
   do not jitter. Lesson from @ginyboi (see
   `skills/short-form-strategy/references/creator-lessons.md`).
+- **B-roll space (`--still-layout frame`).** Instead of cropping a photo to
+  fill 9:16, show the whole image as a bordered card on the brand background
+  (`render.frame_background`, `render.frame_accent`), in the band from 12% to
+  70% of the height so it stays clear of the platform UI and the captions.
+  Use it for app screenshots and wide images. Ken Burns still applies.
+- **Shutter clicks (`--still-sfx`).** A camera-shutter click on every cut to a
+  photo, synthesized in `src/sfx.rs` (no audio file, nothing to license),
+  placed at the measured start of each still segment and mixed at
+  `render.sfx_volume`. Eye-line alignment for fast portrait cuts is not built:
+  it needs a face-detection model, and these explainers rarely cut portraits.
+- **Segments are limited-range yuv420p.** JPEGs decode as full-range
+  yuvj420p; joined by stream copy with limited-range segments, the colors
+  after a JPEG were misread. Every segment is now converted.
+- **Audio renders in its own ffmpeg run**, then is muxed with the captioned
+  video. In one shared filter graph with the caption overlays, identical
+  inputs gave a different audio track on each run (sometimes ~50 ms early,
+  dropping a click); the audio-only graph is byte-for-byte repeatable.
 - **Loudness is -14 LUFS / -1 dBTP on every render**, using
   `claw-shorts`' loudness module (path dependency): measure the voice+BGM mix,
   boost into a limiter only when linear gain would clip, then linear

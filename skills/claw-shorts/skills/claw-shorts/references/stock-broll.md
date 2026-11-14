@@ -26,7 +26,12 @@ skill first when reach matters, then pass it with `--script-file`.
   `SHORTFORM_PIXABAY_API_KEY`. A local directory works with no key:
   `--source /path/to/folder`. Videos (.mp4/.mov/.m4v/.webm/.mkv) are cut;
   photos (.jpg/.jpeg/.png/.webp) get a slow Ken Burns zoom and drift for one
-  clip's length (`--max-clip-duration`), alternating direction.
+  clip's length (`--max-clip-duration`), alternating direction. Add
+  `--still-layout frame` for screenshots or wide images (whole image as a
+  bordered card on the brand background instead of a crop; colors in
+  `render.frame_background` / `render.frame_accent`), and `--still-sfx` for a
+  synthesized camera-shutter click on each cut to a photo (storytelling,
+  travel, "looking back" pieces; leave it off for straight explainers).
 - Edge TTS needs network; `SHORTFORM_TTS_BACKEND=say` is the offline macOS
   fallback (subtitle timing degrades from word-accurate to proportional).
 - Config file (optional): `~/.config/shortform-video/config.toml` — see the

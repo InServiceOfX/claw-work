@@ -17,6 +17,10 @@
 
 | Ken Burns still-image mode | ✅ | local .jpg/.jpeg/.png/.webp; 8% zoom + drift, 4 alternating moves; 2x pre-scale against jitter (2026-11-14) |
 | Loudness -14 LUFS / -1 dBTP | ✅ | two/three-pass via `claw-shorts::loudness`; `loudness.json` artifact; fails off-target renders (2026-11-14) |
+| B-roll space layout | ✅ | `--still-layout frame`: bordered card on brand color, 12-70% height band; colors validated as #rrggbb (2026-11-14) |
+| Shutter SFX on still cuts | ✅ | `--still-sfx`: synthesized in `sfx.rs`, at measured segment starts, `render.sfx_volume` (2026-11-14) |
+| Fix: mixed color ranges | ✅ | JPEG segments were full-range; all segments now limited-range yuv420p |
+| Fix: nondeterministic final audio | ✅ | audio rendered in its own pass, then muxed; 3 identical runs now byte-identical |
 | Moved to claw-work | ✅ | from Monoclaw `Rust/shortform-video` on 2026-11-14; history stays in Monoclaw |
 
 ## In Progress
@@ -30,8 +34,15 @@
 | xfade cross-transitions between segments | med | claw-dj `render_shorts.py` has the offset-chain pattern to port |
 | Whisper subtitles for custom audio | low | whisper.cpp subprocess; only needed for bring-your-own narration |
 | Coverr as a third stock source | low | port from MoneyPrinterTurbo material.py if Pexels/Pixabay prove thin |
+| Eye-line alignment for portrait cuts | won't do for now | needs a face-detection model; faceless explainers rarely cut portraits |
 
 ## Last Worked On
+**2026-11-14 (later)** — Added `--still-layout frame` and `--still-sfx`; fixed
+JPEG color range and run-to-run audio drift. Offline E2E (one wide image, one
+portrait image, one clip, `say`, frame layout, shutter): -14.0 LUFS; clicks at
+3.0 s and 9.0 s; three runs byte-identical audio; frames viewed; a BGM run
+also checked (-14.0 LUFS, -0.9 dBTP). Audio measured, not listened to.
+
 **2026-11-14** — Moved to claw-work. Added Ken Burns stills and loudness
 normalization. Offline E2E with two stills + one clip and `say`: 1080x1920,
 9.37 s, -13.99 LUFS / -1.51 dBTP (the raw `say` mix was -19.4 LUFS with peaks

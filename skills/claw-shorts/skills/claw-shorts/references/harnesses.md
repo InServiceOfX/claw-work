@@ -32,3 +32,29 @@ Override a location with `CLAUDE_SKILLS_DIR`, `AGENTS_SKILLS_DIR`,
 The installed copy holds only the skill text. The tools it drives
 (`Rust/claw-shorts`, `Rust/shortform-video`, `Rust/claw-edit`, the canvas
 renderer and the Python templates) stay in the claw-work checkout.
+
+## Check an install
+
+Verified on 2026-11-14 with these exact commands:
+
+| Harness | Check | Notes |
+|---------|-------|-------|
+| Claude Code | skills listing in a new session shows `claw-shorts`, `short-form-strategy` | |
+| Codex | start a new session; `$claw-shorts` | Codex 0.167 reads both `~/.codex/skills` and `~/.agents/skills`; install only to `~/.agents/skills` to avoid duplicates |
+| Pi | start a new session or `/reload`; `/skill:claw-shorts` | Pi's package manager always loads `~/.agents/skills` as trusted user skills; no entry in `~/.pi/agent/settings.json` is needed |
+| Grok Build | `grok inspect` lists both as `user` skills | |
+| Hermes | `hermes skills list` shows both under `media`, enabled | Hermes caches skill prompts in `~/.hermes/.skills_prompt_snapshot.json`; the cache is keyed by file signatures and rebuilds on the next session by itself |
+
+## On another machine (instructions for any agent)
+
+1. In a claw-work checkout that contains `skills/install-shortform-skills.sh`,
+   run `skills/install-shortform-skills.sh --dry-run` and read what it would
+   remove or copy.
+2. Run it without `--dry-run`, optionally naming harnesses
+   (`claude agents grok hermes`).
+3. Run the checks above. Old names (`short-form-viral-content`,
+   `short-form-video-assembly`, `canvas-explainer`, `transcript-video-edit`)
+   must be gone; if a harness keeps its own copy elsewhere, remove that copy
+   by hand and say so.
+4. Build the tools the skills drive only when they are used:
+   `Rust/claw-shorts` and `Rust/shortform-video` (`cargo build --release`).

@@ -26,6 +26,10 @@ pub struct RunOptions {
     pub script_file: Option<PathBuf>,
     pub bgm_file: Option<PathBuf>,
     pub subtitles_enabled: bool,
+    /// How local stills fill the frame (cover crop or "B-roll space" card).
+    pub still_layout: video::StillLayout,
+    /// Synthesized camera-shutter click on every cut to a still.
+    pub still_sfx: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -106,7 +110,16 @@ impl Pipeline {
         }
 
         // 5. Normalize + concat.
-        let combined = self.combine(options, &sources, tts_output.duration)?;
+        let (combined, still_cuts) = self.combine(options, &sources, tts_output.duration)?;
+        let sfx_track = if options.still_sfx && !still_cuts.is_empty() {
+            let path = self.artifact("shutter.wav");
+            let track = crate::sfx::shutter_track(&still_cuts, tts_output.duration + DURATION_SAFETY_MARGIN);
+            crate::sfx::write_wav(&path, &track)?;
+            eprintln!("shutter clicks at {still_cuts:.2?} s");
+            Some(path)
+        } else {
+            None
+        };
 
         // 6. Captions + final render.
         let final_path = self.artifact("final.mp4");
@@ -125,6 +138,7 @@ impl Pipeline {
                 combined_video: &combined,
                 voice_audio: &tts_output.audio_file,
                 bgm_audio: options.bgm_file.as_deref(),
+                sfx_audio: sfx_track.as_deref(),
                 overlays: &overlays,
                 output: &final_path,
                 duration: tts_output.duration,
@@ -239,7 +253,9 @@ impl Pipeline {
         options: &RunOptions,
         sources: &[SourceClip],
         audio_duration: f64,
-    ) -> Result<PathBuf> {
+    ) -> Result<(PathBuf, Vec<f64>)> {
+        let render = &self.config.render;
+        let still = video::StillStyle::new(options.still_layout, &render.frame_background, &render.frame_accent)?;
         let required = audio_duration + DURATION_SAFETY_MARGIN;
         let plan = video::plan_segments(
             sources,
@@ -254,14 +270,22 @@ impl Pipeline {
         let segments_dir = self.artifact("segments");
         std::fs::create_dir_all(&segments_dir)?;
         let mut segment_files = Vec::new();
+        // Start time of every segment that shows a still, measured from the
+        // encoded segments so the shutter clicks land on the real cuts.
+        let mut still_cuts = Vec::new();
+        let mut elapsed = 0.0;
         for (index, segment) in plan.iter().enumerate() {
             let out = segments_dir.join(format!("segment-{index:03}.mp4"));
-            self.normalize_cached(options, segment, index, &out)?;
+            self.normalize_cached(options, segment, index, &still, &out)?;
+            if video::is_still(&segment.source) {
+                still_cuts.push(elapsed);
+            }
+            elapsed += video::probe_duration(&render.ffprobe_path, &out)?;
             segment_files.push(out);
         }
         let combined = self.artifact("combined.mp4");
-        video::concat_segments(&self.config.render, &segment_files, &combined)?;
-        Ok(combined)
+        video::concat_segments(render, &segment_files, &combined)?;
+        Ok((combined, still_cuts))
     }
 
     /// Looped plans reuse the same (source, start) cut; encode each cut once.
@@ -270,12 +294,20 @@ impl Pipeline {
         options: &RunOptions,
         segment: &SegmentPlan,
         index: usize,
+        still: &video::StillStyle,
         out: &Path,
     ) -> Result<()> {
-        // A still's move alternates by position, so the move is part of its key.
-        let variant = if video::is_still(&segment.source) { index % 4 } else { 0 };
+        // A still's move and look depend on its position and the layout, so
+        // both are part of its key.
+        let is_still = video::is_still(&segment.source);
+        let variant = if is_still { index % 4 } else { 0 };
+        let look = if is_still {
+            format!("{:?}-{}-{}", still.layout, still.background, still.accent)
+        } else {
+            String::new()
+        };
         let cache_key = format!(
-            "{}-{:.3}-{:.3}-{variant}",
+            "{}-{:.3}-{:.3}-{variant}-{look}",
             segment.source.display(),
             segment.start,
             segment.duration
@@ -292,7 +324,7 @@ impl Pipeline {
                 options.aspect,
                 options.fit,
                 options.transition,
-                variant,
+                video::StillMove { style: still, variant },
                 &cache_path,
             )?;
         }
