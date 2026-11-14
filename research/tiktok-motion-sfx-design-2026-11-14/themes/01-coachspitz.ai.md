@@ -53,14 +53,14 @@ The caption says to paste this into Claude Code with HyperFrames installed.
 
 ## Usefulness for claw-dj short-form content and marketing
 
-Context: claw-dj = "AI mixes" brand, lobster mascot, faceless YouTube Shorts and TikTok, local/open-source tools, no paid SaaS voices, no AI influencer personas. claw-work already has a working `skills/canvas-explainer` pipeline (HTML canvas → headless browser → FFmpeg).
+Context: claw-dj = "AI mixes" brand, lobster mascot, faceless YouTube Shorts and TikTok, local/open-source tools, no paid SaaS voices, no AI influencer personas. claw-work already has a working canvas pipeline (HTML canvas → headless browser → FFmpeg): the canvas mode of `skills/claw-shorts`, formerly `skills/canvas-explainer`.
 
 | Aspect | Verdict | Why |
 |---|---|---|
-| **HyperFrames** (direct video tool) | **Useful** | HTML-to-MP4 with deterministic headless-Chrome rendering is the same model as our canvas-explainer, but with ~450 ready blocks (captions, kinetic type, transitions, charts). Apache-2.0 and local, so it fits a lobster-mascot explainer or a "track A → track B" transition card with no SaaS. |
+| **HyperFrames** (direct video tool) | **Useful** | HTML-to-MP4 with deterministic headless-Chrome rendering is the same model as our claw-shorts canvas mode, but with ~450 ready blocks (captions, kinetic type, transitions, charts). Apache-2.0 and local, so it fits a lobster-mascot explainer or a "track A → track B" transition card with no SaaS. |
 | **The caption prompt** (word-timed motion graphics) | **Useful** | Transcribe → one graphic per line → timed to the word → vertical 1080×1920 → frame-by-frame check is exactly a faceless Shorts recipe. Swap "my edited video" for a claw-dj mix clip plus local Whisper word timings and "real logos only" for the lobster mascot assets. |
 | **huashu-motion** (direct video tool) | **Maybe** | MIT, local, and it can write its own soundtrack, but it is brand new, Chinese-only docs, and stamps "Made with huashu-motion" unless `data-om-signature="off"` is set. Worth a sandboxed trial for launch-film style promos; the bundled GSAP library carries its own license. |
 | **Remotion** (direct video tool) | **Maybe** | Mature React-to-video with strong agent knowledge, and free for an individual or a company of up to 3 employees. Not open source in the OSI sense; if claw-dj ever grows past that threshold it needs a paid Company License, so HyperFrames is the lower-risk default. |
 | **GSAP skills** (animation knowledge for agents) | **Useful** | Not a video tool, but HyperFrames and huashu both animate with GSAP, so these skills directly improve the easing and timing of every rendered short. MIT skills; GSAP itself is free including plugins. |
 | **"Claude Motion is Team plan only" framing** | **Not useful** | Product-plan news, not a technique; nothing to adopt. |
-| **Video format itself** (numbered tool cards, repo screenshot, timed pills) | **Useful** | A faceless, repeatable "N free tools" list format that claw-dj can copy for "3 free tools behind this AI mix" shorts, rendered with HyperFrames or canvas-explainer. |
+| **Video format itself** (numbered tool cards, repo screenshot, timed pills) | **Useful** | A faceless, repeatable "N free tools" list format that claw-dj can copy for "3 free tools behind this AI mix" shorts, rendered with HyperFrames or the claw-shorts canvas mode. |

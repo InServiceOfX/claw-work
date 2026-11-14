@@ -36,7 +36,7 @@ A short talking-head-plus-screen-recording video. The creator names three sites 
 
 ## Usefulness for claw-dj short-form content and marketing
 
-All three are **web front-end** tools. Their value to claw-dj is indirect: a better landing page, or motion graphics that are authored as HTML and rendered to MP4 (HyperFrames or our `canvas-explainer` pipeline).
+All three are **web front-end** tools. Their value to claw-dj is indirect: a better landing page, or motion graphics that are authored as HTML and rendered to MP4 (HyperFrames or our claw-shorts canvas mode).
 
 | Aspect | Verdict | Why |
 |---|---|---|

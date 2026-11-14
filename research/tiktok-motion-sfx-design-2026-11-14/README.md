@@ -37,7 +37,7 @@ screenshots/       3–5 readable stills per video (720 px wide)
 
 ## Overall verdict: what to adopt first for claw-dj shorts
 
-1. **HyperFrames + the coachspitz prompt (01)** — Apache-2.0, local HTML-to-MP4 with ~450 blocks; the prompt (transcribe with word timestamps → one graphic per line → vertical 1080×1920 → frame-by-frame check) is a ready faceless Shorts recipe. Complements our existing `skills/canvas-explainer`.
+1. **HyperFrames + the coachspitz prompt (01)** — Apache-2.0, local HTML-to-MP4 with ~450 blocks; the prompt (transcribe with word timestamps → one graphic per line → vertical 1080×1920 → frame-by-frame check) is a ready faceless Shorts recipe. Complements our existing canvas mode (`skills/claw-shorts/canvas/`, formerly `skills/canvas-explainer`).
 2. **GSAP skills (01)** — MIT skills that improve the motion in every HyperFrames render; GSAP itself is free including plugins.
 3. **Real SFX (03)** — local frame-accurate sound design that keeps the AI mix untouched, tunes pitched hits to the track, checks mono, and outputs a separate SFX stem. Free; README says "Scripts: MIT" but the repo has no LICENSE file, so install and use it rather than copying its code. The 78 bundled UI cues are CC0.
 4. **A claw-dj `DESIGN.md` (04: Awesome Claude Design format) + Design Motion Principles (04)** — one brand file feeding both site and videos, plus an anti-slop motion audit.

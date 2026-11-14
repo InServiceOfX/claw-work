@@ -52,7 +52,7 @@ Each repo was identified by GitHub repository search on the spoken name and conf
 
 ## Usefulness for claw-dj short-form content and marketing
 
-All five are **web-UI / front-end design** resources. Their value to claw-dj is indirect: a sharper landing page, and HTML-authored motion graphics rendered to MP4 via HyperFrames (whose `frame.md` layer explicitly translates a brand `design.md` into video rules) or our `canvas-explainer`.
+All five are **web-UI / front-end design** resources. Their value to claw-dj is indirect: a sharper landing page, and HTML-authored motion graphics rendered to MP4 via HyperFrames (whose `frame.md` layer explicitly translates a brand `design.md` into video rules) or our claw-shorts canvas mode.
 
 | Aspect | Verdict | Why |
 |---|---|---|
