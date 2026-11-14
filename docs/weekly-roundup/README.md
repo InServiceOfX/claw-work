@@ -47,10 +47,32 @@ The format notes and outside examples are in [FORMAT.md](FORMAT.md).
 6. **Write the short** from the template: hook ≤ 12 words naming the count and
    teasing #1, then ~6–8 s per item, with #1 longest. Every claim on screen must
    appear in the edition's evidence table.
-7. **Produce locally** with [claw-shorts](../../Skills/claw-shorts/README.md) or the
-   canvas explainer, then publish by hand. The
+7. **Produce locally, faceless,** with the
+   [claw-shorts](../../skills/claw-shorts/README.md) voiced explainer
+   ([`Rust/claw-shorts`](../../Rust/claw-shorts/README.md)). It validates the
+   spec's copy, narrates each scene with `voxcpm-tts`, sets each scene's length from its
+   narration, and writes captions and a -14 LUFS mix. Disclose the synthetic
+   voice. Then publish by hand. The
    [YouTube CLI](../../Tools/social-publish/README.md) only ever uploads as private,
    and publishing is a separate confirmed step. Nothing auto-posts.
+
+## Status and next steps (2026-11-14)
+
+- **Done:** process, format research, template, and the 2026-W45 edition
+  (summary + script). The W45 short has **not** been rendered or posted.
+- **Ready on the Mac mini:** `voxcpm-tts` is installed and verified (see
+  `Rust/voxcpm-tts/docs/HANDOFF.md`), and `Rust/claw-shorts` calls it from `PATH`.
+- **Next:**
+  1. Turn the W45 script table into a `Rust/claw-shorts` spec (one scene per
+     row; see its `examples/voxcpm-tts.short.json`), then run
+     `check --strict` and render. Expect a warning: the W45 narration is
+     ~50 s and `check` warns above ~45 s. Trim #2's "saved" line first.
+  2. Decide the voice. The claw-shorts skill says faceless narration should be
+     synthetic and disclosed, and it should not suggest recording the user's own
+     voice. Cloning Ernest's voice with VoxCPM is his call. The public-sample
+     voice or another voice he's authorized to use works without that decision.
+  3. Write **2026-W46** (Nov 9–15) from that week's `research/` additions
+     using [TEMPLATE.md](TEMPLATE.md).
 
 ## Honesty and public-safety rules
 
