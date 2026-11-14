@@ -100,8 +100,29 @@ using the public `test_en.wav` shipped in the cached
       ends the process within 1 s, so nothing stays resident.
 - [ ] Generate/Cancel in the app window has still not been exercised by a human.
       It calls the same `job::run_job` path as the CLI.
-- [ ] Mac mini M4 has not been run. Install there with `scripts/install.sh`
-      (do not copy the virtualenv). Weights can be copied or fetched.
+- [x] **Mac mini M4 Pro (64 GB, macOS 26.6.2, Rust 1.94), 2026-11-09.**
+      `scripts/install.sh --fetch` built release binaries in 1 min 8 s and
+      installed `~/.local/bin/voxcpm-tts` and `~/Applications/VoxCPM TTS.app`
+      (`codesign --verify --deep --strict` passed). It fetched weights into the
+      HF cache. `doctor`: weights ✓ and native ✓. mlx-python was not installed,
+      which is expected without `--with-python-engine`.
+      - Native `say` with the public `test_en.wav`, run offline with
+        `--seed 42`: 185 characters in 1 chunk, 11.44 s of mono 48 kHz PCM16,
+        26.9 s of generation (2.35× real time), cold load 11.4 s, 1 attempt
+        (ratio 0.97). `parts_directory` was null, no job directories were left,
+        and the peak footprint was 16.05 GB. Local `whisper-small-mlx`
+        transcribed it word for word.
+      - Reference **mp3** (stereo, 44.1 kHz, transcoded from the public
+        sample) with `--text`: decoded, downmixed, resampled, 3 s output in 5 s.
+      - App: launch → weights loaded (12 GB footprint) → AppleEvent quit → no
+        process left.
+      - Gotcha: `voxcpm-tts fetch` downloads only model files. The repo's public
+        `test_en.wav` sample is not fetched; download it separately for checks.
+      - A 1,796-character listening test script is at
+        [`examples/test-script.txt`](../examples/test-script.txt) (10 chunks,
+        ~1 min 54 s planned). It covers numbers, words spelled alike but said
+        differently, tech names, a clause-split long sentence, and paragraph
+        pauses. No one has listened to it with a real cloned voice yet.
 - [x] The crate is committed on `feature/voxcpm2-tts-macos` after the privacy
       gate. Golden tensors, the virtualenv, `dist/`, `target/`, and generated
       WAVs stay untracked. Do not push unless asked.
@@ -132,8 +153,10 @@ using the public `test_en.wav` shipped in the cached
 
 ## Next steps
 
-1. On the Mac mini M4, run `scripts/install.sh`, then `voxcpm-tts doctor` and
-   one short `say` with a voice the user is allowed to clone.
+1. Done on the Mac mini (see Status). Remaining there: Ernest runs
+   `voxcpm-tts say examples/test-script.txt --voice <his clip> --seed 42 -o <outside repo>`
+   and listens for numbers, the clause split, and paragraph gaps.
+   `Rust/claw-shorts` now calls `voxcpm-tts` from `PATH` for scene narration.
 2. Open `VoxCPM TTS.app` once and generate a short script, then use Free memory
    and quit. Confirm the window's progress line and that the process is gone.
 3. Push only if Ernest asks. He merges `feature/voxcpm2-tts-macos` himself.

@@ -1,0 +1,17 @@
+Hello, and welcome to a quick test of this voice. If everything is working, you should hear one steady speaker from the first word to the last, with natural pauses and no clicks between sentences.
+
+Let's start simple. The quick brown fox jumps over the lazy dog. She sells seashells by the seashore. Red leather, yellow leather, red leather, yellow leather.
+
+Now for questions and feelings. Did you hear that? Wait, really? That's fantastic! Unfortunately, the coffee machine is broken again... so today might be a long day.
+
+Numbers are harder. On March 14, 2026, the team shipped version 2.5 of the app. It cost $1,299, saved about 40% of render time, and ran at 48 kHz on a 64 GB Mac mini. Call 555-0123 between 9:30 and 5:00, or email hello at example dot com.
+
+Some words change with meaning. I read the book yesterday, and now I read a new chapter every night. The wind was too strong to wind the sail. We must polish the Polish furniture before the guests arrive.
+
+Technical names test pronunciation: GitHub, FFmpeg, Playwright, HyperFrames, Claude Code, Metal, and an API that returns JSON over HTTPS.
+
+This next sentence is deliberately long, because the tool has to split it at a comma or a dash rather than at a full stop, and if the split works you should hear it continue smoothly — first through the clause about commas, then through this part about dashes, and finally, after a short breath, all the way to the end without the voice changing pitch, speed, or character.
+
+Finally, a short story. The old lighthouse keeper climbed the stairs one last time. He wound the clock, wiped the lens, and watched the ships slip past in the fog. "Not bad," he whispered, "not bad at all." Then the light came on, and the harbor was safe for another night.
+
+That's the end of the test. Thank you for listening.

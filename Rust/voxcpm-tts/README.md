@@ -11,7 +11,8 @@ Requires an Apple Silicon Mac running macOS 15 or later, Rust/Cargo, and enough
 unified memory for approximately 5 GB of weights plus inference scratch space.
 Rust 1.88 or newer is required; the verified development stack uses Rust 1.91.1. The native float32 path expands
 the weights to roughly 10 GB; 24–32 GB or more unified memory is recommended.
-The Mac mini M4 has not yet been tested. Weights run locally; model downloads
+A Mac mini M4 Pro (64 GB, macOS 26.6) was verified on 2026-11-09 with the native
+engine; see the [handoff](docs/HANDOFF.md). Weights run locally; model downloads
 come from Hugging Face on first use. Provide a clean recording of one speaker
 whose voice you are authorized to use.
 
