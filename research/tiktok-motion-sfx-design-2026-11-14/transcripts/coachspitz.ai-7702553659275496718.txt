@@ -1,0 +1,16 @@
+Claude Motion just dropped and unless your business is on a team plan, you can't use it.
+But it's just code making video.
+So here are four free ways to get the same thing.
+HyperFrames, open source from HeyGen.
+You describe the video, Claude writes it and it renders a real MP4.
+It's what I use for every reel on this page.
+Huashu Motion, it's basically an open source Claude Motion.
+It even writes its own soundtrack.
+Two tips.
+It's five days old, so I scanned it before installing and turn off the "Made with huashu" tag, or it brands every video.
+Remotion, the original video made with code, free if it's just you and Claude already knows it really well.
+And GSAP skills, not a video tool, a skill that teaches Claude how pros animate.
+So anything it makes moves smooth instead of cheesy.
+I put all 4 plus the exact prompt I use in one list.
+Follow and save this.
+Every link is in the caption.

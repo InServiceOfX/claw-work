@@ -1,0 +1,8 @@
+These are the top three websites that changed my life as a Claude user.
+The first one is motion.dev.
+It's a free animation library, and it's written so that AI can use them, so Claude adds smooth, beautiful transitions that actually work.
+Then there's anime.js.
+It lets you control exactly how things move, springs, timelines, and shapes that morph so your website stops looking like every other AI website with the same boring components.
+And then the shadcn charts.
+Just ask Claude to add a chart component and you get beautiful charts that match your design.
+If you want to stay at the cutting edge of AI, hit subscribe for more content like this!

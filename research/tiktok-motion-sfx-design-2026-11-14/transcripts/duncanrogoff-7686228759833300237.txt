@@ -1,0 +1,16 @@
+Stop building ugly front ends with Claude.
+There are five free repos that literally give it design skills.
+And here they are.
+First, Taste Skill.
+Built for one thing.
+Killing that AI-generated look.
+Next, UI UX Pro Max, one hundred twenty eight thousand stars.
+It gives Claude actual taste.
+Layout, typography, color, everything.
+Then Awesome Claude Design: sixty eight pre-built design systems you can drop in so nothing starts from a blank page.
+Number four, Design Motion Principles: layers in animation, transitions and easing curves so your builds actually move.
+The last one is wild: Design.md Chrome.
+Load up any site, click the extension and boom, you get the entire design system exported.
+And if you actually want to go deep on this stuff, I run Claude Code Club, where almost eight thousand of us are learning Claude Code and building and selling real things with it.
+That's where I share all of this first.
+So if you want the repo link plus access to the community, check my pinned comment for the link.

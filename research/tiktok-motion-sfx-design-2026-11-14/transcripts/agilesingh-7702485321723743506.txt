@@ -1,0 +1,11 @@
+Claude can now sound design your videos with real recorded sounds.
+It watches your render and finds every moment that needs a hit.
+Then it pulls real recordings from your sound library and drops each one on the exact frame.
+Your music and voice over stay untouched.
+It even tunes pitched sounds to the notes of your track.
+Picture a launch: a logo slam, 3 UI clicks, a whoosh on every cut.
+One catch: Claude can't hear, so it flags five moments for you to check from your phone.
+No library yet?
+It ships with 78 free UI sounds for anyone running ads.
+This is the upgrade I'd add.
+First, the tool is called Real SFX.
