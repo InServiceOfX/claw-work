@@ -6,6 +6,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+use claw_shorts::loudness;
 use claw_shorts::media;
 
 const BIN: &str = env!("CARGO_BIN_EXE_claw-shorts");
@@ -84,6 +85,8 @@ fn canvas_writes_a_self_contained_scene_and_matching_narration() {
 
     let narration = media::probe_duration_ms(&dir.path().join("scene/narration.wav")).unwrap();
     assert!(narration.abs_diff(total) < 60, "narration {narration} vs timeline {total}");
+    let level = loudness::measure_file(&dir.path().join("scene/narration.wav")).unwrap();
+    assert!((level.integrated_lufs - loudness::TARGET_LUFS).abs() <= 0.5, "{level:?}");
 }
 
 #[test]

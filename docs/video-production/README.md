@@ -12,8 +12,8 @@ not predicted income or a ranking by TikTok view counts.
 
 | Priority | Capability | Why it earns its place | Current deliverable |
 | --- | --- | --- | --- |
-| 1 | Transcript-derived cuts and reusable brand recipe | Repeated cuts/caption work across recorded demos; easy to inspect and revise | [transcript-video-edit](../../skills/transcript-video-edit/SKILL.md), [Rust claw-edit](../../Rust/claw-edit/README.md) |
-| 2 | Faceless coded explainers | Explains a product without filming or a per-clip generative-video service | [canvas-explainer](../../skills/canvas-explainer/SKILL.md), original scene/capture script |
+| 1 | Transcript-derived cuts and reusable brand recipe | Repeated cuts/caption work across recorded demos; easy to inspect and revise | [recording-cut mode](../../skills/claw-shorts/skills/claw-shorts/references/recording-cut.md) of `claw-shorts`, [Rust claw-edit](../../Rust/claw-edit/README.md) |
+| 2 | Faceless coded explainers | Explains a product without filming or a per-clip generative-video service | [canvas mode](../../skills/claw-shorts/skills/claw-shorts/references/canvas.md) of `claw-shorts`, original scene/capture script |
 | Fold into1 | Storyboard and brand/effects choices | Sarah's useful editorial idea; doesn't require a new CapCut integration | Included in transcript skill; no unverified connector |
 | Fold into1 | Script-tied effects and chat revisions | Adam's edit loop is the same production family | Effects contract in storyboard; actual effects need a renderer |
 | Defer | Custom CapCut automation | Project formats/adapters need independent validation; paid setup is not required for the first edit | Storyboard/EDL can be handed to an existing editor |
@@ -34,17 +34,16 @@ Detailed source notes: [research index](../../research/tiktok-skill-research-202
 
 ## Use the skills
 
-These are self-contained repository skill folders. Tell an agent to read the
-chosen SKILL.md by path now. For automatic discovery, explicitly install/copy
-the chosen folder using that harness's supported mechanism; no global skills,
-plugins, credentials or shared skill directories were modified by this work.
+Since 2026-11-14 both workflows are modes of the `claw-shorts` skill. Install it
+(with `short-form-strategy`) via `skills/install-shortform-skills.sh`, or tell an
+agent to read `skills/claw-shorts/skills/claw-shorts/SKILL.md` by path.
 
 Example requests:
 
-- “Use skills/transcript-video-edit/SKILL.md. Turn this local recording and its
+- “Use the claw-shorts skill in recording-cut mode. Turn this local recording and its
   timestamped transcript into a clean 30-second short. Prefer the final complete
   take of each line; show uncertain choices. Keep a clean master and captions.”
-- “Use skills/canvas-explainer/SKILL.md. Make a silent 15-second portrait explainer
+- “Use the claw-shorts skill in canvas mode. Make a silent 15-second portrait explainer
   of phrase alignment. Show the storyboard first, then render a local preview.”
 - On the other computer: “In claw-dj, follow docs/TONE_PLAY_AGENT_HANDOFF.md.
   Reproduce synthetic checks and prepare a dry-run score. No live playback.”
@@ -68,7 +67,7 @@ HyperFrames or a verified existing graphics path can handle that next pass.
 One takeaway -> beat script -> narration timing or explicit silent choice ->
 representative storyboard frames -> deterministic `renderFrame(t)` scene ->
 short motion preview -> bounded contact-sheet/fix loop -> full encode -> actual
-media checks -> review. Original local starter: `skills/canvas-explainer/assets/scene.html`.
+media checks -> review. Original local starter: `skills/claw-shorts/canvas/assets/scene.html`.
 
 The bundled Playwright capture script can render the starter directly. Use its
 reference instructions for project-local dependencies and an existing Chrome.

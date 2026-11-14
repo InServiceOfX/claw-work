@@ -253,6 +253,11 @@ impl<'a> Builder<'a> {
 
 /// Build the whole filter graph. `timings` must have one entry per scene.
 pub fn build(spec: &Spec, timings: &[SceneTiming]) -> FilterPlan {
+    build_with_audio(spec, timings, None)
+}
+
+/// [`build`], with `audio_post` applied to the joined narration.
+pub fn build_with_audio(spec: &Spec, timings: &[SceneTiming], audio_post: Option<&str>) -> FilterPlan {
     assert_eq!(spec.scenes.len(), timings.len(), "one timing per scene");
     let total = timeline::total_ms(timings);
     let mut b = Builder::new(&spec.style);
@@ -265,13 +270,27 @@ pub fn build(spec: &Spec, timings: &[SceneTiming]) -> FilterPlan {
         }
     }
     let video = format!("[0:v]{}[v]", b.filters.join(","));
-    let filter_complex = format!("{};{video}", audio_graph(timings, 1));
+    let filter_complex = format!("{};{video}", audio_graph_then(timings, 1, audio_post));
     FilterPlan { text_files: b.files, filter_complex, total_ms: total }
 }
 
 /// Filter-graph text that pads each scene's narration to its exact length and
 /// joins them into `[aout]`. Scene audio inputs start at input index `first_input`.
 pub fn audio_graph(timings: &[SceneTiming], first_input: usize) -> String {
+    audio_graph_then(timings, first_input, None)
+}
+
+/// Like [`audio_graph`], then runs the joined narration through `post` (for
+/// example loudness normalization) before it becomes `[aout]`.
+pub fn audio_graph_then(timings: &[SceneTiming], first_input: usize, post: Option<&str>) -> String {
+    let joined = audio_join(timings, first_input);
+    match post {
+        None => joined,
+        Some(post) => format!("{}[ajoin];[ajoin]{post}[aout]", joined.strip_suffix("[aout]").unwrap_or(&joined)),
+    }
+}
+
+fn audio_join(timings: &[SceneTiming], first_input: usize) -> String {
     let mut parts: Vec<String> = Vec::new();
     for (i, t) in timings.iter().enumerate() {
         let dur = timeline::secs(t.duration_ms());
@@ -323,6 +342,15 @@ mod tests {
         assert!(fc.contains("[a0][a1][a2][a3]concat=n=4:v=0:a=1[aout]"));
         assert!(fc.contains("[0:v]") && fc.ends_with("[v]"));
         assert_eq!(plan.total_ms, 3350 + 6350 + 5350 + 3350);
+    }
+
+    #[test]
+    fn audio_post_runs_on_the_joined_narration() {
+        let plain = build(&spec(), &timings()).filter_complex;
+        let post = build_with_audio(&spec(), &timings(), Some("volume=2")).filter_complex;
+        assert!(post.contains("[a0][a1][a2][a3]concat=n=4:v=0:a=1[ajoin];[ajoin]volume=2[aout]"), "{post}");
+        assert_eq!(post.matches("[aout]").count(), 1);
+        assert_eq!(plain, post.replace("[ajoin];[ajoin]volume=2[aout]", "[aout]"));
     }
 
     #[test]

@@ -8,6 +8,7 @@ use serde::Serialize;
 
 use crate::filters;
 use crate::kit;
+use crate::loudness::{self, Loudness, Normalization};
 use crate::media::{self, VideoInfo};
 use crate::spec::{self, Severity, Spec};
 use crate::text;
@@ -32,6 +33,8 @@ pub struct Report {
     pub posting_kit_md: PathBuf,
     pub total_ms: u64,
     pub scene_audio: Vec<PathBuf>,
+    /// Measured on the finished `short.mp4`.
+    pub loudness: Loudness,
 }
 
 #[derive(Debug, Serialize)]
@@ -42,6 +45,12 @@ struct Verification {
     expected_duration_ms: u64,
     has_audio: bool,
     full_decode_ok: bool,
+    /// Narration before normalization, then the finished file.
+    narration_loudness: Loudness,
+    /// True when the voice's peaks needed the limiter step to reach the target.
+    limiter_used: bool,
+    output_loudness: Loudness,
+    target_lufs: f64,
     note: &'static str,
 }
 
@@ -144,7 +153,8 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
     let wavs = narrate(spec, opts)?;
     let audio_ms: Vec<u64> = wavs.iter().map(|w| media::probe_duration_ms(w)).collect::<Result<_, _>>()?;
     let timings = timeline::build(&audio_ms, spec.style.pad_ms);
-    let plan = filters::build(spec, &timings);
+    let normalization = normalize_narration(&wavs, &timings)?;
+    let plan = filters::build_with_audio(spec, &timings, Some(&normalization.filter));
 
     let text_dir = opts.work_dir.join("text");
     if text_dir.exists() {
@@ -186,6 +196,7 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
 
     let info: VideoInfo = media::probe(&video)?;
     let decode = media::decode_check(&video);
+    let output_loudness = loudness::measure_file(&video)?;
     let verification = Verification {
         width: info.width,
         height: info.height,
@@ -193,7 +204,11 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
         expected_duration_ms: plan.total_ms,
         has_audio: info.has_audio,
         full_decode_ok: decode.is_ok(),
-        note: "Structure only. Listen to the audio and view the contact sheet before posting.",
+        narration_loudness: normalization.measured,
+        limiter_used: normalization.limited,
+        output_loudness,
+        target_lufs: loudness::TARGET_LUFS,
+        note: "Structure and measured loudness only. Listen to the audio and view the contact sheet before posting.",
     };
     write(
         &out_dir.join("verification.json"),
@@ -208,6 +223,10 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
     }
     if !info.has_audio {
         return Err("output has no audio stream".into());
+    }
+    let loud = loudness::problems(&output_loudness);
+    if !loud.is_empty() {
+        return Err(format!("output loudness is off target: {}", loud.join("; ")));
     }
 
     let contact_sheet = contact_sheet(&video, &timings, &opts.work_dir, &out_dir)?;
@@ -226,7 +245,15 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
         posting_kit_md,
         total_ms: plan.total_ms,
         scene_audio: wavs,
+        loudness: output_loudness,
     })
+}
+
+/// Choose the loudness normalization for the joined, padded narration,
+/// measured exactly as the render will hear it.
+pub fn normalize_narration(wavs: &[PathBuf], timings: &[SceneTiming]) -> Result<Normalization, String> {
+    let inputs: Vec<&Path> = wavs.iter().map(PathBuf::as_path).collect();
+    loudness::plan(|pre| loudness::measure_graph(&inputs, &filters::audio_graph_then(timings, 0, pre)))
 }
 
 /// One frame from the middle of each scene, side by side. A reviewer's first

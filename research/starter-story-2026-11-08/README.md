@@ -82,7 +82,7 @@ Fields: **What** · **Revenue (founder's claim)** · **Customers from** · **Pri
 
 ## Relevance to claw-shorts
 
-The Fastlane and Vugola patterns are directly relevant to the [claw-shorts Launch Kit](../../Skills/claw-shorts/README.md) merged in [PR #9](https://github.com/InServiceOfX/claw-work/pull/9): local, pay-once short-form video tooling for dev-tool builders is a validated market segment.
+The Fastlane and Vugola patterns are directly relevant to the [claw-shorts Launch Kit](../../skills/claw-shorts/README.md) merged in [PR #9](https://github.com/InServiceOfX/claw-work/pull/9): local, pay-once short-form video tooling for dev-tool builders is a validated market segment.
 
 ## Limitations
 

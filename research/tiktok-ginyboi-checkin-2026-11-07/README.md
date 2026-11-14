@@ -8,7 +8,7 @@
 | Video | Title | Duration | Views (at ingest) |
 |-------|-------|----------|-------------------|
 | [7703008350983769375](videos/ginyboi-7703008350983769375/README.md) | How editors & creators should add captions | 33s | ~10.3k |
-| [7704173307838352671](videos/ginyboi-7704173307838352671/README.md) | If you wanna make more money as an editor | 50s | ~12.1k |
+| [7704173307838352671](videos/ginyboi-7704173307838352671/README.md) | How creators should post every day | 49s | ~3.1k |
 
 ## Themes
 
@@ -21,13 +21,18 @@ The first video argues that captions are part of storytelling, not just accessib
 
 Workflow: finish the video edit first, then deliberately pick caption style.
 
-### 2. Editor pricing strategy
+### 2. Posting every day with a job
 
-The second video covers pricing positioning for video editors:
+The second video answers "How do I post consistently? I'm too busy working":
 
-- Lowest-price positioning attracts bad clients (demanding, constant revisions)
-- Charge a rate where clients have something to lose if they don't use the work
-- Mid-tier pricing naturally filters clients who value the service
+- Minimal editing: at most 1 hour a day; talking head, B-roll and captions, no motion graphics
+- Batch: write and film the week's videos in 2-3 hours on Saturday
+- Still too busy: hire an editor for less than your own hourly value (his example: $50/hr vs $25-30/hr)
+
+> Correction (2026-11-14): this section and the table row first described an
+> editor-pricing video ("If you wanna make more money as an editor", ~12.1k
+> views). That does not match the archived video, transcript or screenshots,
+> which are the posting-cadence video above.
 
 ## Related research
 

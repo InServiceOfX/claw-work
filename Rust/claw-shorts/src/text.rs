@@ -118,6 +118,30 @@ pub fn contains_term(haystack: &str, term: &str) -> bool {
     false
 }
 
+/// Split spoken text into sentences at `.`, `!` or `?` followed by whitespace
+/// or the end. "1.49x" and "github.com" stay whole because no space follows
+/// their dot. Each sentence is trimmed; empty ones are dropped.
+pub fn sentences(text: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    let mut current = String::new();
+    let mut chars = text.chars().peekable();
+    while let Some(c) = chars.next() {
+        current.push(c);
+        if matches!(c, '.' | '!' | '?') && chars.peek().is_none_or(|n| n.is_whitespace()) {
+            let sentence = current.trim();
+            if !sentence.is_empty() {
+                out.push(sentence.to_string());
+            }
+            current.clear();
+        }
+    }
+    let rest = current.trim();
+    if !rest.is_empty() {
+        out.push(rest.to_string());
+    }
+    out
+}
+
 /// FNV-1a 64-bit, used to name cached audio so a changed script or voice
 /// never reuses a stale file.
 pub fn fnv64(parts: &[&str]) -> u64 {
@@ -134,6 +158,15 @@ pub fn fnv64(parts: &[&str]) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn sentences_split_on_terminal_punctuation_only() {
+        assert_eq!(
+            sentences("Is it real? Let's find out.  It ran 1.49x on github.com today! Done"),
+            vec!["Is it real?", "Let's find out.", "It ran 1.49x on github.com today!", "Done"]
+        );
+        assert!(sentences("   ").is_empty());
+    }
 
     #[test]
     fn rejects_glyphs_the_font_lacks() {

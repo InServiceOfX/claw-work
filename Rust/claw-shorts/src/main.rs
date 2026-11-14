@@ -67,7 +67,7 @@ enum Command {
         strict: bool,
     },
     /// Prepare the canvas path: narration, loudness, captions data and a
-    /// self-contained scene.html for skills/canvas-explainer's renderer.
+    /// self-contained scene.html for the skills/claw-shorts/canvas renderer.
     Canvas {
         #[arg(long)]
         spec: PathBuf,
@@ -201,7 +201,7 @@ fn run(cli: Cli) -> Result<(), String> {
             println!("narration:   {}", report.narration_wav.display());
             println!("timeline:    {}", report.timeline_json.display());
             println!("length:      {seconds:.2} s at {} fps\n", report.fps);
-            println!("Next: render the frames with the canvas-explainer renderer, then mux.");
+            println!("Next: render the frames with skills/claw-shorts/canvas/scripts/render.mjs, then mux.");
             println!("  render.mjs scene.html NEW_DIR {:.2} {}", seconds + 0.05, report.fps);
             println!("  claw-shorts mux --video NEW_DIR/video.mp4 --audio narration.wav --output short.mp4 --timeline timeline.json");
             Ok(())

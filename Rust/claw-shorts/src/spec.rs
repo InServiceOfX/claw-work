@@ -103,6 +103,11 @@ pub struct Engagement {
 
 pub const ENGAGEMENT_TOKENS: &[&str] = &["like", "comment", "save", "share"];
 
+/// A sentence with more words than this is "long" for the rhythm check.
+pub const LONG_SENTENCE_WORDS: usize = 12;
+/// A sentence with at most this many words is a "short" rhythm beat.
+pub const SHORT_SENTENCE_WORDS: usize = 5;
+
 /// Openers that waste the first three seconds. Matched at the start of the
 /// first scene's narration or on-screen text.
 pub const GREETINGS: &[&str] = &[
@@ -344,9 +349,44 @@ impl Spec {
             self.validate_scene(index, scene, &mut issues);
         }
         self.hook_and_engagement(&mut issues);
+        self.rhythm_warnings(&mut issues);
 
         self.fact_or_hype_warnings(&mut issues);
         issues
+    }
+
+    /// Script rhythm (ginyboi, crediting @kallaway): uniform long sentences
+    /// sound flat, and TTS flattens them further. Put a line of
+    /// `SHORT_SENTENCE_WORDS` or fewer between long ones. Sentences run across
+    /// scene boundaries, in narration order.
+    fn rhythm_warnings(&self, issues: &mut Vec<Issue>) {
+        let spoken: Vec<String> =
+            self.scenes.iter().flat_map(|s| text::sentences(&s.narration)).collect();
+        let words: Vec<usize> = spoken.iter().map(|s| s.split_whitespace().count()).collect();
+        let back_to_back: Vec<usize> = words
+            .windows(2)
+            .enumerate()
+            .filter(|(_, pair)| pair.iter().all(|w| *w > LONG_SENTENCE_WORDS))
+            .map(|(i, _)| i)
+            .collect();
+        if let Some(&first) = back_to_back.first() {
+            issues.push(Issue::warn(format!(
+                "{} pair(s) of long sentences run back to back, first {:?} then {:?} ({} and {} words); \
+                 put a line of {SHORT_SENTENCE_WORDS} words or fewer between them",
+                back_to_back.len(),
+                spoken[first],
+                spoken[first + 1],
+                words[first],
+                words[first + 1]
+            )));
+        }
+        if spoken.len() >= 4 && !words.iter().any(|w| *w <= SHORT_SENTENCE_WORDS) {
+            issues.push(Issue::warn(format!(
+                "no sentence of {SHORT_SENTENCE_WORDS} words or fewer in {} sentences; \
+                 a short line such as a question or a twist breaks up the rhythm",
+                spoken.len()
+            )));
+        }
     }
 
     fn validate_scene(&self, index: usize, scene: &Scene, issues: &mut Vec<Issue>) {
@@ -595,6 +635,47 @@ mod tests {
     fn a_complete_spec_has_no_errors_or_warnings() {
         let spec = good();
         assert_eq!(spec.validate(), vec![]);
+    }
+
+    fn warnings(spec: &Spec) -> Vec<String> {
+        spec.validate()
+            .into_iter()
+            .filter(|i| i.severity == Severity::Warn)
+            .map(|i| i.message)
+            .collect()
+    }
+
+    const LONG_A: &str = "Eight seconds of a public domain voice went into the model on my laptop today.";
+    const LONG_B: &str = "Twenty one seconds of speech came out of it in about thirty two seconds flat.";
+
+    #[test]
+    fn back_to_back_long_sentences_warn_across_scenes() {
+        let mut spec = good();
+        spec.scenes[0].narration = format!("No cloud. {LONG_A}");
+        spec.scenes[1].narration = LONG_B.into();
+        let warns = warnings(&spec).join("\n");
+        assert!(warns.contains("1 pair(s) of long sentences"), "{warns}");
+        assert!(warns.contains("15 and 15 words"), "{warns}");
+        assert!(errors(&spec).is_empty(), "rhythm is advice, never an error");
+    }
+
+    #[test]
+    fn a_short_line_between_long_sentences_clears_the_warning() {
+        let mut spec = good();
+        spec.scenes[0].narration = format!("No cloud. {LONG_A}");
+        spec.scenes[1].narration = format!("But was it real? {LONG_B}");
+        assert!(!warnings(&spec).iter().any(|w| w.contains("long sentences")));
+    }
+
+    #[test]
+    fn a_script_with_no_short_beat_warns() {
+        let mut spec = good();
+        let medium = "This sentence has exactly eight words in it.";
+        for scene in &mut spec.scenes {
+            scene.narration = medium.into();
+        }
+        let warns = warnings(&spec).join("\n");
+        assert!(warns.contains("no sentence of 5 words or fewer in 4 sentences"), "{warns}");
     }
 
     #[test]

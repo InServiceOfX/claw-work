@@ -94,7 +94,7 @@ Frames were chosen where a new tip or on-screen demo starts, using the transcrip
 
 This is *directly* the faceless stills pipeline:
 
-1. **Asset pool:** local / CC0 stills, app screenshots, icons, the "B-roll space" from ginyboi's [5-step video](../ginyboi-7678511193039981854/README.md).
+1. **Asset pool:** local / CC0 stills, app screenshots, icons, the "B-roll space" from ginyboi's [5-step video](../../../../docs/shortform/tiktok/ginyboi-7678511193039981854/README.md).
 2. **Ken Burns automation (Remotion / FFmpeg):** for each still, randomize `{scale: 1.0→1.08 | 1.08→1.0, xPan: ±4%}` over 3–5s. Never hold a fully static frame >1.5s.
 3. **Camera shutter SFX:** on every still-to-still cut, mix a local `camera-shutter.wav` (Freesound / CC0) at −12 to −18 LUFS under VO.
 4. **Portrait eye-line alignment:** MediaPipe / face-detect → crop so eye midpoint hits a fixed Y (upper-third). Reject or re-crop cuts that jump eye-line >5% of frame height.
@@ -117,7 +117,7 @@ This is *directly* the faceless stills pipeline:
 
 ## Related
 
-- [ginyboi 5-step pipeline](../ginyboi-7678511193039981854/README.md) — B-roll space concept
+- [ginyboi 5-step pipeline](../../../../docs/shortform/tiktok/ginyboi-7678511193039981854/README.md) — B-roll space concept
 - [ginyboi jump-cut masking](../ginyboi-7670579415201500447/README.md) — audio overlap + B-roll coverage
 
 ## Transcript

@@ -108,7 +108,7 @@ This is *even more important* for faceless VO pipelines than for talking heads:
 
 ## Related
 
-- [ginyboi 5-step pipeline](../ginyboi-7678511193039981854/README.md) — the full editing workflow
+- [ginyboi 5-step pipeline](../../../../docs/shortform/tiktok/ginyboi-7678511193039981854/README.md) — the full editing workflow
 - [ginyboi stills B-roll](../ginyboi-7678120287228939550/README.md) — Ken Burns, shutter SFX, eye-line
 
 ## Transcript

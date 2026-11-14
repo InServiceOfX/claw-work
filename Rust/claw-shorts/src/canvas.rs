@@ -1,5 +1,5 @@
 //! Canvas path: turn a spec plus measured narration into one self-contained
-//! `scene.html` for `skills/canvas-explainer`'s renderer.
+//! `scene.html` for the canvas renderer in `skills/claw-shorts/canvas/`.
 //!
 //! The scene draws every frame from `window.renderFrame(t)` using data computed
 //! here: real narration loudness per frame, the reference clip's waveform, and
@@ -13,6 +13,7 @@ use std::process::Command;
 use serde::{Deserialize, Serialize};
 
 use crate::filters;
+use crate::loudness;
 use crate::media;
 use crate::render::{self, RenderOptions};
 use crate::spec::{self, Spec};
@@ -392,6 +393,7 @@ pub fn prepare(spec: &Spec, opts: &RenderOptions, words_path: Option<&Path>) -> 
     fs::create_dir_all(&opts.output_dir).map_err(|e| format!("cannot create output dir: {e}"))?;
     let out_dir = fs::canonicalize(&opts.output_dir).map_err(|e| e.to_string())?;
     let narration_wav = out_dir.join("narration.wav");
+    let loudnorm = render::normalize_narration(&wavs, &timings)?.filter;
     let mut ffmpeg = Command::new("ffmpeg");
     ffmpeg.args(["-y", "-v", "error"]);
     for wav in &wavs {
@@ -399,7 +401,7 @@ pub fn prepare(spec: &Spec, opts: &RenderOptions, words_path: Option<&Path>) -> 
     }
     ffmpeg
         .arg("-filter_complex")
-        .arg(filters::audio_graph(&timings, 0))
+        .arg(filters::audio_graph_then(&timings, 0, Some(&loudnorm)))
         .args(["-map", "[aout]", "-c:a", "pcm_s16le"])
         .arg(&narration_wav);
     media::run(&mut ffmpeg, "ffmpeg narration concat")?;
@@ -484,7 +486,14 @@ pub fn mux(video: &Path, audio: &Path, output: &Path, timeline_path: Option<&Pat
     if !info.has_audio {
         return Err("muxed output has no audio".into());
     }
-    let mut notes = vec![format!("{}x{}, {} ms, audio present, full decode ok", info.width, info.height, info.duration_ms)];
+    let measured = loudness::measure_file(output)?;
+    let mut notes = vec![format!(
+        "{}x{}, {} ms, audio present, full decode ok, {:.1} LUFS / {:.1} dBTP (target {} LUFS)",
+        info.width, info.height, info.duration_ms, measured.integrated_lufs, measured.true_peak_dbtp, loudness::TARGET_LUFS
+    )];
+    for problem in loudness::problems(&measured) {
+        notes.push(format!("warning: {problem}; re-run `claw-shorts canvas` to normalize the narration"));
+    }
     if let Some(path) = timeline_path {
         let json = fs::read_to_string(path).map_err(|e| format!("cannot read {}: {e}", path.display()))?;
         let timings: Vec<SceneTiming> = parse_timings(&json)?;

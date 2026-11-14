@@ -26,11 +26,19 @@ and [public/privacy boundary](PRIVACY.md).
   local GGUF open-weight models natively on Apple Silicon (Metal), resolved from the
   HuggingFace hub cache, behind OpenAI- and Anthropic-compatible APIs. Includes the
   `llama-cpp-macos` skill for connecting Claude Code, Codex, Grok Build, Hermes and pi.
-- [claw-shorts](Skills/claw-shorts/README.md): create 9:16 vertical short-form videos
-  (TikTok, Reels, Shorts) from raw takes, screen recordings, or HTML/Canvas animations.
-  Non-destructive workflow with paced captions, safe-zone margins, and deterministic
-  output naming. Includes the `claw-shorts` skill for Claude Code, Codex, Grok Build,
-  Hermes and Pi.
+- Short-form video (faceless TikTok, Reels, Shorts), moved here from Monoclaw on
+  2026-11-14. Two skills, installed with `skills/install-shortform-skills.sh` for
+  Claude Code, Codex, Grok Build, Hermes and Pi:
+  [`short-form-strategy`](skills/short-form-strategy/SKILL.md) plans hooks,
+  retention, engagement and script rhythm;
+  [`claw-shorts`](skills/claw-shorts/README.md) produces the video. Its tools:
+  [`Rust/claw-shorts`](Rust/claw-shorts/README.md) (voiced explainers with
+  validated copy, canvas path, -14 LUFS audio),
+  [`Rust/shortform-video`](Rust/shortform-video/README.md) (stock B-roll and Ken
+  Burns photos, TTS, burned captions), [`Rust/claw-edit`](Rust/claw-edit/README.md)
+  (transcript cuts) and the canvas renderer. Research notes and the ingest tool:
+  [`docs/shortform/`](docs/shortform/README.md),
+  [`Scripts/shortform-ingest/`](Scripts/shortform-ingest/README.md).
 
 The Lean toolkit distinguishes proofs about mathematical models from verification
 that source code implements those models. Read its verification status before relying
@@ -50,8 +58,8 @@ local harness may merge and ordinary non-force push to master when explicitly as
 ## Research
 
 - [Video production skills and workflows](docs/video-production/README.md):
-  six-video breakdown, priority ranking, transcript editing and canvas-explainer
-  skills, plus a local [Rust cut-list helper](Rust/claw-edit/README.md).
+  six-video breakdown, priority ranking, transcript editing and canvas modes (now
+  part of `claw-shorts`), plus a local [Rust cut-list helper](Rust/claw-edit/README.md).
 
 - [TikTok skill research (2026-11-05)](research/tiktok-skill-research-2026-11-05/README.md):
   parsed six public TikToks for Claude / AI-edit workflow notes, captions, and screenshots.

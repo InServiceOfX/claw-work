@@ -48,7 +48,7 @@ A Day-N web-design close reel that doubles as a **B-roll capture recipe**. The v
 | 0:50 | **$250** spoken (maintenance) |
 | 0:56 | **Day 5: $1,500** (end card — inconsistent with $1,550 open) |
 
-**Note on figure inconsistency:** The open card shows $1,550, the spoken math is $1,300 + $250 = $1,550, but the end card shows $1,500. This is already documented in [build-in-public-close-reel.md](../../../../shared/openclaw/skills/short-form-viral-content/references/build-in-public-close-reel.md): "Do not copy the broken number."
+**Note on figure inconsistency:** The open card shows $1,550, the spoken math is $1,300 + $250 = $1,550, but the end card shows $1,500. This is already documented in [build-in-public-close-reel.md](../../../../skills/short-form-strategy/references/build-in-public-close-reel.md): "Do not copy the broken number."
 
 ## Screenshots
 
@@ -130,7 +130,7 @@ The talking-head local-business POV is not our primary mode, but the structure t
 ## Related
 
 - [REFERENCE_CREATORS.md](../../REFERENCE_CREATORS.md) — @a13x_duke account notes
-- [build-in-public-close-reel.md](../../../../shared/openclaw/skills/short-form-viral-content/references/build-in-public-close-reel.md) — close-reel structure, dollar inconsistency caveat
+- [build-in-public-close-reel.md](../../../../skills/short-form-strategy/references/build-in-public-close-reel.md) — close-reel structure, dollar inconsistency caveat
 
 ## Transcript
 

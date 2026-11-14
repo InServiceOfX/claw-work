@@ -7,10 +7,9 @@ renders the video, verifies it, and writes a contact sheet and a posting kit.
 
 It **never uploads or posts anything**. Posting is a separate, manual step.
 
-This is the Rust successor to the planning half of the Python
-`Skills/claw-shorts` launch kit. The Python kit's other templates
-(`demo_zoom`, `before_after`, `readme_scroll`, and so on) are not ported and
-keep working.
+This is the Rust successor to the Python launch kit, which was retired on
+2026-11-14. The Python templates in `skills/claw-shorts/scripts/` (`demo_zoom`,
+`before_after`, `readme_scroll`, and so on) are not ported and keep working.
 
 ## Why it exists: lessons from the Python launch kit
 
@@ -94,7 +93,7 @@ claw-shorts canvas --spec short.json --work work --output prep --strict
 .venv/bin/python scripts/words.py prep/narration.wav words.json
 # 3. Rebuild the scene with the captions data (narration is cached).
 claw-shorts canvas --spec short.json --work work --output scene --words words.json --strict
-# 4. Render frames with skills/canvas-explainer's renderer (856 frames took 2 min on an M5).
+# 4. Render frames with skills/claw-shorts/canvas/scripts/render.mjs (856 frames took 2 min on an M5).
 render.mjs scene/scene.html frames SECONDS 30
 # 5. Join video and narration, verify, and write a contact sheet.
 claw-shorts mux --video frames/video.mp4 --audio scene/narration.wav \
@@ -120,12 +119,16 @@ cached `mlx-community/whisper-large-v3-turbo-asr-fp16` offline.
 | Hook: readable muted | An on-screen hook over 8 words is a warning. |
 | Hook: motion in the first seconds | The canvas scene animates a waveform from frame 0. |
 | Retention | A scene held over 10 s is a warning from `canvas`. |
+| Script rhythm | Two sentences over 12 words back to back, or 4+ sentences with none of 5 words or fewer, is a warning. Sentences run across scenes. TTS flattens prosody, so short lines (a question, a twist) do the work a human read would. |
+| Loudness | Every render is normalized to -14 LUFS integrated, -1 dBTP, in two passes (measure, then linear `loudnorm`). `render` fails if the finished file is more than 1 LU off or clips; `verification.json` records narration and output loudness. The canvas path normalizes `narration.wav`, and `mux` reports the final level. |
 | Close reel: one real number | `scoreboard` appears from about 1.4 s and returns on the end card. Use the same numbers in narration, terminal output and caption. |
 | Engagement | No `engagement` device is a warning. A device must name a token (`like`, `comment`, `save`, `share`); its prompt appears on the end card and its pinned comment in the posting kit. |
 | Fact-or-hype | A visible URL, a number, a verdict and a disclosure are checked as warnings; superlatives need evidence. |
 
 Sources are credited by name, not linked: the hook, retention and engagement
 framework follows Noe Murillo's two "Successful Content Creator" videos, the
+rhythm and loudness rules follow @ginyboi (rhythm credited to @kallaway; see
+`skills/short-form-strategy/references/creator-lessons.md`), the
 scoreboard and close-reel shape follows an a13x_duke build-in-public reel, and the
 claim-source-demo-number-verdict structure follows @itstundealao's "Fact or Hype?"
 videos (see `research/tiktok-itstundealao-2026-11-06/`). Their performance figures
@@ -141,7 +144,7 @@ in a real edit.
 
 ## Design notes
 
-The layout follows the checklist in `skills/canvas-explainer`: one idea per
+The layout follows the canvas checklist (`skills/claw-shorts/skills/claw-shorts/references/canvas.md`): one idea per
 beat, a limited palette, safe margins (content stays 90 px from the sides and
 clear of the bottom 420 px where platform buttons sit), a contact sheet to
 inspect, and timing taken from measured audio. The copy structure follows
@@ -149,7 +152,7 @@ inspect, and timing taken from measured audio. The copy structure follows
 a testable claim, a visible source, a live run, a measured result, a verdict.
 That research notes correlation, not causation, with views.
 
-The FFmpeg path needs no browser. The canvas path uses `canvas-explainer`'s own
+The FFmpeg path needs no browser. The canvas path uses the canvas renderer in `skills/claw-shorts/canvas/`, its own
 renderer (Node and Playwright).
 
 ## Limits

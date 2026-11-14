@@ -24,7 +24,7 @@ Auto-captions (cleaned spoken text) live in `transcripts/`. Chosen stills (720px
 
 ## Suggested uses
 
-- **Motion catalog ledger.** Encode `10. Motion/OPPORTUNITIES.md` + `ledger.csv` pattern in `Skills/claw-shorts` so each batch run pitches missing templates before building.
+- **Motion catalog ledger.** Encode `10. Motion/OPPORTUNITIES.md` + `ledger.csv` pattern in `skills/claw-shorts` so each batch run pitches missing templates before building.
 - **Style interview prompt.** Add `style.md` skill (cuts, fonts, colors, pacing) to any editing workflow—CapCut-free via Remotion or transcript-driven FFmpeg.
 - **Outreach gates.** Enforce `body_words <= 90`, `subject_chars < 30`, Tue/Wed schedule, max 2 follow-ups in cold-email agent prompts.
 

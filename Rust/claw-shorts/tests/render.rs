@@ -5,6 +5,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+use claw_shorts::loudness;
 use claw_shorts::media;
 use claw_shorts::render::{self, RenderOptions};
 use claw_shorts::spec;
@@ -84,6 +85,15 @@ fn renders_verifies_and_writes_companions() {
     assert!(width >= 4 * 360, "contact sheet is {width} wide");
     let verification = fs::read_to_string(dir.path().join("out/verification.json")).unwrap();
     assert!(verification.contains("\"full_decode_ok\": true"), "{verification}");
+
+    // The sine "narration" starts far from -14 LUFS (FFmpeg's sine is -18 dBFS
+    // peak); the render must land on target regardless.
+    assert!(report.loudness.integrated_lufs.is_finite());
+    assert!((report.loudness.integrated_lufs - loudness::TARGET_LUFS).abs() <= 0.5, "{:?}", report.loudness);
+    assert!(report.loudness.true_peak_dbtp < 0.0, "{:?}", report.loudness);
+    let independent = loudness::measure_file(&report.video).unwrap();
+    assert!((independent.integrated_lufs - report.loudness.integrated_lufs).abs() < 0.05);
+    assert!(verification.contains("\"output_loudness\"") && verification.contains("\"narration_loudness\""), "{verification}");
 }
 
 #[test]

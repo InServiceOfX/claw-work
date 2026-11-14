@@ -10,6 +10,7 @@ pub mod brief;
 pub mod canvas;
 pub mod filters;
 pub mod kit;
+pub mod loudness;
 pub mod media;
 pub mod render;
 pub mod spec;
