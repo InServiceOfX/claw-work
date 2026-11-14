@@ -1059,6 +1059,101 @@
       "sha256": "8ae76f7d2d844eefe4cdaf50e2ad29767bb447da5ea4b48809717136a33cccd2",
       "max_bytes": 300000,
       "note": "YouTube screenshot (1920x1080) - Matthew Berman WSP video 24:30 Gemma negative"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/agilesingh/01-claude-sound-design-title.jpg": {
+      "sha256": "ce0af310968c0a57c5c853721596b737331b3c453ee7224c7d96c7596ef1dee7",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @agilesingh Real SFX title card"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/agilesingh/02-sfx-placed-on-timeline.jpg": {
+      "sha256": "b04400049cb8e8a167c0e1f43573a29e7f9fdb8f312c4fcff5ebff6b91ee0dc9",
+      "max_bytes": 40960,
+      "note": "Public TikTok screenshot - @agilesingh SFX on timeline"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/agilesingh/03-pitched-sounds-tuned-to-track.jpg": {
+      "sha256": "75f3f4b1ee227f997b609ccc4f9991ba190735b1c641d578d0b580fcc24626bd",
+      "max_bytes": 32768,
+      "note": "Public TikTok screenshot - @agilesingh pitched sounds tuned"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/agilesingh/04-logo-slam-ui-clicks.jpg": {
+      "sha256": "dadd0cf2231b068180c6c765e9531e7568c8a53e07e0b119e29806c015a80202",
+      "max_bytes": 32768,
+      "note": "Public TikTok screenshot - @agilesingh logo slam UI clicks"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/agilesingh/05-real-sfx-name-card.jpg": {
+      "sha256": "4119679175472694ba87eb19892e117b6179c80ed8b4c079f13477f42ad2355d",
+      "max_bytes": 53248,
+      "note": "Public TikTok screenshot - @agilesingh Real SFX name card"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/coachspitz.ai/01-four-free-ways.jpg": {
+      "sha256": "826b026330cea9ad18b903785d95c76a634532387b762ccb6220612375180af1",
+      "max_bytes": 57344,
+      "note": "Public TikTok screenshot - @coachspitz.ai 4 free ways title"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/coachspitz.ai/02-hyperframes-apache-2.jpg": {
+      "sha256": "6fad30227618b47341c80a8792faa0c51d1ed309fe7c5c90bbff3f84180b0b09",
+      "max_bytes": 73728,
+      "note": "Public TikTok screenshot - @coachspitz.ai HyperFrames Apache-2.0"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/coachspitz.ai/03-huashu-motion-mit-signature-toggle.jpg": {
+      "sha256": "87e57417577e13e5f8f66a50718219a1a3dfce46353897a326a294b5855bde50",
+      "max_bytes": 69632,
+      "note": "Public TikTok screenshot - @coachspitz.ai huashu-motion MIT"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/coachspitz.ai/04-remotion-free-if-just-you.jpg": {
+      "sha256": "733c71e72c946283a40fccf37c9c5311793f02f2de535c443c6aadec950f4b31",
+      "max_bytes": 69632,
+      "note": "Public TikTok screenshot - @coachspitz.ai Remotion free tier"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/coachspitz.ai/05-gsap-skills-official-mit.jpg": {
+      "sha256": "56d82550b34e8e9dc0ad3751e0baad35ce3b144bf59addb5a2d52f595f4317e7",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot - @coachspitz.ai GSAP skills MIT"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/duncanrogoff/01-taste-skill.jpg": {
+      "sha256": "d2f6a55fc47418f424d7bcfe2b3155e2ee7f6e38889ea36dd542f4d126339fa7",
+      "max_bytes": 24576,
+      "note": "Public TikTok screenshot - @duncanrogoff Taste Skill"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/duncanrogoff/02-ui-ux-pro-max-repo-stats.jpg": {
+      "sha256": "dcd5945b2627b281c12ce35bf0e10ec7807849e76f86cce3c46111c217966900",
+      "max_bytes": 73728,
+      "note": "Public TikTok screenshot - @duncanrogoff UI UX Pro Max stats"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/duncanrogoff/03-getdesign-md-design-systems.jpg": {
+      "sha256": "582e17803286476e42d0242d7f6221177a30db779d5a1d3541d4eacf4ef1ad76",
+      "max_bytes": 69632,
+      "note": "Public TikTok screenshot - @duncanrogoff getdesign.md"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/duncanrogoff/04-kylezantos-design-motion-principles.jpg": {
+      "sha256": "4b12de750674018f9fb4bcd46074fa36a26d0ba704a9db4d063e30f164978dd8",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot - @duncanrogoff Design Motion Principles"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/duncanrogoff/05-design-md-chrome-extension.jpg": {
+      "sha256": "6a24facc45ee484c148a8fddb94e3ff1a3e796a542d71172291324a10ee6aea2",
+      "max_bytes": 57344,
+      "note": "Public TikTok screenshot - @duncanrogoff Design.md Chrome"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/jackroberts____/01-motion-dev.jpg": {
+      "sha256": "c8bf0d7fa3013d16dcd8c60efb9ec4d48850b1629b8a68d55300e6561427737f",
+      "max_bytes": 81920,
+      "note": "Public TikTok screenshot - @jackroberts____ motion.dev"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/jackroberts____/02-animejs.jpg": {
+      "sha256": "d82e26eb51e9ed43b4612a96a1ac4e47153b27b6aebb48d61e369b012001fc16",
+      "max_bytes": 73728,
+      "note": "Public TikTok screenshot - @jackroberts____ anime.js"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/jackroberts____/03-shadcn-charts.jpg": {
+      "sha256": "d79f40661b0fe60a1409159b327062179edacec243f5b13f00b1f1ad26dbd845",
+      "max_bytes": 73728,
+      "note": "Public TikTok screenshot - @jackroberts____ shadcn charts"
+    },
+    "research/tiktok-motion-sfx-design-2026-11-14/screenshots/jackroberts____/04-chart-matching-design.jpg": {
+      "sha256": "c6e477c76cca87278dd9f3e903a242e596c2b9e717dfd6f721594449598d5329",
+      "max_bytes": 69632,
+      "note": "Public TikTok screenshot - @jackroberts____ chart matching design"
     }
   }
 }
