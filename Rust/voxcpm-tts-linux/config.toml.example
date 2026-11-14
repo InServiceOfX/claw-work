@@ -1,0 +1,23 @@
+# Copy to ~/.config/voxcpm-tts/config.toml (or point VOXCPM_TTS_CONFIG at your copy)
+# and edit for this machine. The real file holds your absolute paths: never commit it.
+# Precedence: --model-dir flag > VOXCPM_TTS_* environment variables > this file.
+
+# Absolute path of the git-cloned weights (the directory that contains
+# config.json, tokenizer.json and model-0000*.safetensors):
+#   git lfs install
+#   git clone https://huggingface.co/mlx-community/VoxCPM2-bf16 /your/absolute/path/VoxCPM2-bf16
+model_dir = "/absolute/path/to/VoxCPM2-bf16"
+
+# "cuda" (NVIDIA GPU, default) or "cpu" (works anywhere, much slower).
+device = "cuda"
+
+# CUDA ordinal as the CUDA runtime numbers it (fastest GPU first by default),
+# which can differ from `nvidia-smi`'s order on mixed-GPU machines.
+cuda_device = 0
+
+# Transformer precision. "f32" is the numerically verified path and needs ~10 GB
+# of GPU memory for weights; "bf16" needs ~5 GB (fits 12 GB cards comfortably).
+dtype = "f32"
+
+# Where calibration (ETA) data is kept. Default: ~/.local/share/voxcpm-tts
+# data_dir = "/absolute/path/to/voxcpm-tts-data"

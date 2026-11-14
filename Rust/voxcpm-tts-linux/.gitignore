@@ -1,0 +1,7 @@
+target/
+dist/
+*.wav
+*.mp3
+*.safetensors
+# Machine-specific settings (absolute weights path). Commit config.toml.example only.
+config.toml
