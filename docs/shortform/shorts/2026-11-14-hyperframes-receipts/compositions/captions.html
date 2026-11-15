@@ -1,0 +1,128 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .cap-group {
+      position: absolute; left: 120px; right: 300px; top: 1090px;
+      text-align: center; overflow: visible;
+      font-family: var(--font-display, "Archivo Black"), sans-serif;
+      font-size: 58px; line-height: 1.12; color: var(--color-ink, #ffffff);
+      text-shadow: 0 4px 0 rgba(0, 0, 0, 0.55);
+      opacity: 0;
+    }
+    .cap-word.hot { color: var(--color-accent, #4ade80); }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="1080" data-height="1920">
+      <div id="cap-00" class="cap-group"><span class="cap-word">My</span> <span class="cap-word">captions</span> <span class="cap-word">were</span> <span class="cap-word">hiding</span></div>
+      <div id="cap-01" class="cap-group"><span class="cap-word">under</span> <span class="cap-word">TikTok&#x27;s</span> <span class="cap-word">buttons.</span></div>
+      <div id="cap-02" class="cap-group"><span class="cap-word">I</span> <span class="cap-word">never</span> <span class="cap-word">noticed.</span></div>
+      <div id="cap-03" class="cap-group"><span class="cap-word">A</span> <span class="cap-word">free</span> <span class="cap-word">tool</span> <span class="cap-word">did.</span></div>
+      <div id="cap-04" class="cap-group"><span class="cap-word">The</span> <span class="cap-word">fix</span> <span class="cap-word">is</span> <span class="cap-word hot">HyperFrames.</span></div>
+      <div id="cap-05" class="cap-group"><span class="cap-word">You</span> <span class="cap-word">write</span> <span class="cap-word">the</span> <span class="cap-word">video</span></div>
+      <div id="cap-06" class="cap-group"><span class="cap-word">in</span> <span class="cap-word">HTML,</span> <span class="cap-word">and</span> <span class="cap-word">it</span></div>
+      <div id="cap-07" class="cap-group"><span class="cap-word">renders</span> <span class="cap-word">on</span> <span class="cap-word">your</span> <span class="cap-word">own</span> <span class="cap-word">machine.</span></div>
+      <div id="cap-08" class="cap-group"><span class="cap-word">It</span> <span class="cap-word">checks</span> <span class="cap-word">every</span> <span class="cap-word">frame</span></div>
+      <div id="cap-09" class="cap-group"><span class="cap-word">against</span> <span class="cap-word">TikTok,</span> <span class="cap-word">Reels</span> <span class="cap-word">and</span> <span class="cap-word">Shorts.</span></div>
+      <div id="cap-10" class="cap-group"><span class="cap-word">That&#x27;s</span> <span class="cap-word">how</span> <span class="cap-word">it</span> <span class="cap-word">caught</span> <span class="cap-word">mine.</span></div>
+      <div id="cap-11" class="cap-group"><span class="cap-word">Now</span> <span class="cap-word">the</span> <span class="cap-word">receipts.</span></div>
+      <div id="cap-12" class="cap-group"><span class="cap-word">It</span> <span class="cap-word">timed</span> <span class="cap-word">every</span> <span class="cap-word">word</span></div>
+      <div id="cap-13" class="cap-group"><span class="cap-word">of</span> <span class="cap-word">a</span> <span class="cap-word">25-second</span> <span class="cap-word">voiceover</span></div>
+      <div id="cap-14" class="cap-group"><span class="cap-word">in</span> <span class="cap-word hot">2.5</span> <span class="cap-word">seconds.</span></div>
+      <div id="cap-15" class="cap-group"><span class="cap-word">A</span> <span class="cap-word hot">27-second</span> <span class="cap-word">short</span> <span class="cap-word">rendered</span></div>
+      <div id="cap-16" class="cap-group"><span class="cap-word">in</span> <span class="cap-word">under</span> <span class="cap-word hot">14</span> <span class="cap-word">seconds.</span></div>
+      <div id="cap-17" class="cap-group"><span class="cap-word">It&#x27;s</span> <span class="cap-word">free,</span> <span class="cap-word">Apache</span> <span class="cap-word">2,</span></div>
+      <div id="cap-18" class="cap-group"><span class="cap-word">and</span> <span class="cap-word">local.</span></div>
+      <div id="cap-19" class="cap-group"><span class="cap-word">One</span> <span class="cap-word">catch:</span> <span class="cap-word">turn</span> <span class="cap-word">telemetry</span> <span class="cap-word">off.</span></div>
+      <div id="cap-20" class="cap-group"><span class="cap-word">Bug.</span></div>
+      <div id="cap-21" class="cap-group"><span class="cap-word">Fix.</span></div>
+      <div id="cap-22" class="cap-group"><span class="cap-word">Receipts.</span></div>
+      <div id="cap-23" class="cap-group"><span class="cap-word">The</span> <span class="cap-word">template</span> <span class="cap-word">is</span> <span class="cap-word">on</span></div>
+      <div id="cap-24" class="cap-group"><span class="cap-word">our</span> <span class="cap-word">GitHub.</span></div>
+      <div id="cap-25" class="cap-group"><span class="cap-word">Save</span> <span class="cap-word">this</span> <span class="cap-word">for</span> <span class="cap-word">your</span></div>
+      <div id="cap-26" class="cap-group"><span class="cap-word">next</span> <span class="cap-word">short.</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#cap-00", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 0.160);
+    tl.to("#cap-00", { opacity: 0, duration: 0.1, ease: "power2.in" }, 2.140);
+    tl.set("#cap-00", { visibility: "hidden" }, 2.240);
+    tl.fromTo("#cap-01", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 2.240);
+    tl.to("#cap-01", { opacity: 0, duration: 0.1, ease: "power2.in" }, 5.180);
+    tl.set("#cap-01", { visibility: "hidden" }, 5.280);
+    tl.fromTo("#cap-02", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 5.280);
+    tl.to("#cap-02", { opacity: 0, duration: 0.1, ease: "power2.in" }, 7.500);
+    tl.set("#cap-02", { visibility: "hidden" }, 7.600);
+    tl.fromTo("#cap-03", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 7.600);
+    tl.to("#cap-03", { opacity: 0, duration: 0.1, ease: "power2.in" }, 9.590);
+    tl.set("#cap-03", { visibility: "hidden" }, 9.690);
+    tl.fromTo("#cap-04", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 9.760);
+    tl.to("#cap-04", { opacity: 0, duration: 0.1, ease: "power2.in" }, 11.100);
+    tl.set("#cap-04", { visibility: "hidden" }, 11.200);
+    tl.fromTo("#cap-05", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 11.200);
+    tl.to("#cap-05", { opacity: 0, duration: 0.1, ease: "power2.in" }, 11.740);
+    tl.set("#cap-05", { visibility: "hidden" }, 11.840);
+    tl.fromTo("#cap-06", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 11.840);
+    tl.to("#cap-06", { opacity: 0, duration: 0.1, ease: "power2.in" }, 12.940);
+    tl.set("#cap-06", { visibility: "hidden" }, 13.040);
+    tl.fromTo("#cap-07", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 13.040);
+    tl.to("#cap-07", { opacity: 0, duration: 0.1, ease: "power2.in" }, 14.390);
+    tl.set("#cap-07", { visibility: "hidden" }, 14.490);
+    tl.fromTo("#cap-08", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 14.560);
+    tl.to("#cap-08", { opacity: 0, duration: 0.1, ease: "power2.in" }, 15.420);
+    tl.set("#cap-08", { visibility: "hidden" }, 15.520);
+    tl.fromTo("#cap-09", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 15.520);
+    tl.to("#cap-09", { opacity: 0, duration: 0.1, ease: "power2.in" }, 17.129);
+    tl.set("#cap-09", { visibility: "hidden" }, 17.229);
+    tl.fromTo("#cap-10", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 17.229);
+    tl.to("#cap-10", { opacity: 0, duration: 0.1, ease: "power2.in" }, 18.830);
+    tl.set("#cap-10", { visibility: "hidden" }, 18.930);
+    tl.fromTo("#cap-11", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 19.040);
+    tl.to("#cap-11", { opacity: 0, duration: 0.1, ease: "power2.in" }, 20.140);
+    tl.set("#cap-11", { visibility: "hidden" }, 20.240);
+    tl.fromTo("#cap-12", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 20.240);
+    tl.to("#cap-12", { opacity: 0, duration: 0.1, ease: "power2.in" }, 21.180);
+    tl.set("#cap-12", { visibility: "hidden" }, 21.280);
+    tl.fromTo("#cap-13", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 21.280);
+    tl.to("#cap-13", { opacity: 0, duration: 0.1, ease: "power2.in" }, 22.860);
+    tl.set("#cap-13", { visibility: "hidden" }, 22.960);
+    tl.fromTo("#cap-14", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 22.960);
+    tl.to("#cap-14", { opacity: 0, duration: 0.1, ease: "power2.in" }, 24.300);
+    tl.set("#cap-14", { visibility: "hidden" }, 24.400);
+    tl.fromTo("#cap-15", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 24.400);
+    tl.to("#cap-15", { opacity: 0, duration: 0.1, ease: "power2.in" }, 26.300);
+    tl.set("#cap-15", { visibility: "hidden" }, 26.400);
+    tl.fromTo("#cap-16", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 26.400);
+    tl.to("#cap-16", { opacity: 0, duration: 0.1, ease: "power2.in" }, 27.820);
+    tl.set("#cap-16", { visibility: "hidden" }, 27.920);
+    tl.fromTo("#cap-17", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 27.920);
+    tl.to("#cap-17", { opacity: 0, duration: 0.1, ease: "power2.in" }, 29.940);
+    tl.set("#cap-17", { visibility: "hidden" }, 30.040);
+    tl.fromTo("#cap-18", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 30.040);
+    tl.to("#cap-18", { opacity: 0, duration: 0.1, ease: "power2.in" }, 30.830);
+    tl.set("#cap-18", { visibility: "hidden" }, 30.930);
+    tl.fromTo("#cap-19", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 31.000);
+    tl.to("#cap-19", { opacity: 0, duration: 0.1, ease: "power2.in" }, 33.070);
+    tl.set("#cap-19", { visibility: "hidden" }, 33.170);
+    tl.fromTo("#cap-20", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 33.440);
+    tl.to("#cap-20", { opacity: 0, duration: 0.1, ease: "power2.in" }, 34.070);
+    tl.set("#cap-20", { visibility: "hidden" }, 34.170);
+    tl.fromTo("#cap-21", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 34.480);
+    tl.to("#cap-21", { opacity: 0, duration: 0.1, ease: "power2.in" }, 35.660);
+    tl.set("#cap-21", { visibility: "hidden" }, 35.760);
+    tl.fromTo("#cap-22", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 35.760);
+    tl.to("#cap-22", { opacity: 0, duration: 0.1, ease: "power2.in" }, 36.940);
+    tl.set("#cap-22", { visibility: "hidden" }, 37.040);
+    tl.fromTo("#cap-23", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 37.040);
+    tl.to("#cap-23", { opacity: 0, duration: 0.1, ease: "power2.in" }, 38.540);
+    tl.set("#cap-23", { visibility: "hidden" }, 38.640);
+    tl.fromTo("#cap-24", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 38.640);
+    tl.to("#cap-24", { opacity: 0, duration: 0.1, ease: "power2.in" }, 39.820);
+    tl.set("#cap-24", { visibility: "hidden" }, 39.920);
+    tl.fromTo("#cap-25", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 39.920);
+    tl.to("#cap-25", { opacity: 0, duration: 0.1, ease: "power2.in" }, 40.860);
+    tl.set("#cap-25", { visibility: "hidden" }, 40.960);
+    tl.fromTo("#cap-26", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.14, ease: "power3.out" }, 40.960);
+    tl.to("#cap-26", { opacity: 0, duration: 0.1, ease: "power2.in" }, 41.910);
+    tl.set("#cap-26", { visibility: "hidden" }, 42.010);
+    window.__timelines["captions"] = tl;
+  </script>
+</template>

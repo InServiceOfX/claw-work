@@ -1,0 +1,11 @@
+My captions were hiding under TikTok's buttons. I never noticed. A free tool did.
+
+The fix is HyperFrames. You write the video in HTML, and it renders on your own machine.
+
+It checks every frame against TikTok, Reels and Shorts. That's how it caught mine.
+
+Now the receipts. It timed every word of a twenty-five second voiceover in two and a half seconds. A twenty-seven second short rendered in under fourteen seconds.
+
+It's free, Apache two, and local. One catch: turn telemetry off.
+
+Bug. Fix. Receipts. The template is on our GitHub. Save this for your next short.

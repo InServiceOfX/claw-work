@@ -8,4 +8,4 @@ It times every caption to the word. A 27-second short renders in under 14 second
 
 Verdict: fact. Free, Apache 2, and local. One catch: turn telemetry off.
 
-Comment FRAMES, and I'll pin our template.
+The template is on our GitHub. Save this for your next short.

@@ -1,0 +1,59 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #h-stage { position: absolute; inset: 0; }
+    #h-title { position: absolute; top: 300px; left: 120px; width: 768px; font-size: 80px; line-height: 0.98;
+      text-transform: uppercase; }
+    #h-title .hot { color: var(--color-fail); }
+    /* A phone, drawn: 9:16, with a button rail on the right. */
+    #h-phone { position: absolute; top: 566px; left: 120px; width: 270px; height: 480px; border-radius: 32px;
+      border: 6px solid #2a3442; background: #05080b; overflow: hidden; }
+    .h-btn { position: absolute; right: 14px; width: 36px; height: 36px; border-radius: 50%; background: #cfd6df; }
+    #h-btn-1 { top: 220px; } #h-btn-2 { top: 272px; } #h-btn-3 { top: 324px; } #h-btn-4 { top: 376px; }
+    #h-cap { position: absolute; top: 330px; left: 22px; width: 236px; text-align: center;
+      font-size: 27px; line-height: 1.1; color: #ffffff; }
+    #h-overlap { position: absolute; top: 318px; left: 198px; width: 66px; height: 72px; border-radius: 10px;
+      border: 5px solid var(--color-fail); }
+    #h-term { position: absolute; top: 600px; left: 450px; width: 438px; height: 196px; padding: 20px 22px;
+      border-radius: 24px; background: var(--color-panel); font-family: var(--font-mono), monospace;
+      font-size: 28px; line-height: 42px; }
+    .h-line { white-space: pre; }
+    #h-l1 { color: var(--color-muted); }
+    #h-l2, #h-l3 { color: var(--color-warn); }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="h-stage">
+      <div id="h-title">My captions were under the <span class="hot">buttons</span></div>
+      <div id="h-phone" data-layout-allow-overlap>
+        <div id="h-cap" data-layout-ignore>captions sat here, under the rail</div>
+        <div id="h-btn-1" class="h-btn"></div><div id="h-btn-2" class="h-btn"></div>
+        <div id="h-btn-3" class="h-btn"></div><div id="h-btn-4" class="h-btn"></div>
+        <div id="h-overlap"></div>
+      </div>
+      <div id="h-term">
+        <div id="h-l1" class="h-line">$ hyperframes check</div>
+        <div id="h-l2" class="h-line">outside safe area:</div>
+        <div id="h-l3" class="h-line">TikTok (right edge)</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Frame 0: title and phone already on screen (the thumbnail); the phone settles.
+    tl.fromTo("#h-phone", { y: 30 }, { y: 0, duration: 0.8, ease: "expo.out" }, 0);
+    // "buttons" (3.52 s): the overlap box punches in.
+    // The overlap box is on screen from frame 0 (thumbnail); on "buttons" (3.52 s) it punches once.
+    tl.fromTo("#h-overlap", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power3.out" }, 3.52);
+    tl.to("#h-overlap", { scale: 1, duration: 0.3, ease: "power2.out" }, 3.64);
+    // "I never noticed" (5.36 s): the terminal card arrives empty.
+    tl.fromTo("#h-term", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 5.36);
+    tl.fromTo("#h-l1", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 5.9);
+    // "A free tool did" (7.60 s): the warning lines, as check printed them.
+    tl.fromTo("#h-l2", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 7.6);
+    tl.fromTo("#h-l3", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 7.72);
+    // Whip out to the left.
+    tl.fromTo("#h-stage", { x: 0, filter: "blur(0px)" },
+      { x: -420, filter: "blur(14px)", duration: 0.24, ease: "power3.in" }, 9.46);
+    window.__timelines["hook"] = tl;
+  </script>
+</template>

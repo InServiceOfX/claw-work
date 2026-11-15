@@ -1,0 +1,95 @@
+<!doctype html>
+<html
+  lang="en"
+  data-resolution="portrait"
+  data-composition-variables='[
+    {"id":"color-ground","type":"color","label":"Background","default":"#0b0f14"},
+    {"id":"color-panel","type":"color","label":"Panel","default":"#18202b"},
+    {"id":"color-ink","type":"color","label":"Text","default":"#ffffff"},
+    {"id":"color-muted","type":"color","label":"Muted text","default":"#9aa4b2"},
+    {"id":"color-accent","type":"color","label":"Accent","default":"#4ade80"},
+    {"id":"color-warn","type":"color","label":"Warning","default":"#fbbf24"},
+    {"id":"color-fail","type":"color","label":"Fail","default":"#f87171"},
+    {"id":"font-display","type":"string","label":"Display font","default":"Archivo Black"},
+    {"id":"font-mono","type":"string","label":"Mono font","default":"Space Mono"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <!-- Version B, "Bug. Fix. Receipts.": HyperFrames.
+         Times come from assets/transcript.json (narration.txt read by VoxCPM2). See PLAN.md. -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --color-ground: #0b0f14; --color-panel: #18202b; --color-ink: #ffffff; --color-muted: #9aa4b2;
+        --color-accent: #4ade80; --color-warn: #fbbf24; --color-fail: #f87171;
+        --font-display: "Archivo Black"; --font-mono: "Space Mono";
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--color-ground); }
+      #root { position: relative; width: 1080px; height: 1920px; background: var(--color-ground); }
+      #ground {
+        position: absolute; inset: 0;
+        background: radial-gradient(circle at 50% 28%, rgba(74, 222, 128, 0.16), rgba(11, 15, 20, 0) 60%),
+          var(--color-ground);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="43.3" data-width="1080" data-height="1920">
+      <div id="ground" data-layout-ignore></div>
+
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html"
+        data-start="0" data-duration="9.7" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="fix" data-composition-id="fix" data-composition-src="compositions/fix.html"
+        data-start="9.7" data-duration="4.75" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="safe" data-composition-id="safe" data-composition-src="compositions/safe.html"
+        data-start="14.45" data-duration="4.55" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="timing" data-composition-id="timing" data-composition-src="compositions/timing.html"
+        data-start="19.0" data-duration="8.85" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="receipt" data-composition-id="receipt" data-composition-src="compositions/receipt.html"
+        data-start="27.85" data-duration="5.45" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+      <div id="cta" data-composition-id="cta" data-composition-src="compositions/cta.html"
+        data-start="33.3" data-duration="10.0" data-track-index="1" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+
+      <!-- Signature: BUG / FIX / RECEIPTS tracker over the scenes until the end card. -->
+      <div id="steps" data-composition-id="steps" data-composition-src="compositions/steps.html"
+        data-start="0" data-duration="33.3" data-track-index="2" data-track-kind="graphics"
+        data-width="1080" data-height="1920"></div>
+
+      <div id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html"
+        data-start="0" data-duration="43.3" data-track-index="3" data-track-kind="captions"
+        data-width="1080" data-height="1920"></div>
+
+      <audio id="narration" class="clip" data-start="0" data-duration="41.8" data-track-index="4" data-volume="1"
+        src="assets/narration.wav"></audio>
+
+      <!-- uisfx CC0 cues: start = picture time + 1 frame - the cue's peak. -->
+      <audio id="sfx-overlap" class="clip" data-start="3.547" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-warn" class="clip" data-start="7.413" data-duration="0.537" data-track-index="6" data-volume="0.45" src="assets/sfx/warning-studio.mp3"></audio>
+      <audio id="sfx-cut-1" class="clip" data-start="9.691" data-duration="0.686" data-track-index="5" data-volume="0.5" src="assets/sfx/swipe-cinematic.mp3"></audio>
+      <audio id="sfx-cut-2" class="clip" data-start="14.463" data-duration="0.334" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-studio.mp3"></audio>
+      <audio id="sfx-fixed" class="clip" data-start="17.629" data-duration="0.595" data-track-index="5" data-volume="0.45" src="assets/sfx/success-studio.mp3"></audio>
+      <audio id="sfx-cut-3" class="clip" data-start="18.996" data-duration="0.498" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-soft.mp3"></audio>
+      <audio id="sfx-bar" class="clip" data-start="26.827" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-cut-4" class="clip" data-start="27.841" data-duration="0.686" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-cinematic.mp3"></audio>
+      <audio id="sfx-total" class="clip" data-start="30.617" data-duration="1.224" data-track-index="5" data-volume="0.45" src="assets/sfx/complete-cinematic.mp3"></audio>
+      <audio id="sfx-note" class="clip" data-start="31.347" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-cut-5" class="clip" data-start="33.313" data-duration="0.334" data-track-index="5" data-volume="0.5" src="assets/sfx/swipe-studio.mp3"></audio>
+      <audio id="sfx-sign-bug" class="clip" data-start="33.467" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-sign-fix" class="clip" data-start="34.507" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-sign-rec" class="clip" data-start="35.787" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

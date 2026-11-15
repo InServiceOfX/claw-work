@@ -1,0 +1,57 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #f-stage { position: absolute; inset: 0; }
+    /* The phone is the 1080x1920 frame at 0.352 scale; the green area is the measured safe area. */
+    #f-phone { position: absolute; top: 300px; left: 120px; width: 380px; height: 676px; border-radius: 40px;
+      border: 6px solid #2a3442; background: #05080b; overflow: hidden; }
+    .f-zone { position: absolute; background: rgba(74, 222, 128, 0.16); }
+    #f-zone-a { top: 101px; left: 42px; width: 271px; height: 195px; border-radius: 10px 10px 0 0; }
+    #f-zone-b { top: 296px; left: 42px; width: 232px; height: 143px; border-radius: 0 0 10px 10px; }
+    .f-btn { position: absolute; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: #cfd6df; }
+    #f-btn-1 { top: 300px; } #f-btn-2 { top: 350px; } #f-btn-3 { top: 400px; } #f-btn-4 { top: 450px; }
+    #f-cap { position: absolute; top: 382px; left: 42px; width: 300px; height: 40px; border-radius: 8px;
+      border: 4px solid var(--color-fail); }
+    .chip { position: absolute; left: 540px; padding: 6px 24px; border-radius: 999px; border: 3px solid var(--color-accent);
+      background: var(--color-panel); font-family: var(--font-mono), monospace; font-size: 34px; font-weight: 700; }
+    #f-chip-1 { top: 320px; } #f-chip-2 { top: 400px; } #f-chip-3 { top: 480px; }
+    #f-rule { position: absolute; top: 590px; left: 540px; width: 348px; font-family: var(--font-mono), monospace;
+      font-size: 28px; line-height: 36px; color: var(--color-muted); }
+    #f-ok { position: absolute; top: 730px; left: 540px; font-family: var(--font-mono), monospace; font-size: 30px;
+      line-height: 42px; font-weight: 700; color: var(--color-accent); }
+  </style>
+  <div id="root" data-composition-id="safe" data-width="1080" data-height="1920">
+    <div id="f-stage">
+      <div id="f-phone" data-layout-allow-overlap>
+        <div id="f-zone-a" class="f-zone"></div><div id="f-zone-b" class="f-zone"></div>
+        <div id="f-btn-1" class="f-btn"></div><div id="f-btn-2" class="f-btn"></div>
+        <div id="f-btn-3" class="f-btn"></div><div id="f-btn-4" class="f-btn"></div>
+        <div id="f-cap"></div>
+      </div>
+      <div id="f-chip-1" class="chip">TikTok</div>
+      <div id="f-chip-2" class="chip">Reels</div>
+      <div id="f-chip-3" class="chip">Shorts</div>
+      <div id="f-rule">every word in<br />x 120-780<br />y 288-1248</div>
+      <div id="f-ok">0 warnings</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Blur swap in.
+    tl.fromTo("#f-stage", { opacity: 0, filter: "blur(8px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power3.out" }, 0);
+    // "checks every frame" (0.23 s): the safe area draws in, top band then the stepped band.
+    tl.fromTo("#f-zone-a", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.23);
+    tl.fromTo("#f-zone-b", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.4);
+    // One chip per platform name: TikTok 1.39, Reels 1.87, Shorts 2.43.
+    tl.fromTo("#f-chip-1", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, 1.39);
+    tl.fromTo("#f-chip-2", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, 1.87);
+    tl.fromTo("#f-chip-3", { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: 0.3, ease: "expo.out" }, 2.43);
+    tl.fromTo("#f-rule", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.9);
+    // "caught mine" (3.51 s): the caption box pulls in out of the buttons and turns green.
+    tl.fromTo("#f-cap", { scaleX: 1, transformOrigin: "0% 50%", borderColor: "#f87171" },
+      { scaleX: 0.773, borderColor: "#4ade80", duration: 0.35, ease: "power3.inOut" }, 3.5);
+    tl.fromTo("#f-ok", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 3.4);
+    window.__timelines["safe"] = tl;
+  </script>
+</template>

@@ -8,4 +8,4 @@ It times every caption to the word. A twenty-seven second short renders in under
 
 Verdict: fact. Free, Apache two, and local. One catch: turn telemetry off.
 
-Comment frames, and I'll pin our template.
+The template is on our GitHub. Save this for your next short.

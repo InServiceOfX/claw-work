@@ -1,0 +1,29 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    /* The format's signature: a three-step tracker that stays on screen. */
+    #st-row { position: absolute; top: 996px; left: 400px; display: flex; gap: 12px;
+      font-family: var(--font-mono), monospace; font-size: 28px; font-weight: 700; }
+    .st { padding: 4px 14px; border-radius: 10px; border: 3px solid #2a3442; color: #9aa4b2; }
+  </style>
+  <div id="root" data-composition-id="steps" data-width="1080" data-height="1920">
+    <div id="st-row">
+      <div id="st-bug" class="st">BUG</div>
+      <div id="st-fix" class="st">FIX</div>
+      <div id="st-rec" class="st">RECEIPTS</div>
+    </div>
+  </div>
+  <script>
+    // Film-time anchors from the transcript; filled per voice take.
+    const A = { fix: 9.7, receipts: 19.04 };
+    const on = (sel, color, t) => tl.to(sel, { color: color, borderColor: color, duration: 0.15, ease: "power2.out" }, t);
+    const off = (sel, t) => tl.to(sel, { color: "#9aa4b2", borderColor: "#2a3442", duration: 0.15, ease: "power2.out" }, t);
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#st-row", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.4);
+    on("#st-bug", "#f87171", 0.4);
+    off("#st-bug", A.fix); on("#st-fix", "#4ade80", A.fix);
+    off("#st-fix", A.receipts); on("#st-rec", "#fbbf24", A.receipts);
+    // The end card repeats the three steps large, so the tracker's slot ends there.
+    window.__timelines["steps"] = tl;
+  </script>
+</template>
