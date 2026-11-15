@@ -94,6 +94,13 @@ fn icon_button(icon: &str, tooltip: &str) -> gtk::Button {
     button
 }
 
+fn app_icon() -> Option<gdk_pixbuf::Pixbuf> {
+    gdk_pixbuf::Pixbuf::from_read(std::io::Cursor::new(
+        include_bytes!("../assets/icons/128.png").as_slice(),
+    ))
+    .ok()
+}
+
 impl Browser {
     pub fn new(app: &gtk::Application, start: Option<PathBuf>, prefs: Preferences) -> Rc<Self> {
         let window = gtk::ApplicationWindow::builder()
@@ -109,9 +116,7 @@ impl Browser {
             .show_close_button(true)
             .build();
         header.set_decoration_layout(Some("close,minimize,maximize:"));
-        if let Ok(icon) = gdk_pixbuf::Pixbuf::from_read(std::io::Cursor::new(
-            include_bytes!("../assets/personal-files.svg").as_slice(),
-        )) {
+        if let Some(icon) = app_icon() {
             window.set_icon(Some(&icon));
         }
         window.set_titlebar(Some(&header));
@@ -1750,6 +1755,9 @@ pub fn run() -> i32 {
     if let Err(e) = gtk::init() {
         eprintln!("Personal Files needs an Ubuntu graphical desktop: {e}");
         return 1;
+    }
+    if let Some(icon) = app_icon() {
+        gtk::Window::set_default_icon(&icon);
     }
     let start = args.first().map(PathBuf::from).map(|p| {
         if p.is_absolute() {
