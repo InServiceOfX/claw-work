@@ -1,0 +1,37 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #c-stage { position: absolute; inset: 0; }
+    #c-comment { position: absolute; top: 310px; left: 120px; font-size: 104px; line-height: 1; }
+    #c-word { position: absolute; top: 430px; left: 128px; font-size: 140px; line-height: 1; color: var(--color-accent); }
+    #c-for { position: absolute; top: 600px; left: 124px; font-family: var(--font-mono), monospace; font-size: 34px;
+      color: var(--color-muted); }
+    #c-credits { position: absolute; top: 870px; left: 120px; width: 660px; font-family: var(--font-mono), monospace;
+      font-size: 28px; line-height: 42px; color: var(--color-muted); }
+  </style>
+  <div id="root" data-composition-id="cta" data-width="1080" data-height="1920">
+    <div id="c-stage">
+      <div id="c-comment">COMMENT</div>
+      <div id="c-word">FRAMES</div>
+      <div id="c-for">and I'll pin our template</div>
+      <div id="c-credits">
+        <div>AI voice: VoxCPM2, local</div>
+        <div>Sounds: uisfx, CC0</div>
+        <div>Made with HyperFrames</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Whip up into the end card.
+    tl.fromTo("#c-stage", { y: 160, filter: "blur(10px)" },
+      { y: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 0);
+    // "frames" (0.52 s): the token, per letter.
+    tl.fromTo("#c-word", { opacity: 0, filter: "blur(8px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0.52);
+    // "pin our template" (1.24 s).
+    tl.fromTo("#c-for", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 1.24);
+    tl.fromTo("#c-credits", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.6);
+    window.__timelines["cta"] = tl;
+  </script>
+</template>

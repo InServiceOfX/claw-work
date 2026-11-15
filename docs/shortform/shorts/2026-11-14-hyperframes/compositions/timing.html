@@ -1,0 +1,75 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #t-a, #t-b { position: absolute; inset: 0; }
+    #t-label { position: absolute; top: 300px; left: 120px; font-family: var(--font-mono), monospace; font-size: 32px;
+      font-weight: 700; color: var(--color-muted); }
+    #t-wave { position: absolute; top: 380px; left: 120px; width: 768px; height: 150px; display: flex;
+      align-items: center; gap: 6px; }
+    .t-bar { width: 15px; border-radius: 4px; background: #2a3442; }
+    #t-words { position: absolute; top: 570px; left: 120px; width: 768px; font-size: 54px; line-height: 1.15;
+      color: #3a4554; }
+    .t-w { display: inline-block; }
+    #t-stat { position: absolute; top: 740px; left: 120px; font-family: var(--font-mono), monospace; font-size: 30px;
+      color: var(--color-muted); }
+    #t-stat b { color: var(--color-accent); }
+    #t-b-label { position: absolute; top: 320px; left: 120px; font-family: var(--font-mono), monospace;
+      font-size: 34px; font-weight: 700; color: var(--color-muted); }
+    #t-num { position: absolute; top: 390px; left: 128px; font-size: 170px; line-height: 0.9; color: var(--color-accent); }
+    #t-track { position: absolute; top: 640px; left: 120px; width: 768px; height: 18px; border-radius: 9px;
+      background: #2a3442; overflow: hidden; }
+    #t-fill { width: 768px; height: 18px; border-radius: 9px; background: var(--color-accent); }
+    #t-note { position: absolute; top: 690px; left: 120px; font-family: var(--font-mono), monospace; font-size: 28px;
+      line-height: 40px; color: var(--color-muted); }
+  </style>
+  <div id="root" data-composition-id="timing" data-width="1080" data-height="1920">
+    <div id="t-a">
+      <div id="t-label">word-timed captions</div>
+      <div id="t-wave"></div>
+      <div id="t-words">
+        <span class="t-w">It</span> <span class="t-w">times</span> <span class="t-w">every</span>
+        <span class="t-w">caption</span> <span class="t-w">to</span> <span class="t-w">the</span>
+        <span class="t-w">word.</span>
+      </div>
+      <div id="t-stat">25 s of voice: <b>2.5 s</b></div>
+    </div>
+    <div id="t-b">
+      <div id="t-b-label">27-second short, rendered in</div>
+      <div id="t-num">13.5 s</div>
+      <div id="t-track"><div id="t-fill"></div></div>
+      <div id="t-note">M4 Pro Mac mini, warm cache<br />first run: 50 s</div>
+    </div>
+  </div>
+  <script>
+    // A fixed waveform (no randomness): bar heights from two sines.
+    const wave = document.getElementById("t-wave");
+    for (let i = 0; i < 36; i++) {
+      const b = document.createElement("div");
+      b.className = "t-bar";
+      b.style.height = Math.round(24 + 110 * Math.abs(Math.sin(i * 0.55) * Math.cos(i * 0.21))) + "px";
+      wave.appendChild(b);
+    }
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#t-a", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0);
+    // Each word lights on its own spoken start (transcript, scene-local seconds).
+    const starts = [0.12, 0.36, 0.76, 1.0, 1.4, 1.64, 1.8];
+    document.querySelectorAll(".t-w").forEach((w, i) => {
+      tl.fromTo(w, { color: "#3a4554" }, { color: "#ffffff", duration: 0.08 }, starts[i]);
+    });
+    // The bars light left to right with the same sentence (0.12 to 2.68 s).
+    tl.fromTo(".t-bar", { backgroundColor: "#2a3442" },
+      { backgroundColor: "#4ade80", duration: 0.06, stagger: 0.071 }, 0.12);
+    tl.fromTo("#t-stat", { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power2.out" }, 0.3);
+    // "A twenty-seven second short" (2.68 s): blur swap to the render number.
+    tl.to("#t-a", { opacity: 0, filter: "blur(8px)", duration: 0.16, ease: "power2.in" }, 2.5);
+    tl.fromTo("#t-b", { opacity: 0, filter: "blur(8px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power3.out" }, 2.68);
+    // "renders" (4.44 s) to "seconds" (6.04 s): the bar fills, then the number holds.
+    tl.fromTo("#t-fill", { scaleX: 0, transformOrigin: "0% 50%" },
+      { scaleX: 1, duration: 1.6, ease: "power2.inOut" }, 4.44);
+    tl.fromTo("#t-note", { opacity: 0 }, { opacity: 1, duration: 0.25 }, 2.95);
+    // Dip cut into the verdict.
+    tl.to("#t-b", { opacity: 0.6, duration: 0.1 }, 6.95);
+    window.__timelines["timing"] = tl;
+  </script>
+</template>

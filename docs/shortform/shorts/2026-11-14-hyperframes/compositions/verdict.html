@@ -1,0 +1,44 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #v-label { position: absolute; top: 300px; left: 124px; font-family: var(--font-mono), monospace; font-size: 36px;
+      font-weight: 700; letter-spacing: 0.14em; color: var(--color-muted); }
+    #v-fact { position: absolute; top: 350px; left: 130px; font-size: 210px; line-height: 0.95; color: var(--color-accent); }
+    #v-chips { position: absolute; top: 590px; left: 120px; display: flex; gap: 16px; }
+    .chip { padding: 6px 24px; border-radius: 999px; border: 3px solid var(--color-accent); background: var(--color-panel);
+      font-family: var(--font-mono), monospace; font-size: 32px; font-weight: 700; }
+    #v-catch { position: absolute; top: 690px; left: 120px; width: 768px; height: 130px; padding: 18px 28px;
+      border-radius: 22px; border: 4px solid var(--color-warn); background: var(--color-panel); }
+    #v-catch-h { font-family: var(--font-mono), monospace; font-size: 28px; font-weight: 700; color: var(--color-warn); }
+    #v-catch-c { margin-top: 6px; font-family: var(--font-mono), monospace; font-size: 28px; color: var(--color-ink); }
+  </style>
+  <div id="root" data-composition-id="verdict" data-width="1080" data-height="1920">
+    <div id="v-label">VERDICT</div>
+    <div id="v-fact">FACT</div>
+    <div id="v-chips">
+      <div id="v-chip-1" class="chip">free</div>
+      <div id="v-chip-2" class="chip">Apache-2.0</div>
+      <div id="v-chip-3" class="chip">local</div>
+    </div>
+    <div id="v-catch">
+      <div id="v-catch-h">one catch: telemetry is on</div>
+      <div id="v-catch-c">HYPERFRAMES_NO_TELEMETRY=1</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Hard cut in after the dip; the label is there at once.
+    tl.fromTo("#v-label", { opacity: 0 }, { opacity: 1, duration: 0.12 }, 0.03);
+    // "fact" (0.75 s): the stamp, the one payoff of the film.
+    tl.fromTo("#v-fact", { opacity: 0, scale: 1.25, transformOrigin: "0% 50%" },
+      { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.4)" }, 0.75);
+    // "free" 1.23, "Apache" 1.79, "local" 3.07.
+    tl.fromTo("#v-chip-1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.23);
+    tl.fromTo("#v-chip-2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.79);
+    tl.fromTo("#v-chip-3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 3.07);
+    // "catch" (3.87 s), the fix on "telemetry" (4.67 s).
+    tl.fromTo("#v-catch", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 3.87);
+    tl.fromTo("#v-catch-c", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 4.67);
+    window.__timelines["verdict"] = tl;
+  </script>
+</template>

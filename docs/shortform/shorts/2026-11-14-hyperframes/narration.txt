@@ -1,0 +1,11 @@
+My captions were hiding under TikTok's buttons. I never noticed. A free tool did.
+
+It's called HyperFrames. You write the video in HTML, and it renders on your own machine. Fact or hype?
+
+It checks every frame against TikTok, Reels and Shorts. That's how it caught mine.
+
+It times every caption to the word. A twenty-seven second short renders in under fourteen seconds.
+
+Verdict: fact. Free, Apache two, and local. One catch: turn telemetry off.
+
+Comment frames, and I'll pin our template.
