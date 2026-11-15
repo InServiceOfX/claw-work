@@ -1,0 +1,61 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #t3-stage { position: absolute; inset: 0; }
+    #t3-num { position: absolute; top: 322px; left: 126px; font-size: 200px; line-height: 0.85; color: var(--color-accent); }
+    #t3-title { position: absolute; top: 320px; left: 420px; font-size: 88px; line-height: 1; }
+    #t3-sub { position: absolute; top: 425px; left: 424px; font-family: var(--font-mono), monospace;
+      font-size: 30px; font-weight: 700; color: var(--color-muted); }
+    #t3-grid { position: absolute; top: 530px; left: 120px; width: 616px; display: grid;
+      grid-template-columns: repeat(13, 40px); gap: 8px; }
+    .t3-cell { width: 40px; height: 40px; border-radius: 9px; background: #2a3442; }
+    .t3-cell.cut { background: var(--color-accent); }
+    #t3-count { position: absolute; top: 860px; left: 120px; font-size: 64px; }
+    #t3-count span { color: var(--color-accent); }
+    #t3-chips { position: absolute; top: 872px; left: 470px; display: flex; gap: 16px; }
+    .chip { padding: 8px 26px; border-radius: 999px; border: 3px solid var(--color-accent);
+      background: var(--color-panel); font-family: var(--font-mono), monospace; font-size: 34px; font-weight: 700; }
+    #t3-dip { position: absolute; inset: 0; background: #000; }
+  </style>
+  <div id="root" data-composition-id="tool3" data-width="1080" data-height="1920">
+    <div id="t3-stage">
+      <div id="t3-num">03</div>
+      <div id="t3-title">uisfx</div>
+      <div id="t3-sub">free sound effects</div>
+      <div id="t3-grid">
+        <!-- 78 cells, one per cue; the four accent cells are this video's cuts. -->
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell cut"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell cut"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell cut"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell cut"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+        <div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div><div class="t3-cell"></div>
+      </div>
+      <div id="t3-count"><span>78</span> cues</div>
+      <div id="t3-chips">
+        <div id="t3-chip-license" class="chip">CC0 1.0</div>
+      </div>
+    </div>
+    <div id="t3-dip"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Numeral and title arrive from below; the subtitle on "sound effects" (0.52 s).
+    tl.fromTo("#t3-num", { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0);
+    tl.fromTo("#t3-title", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.4, ease: "expo.out" }, 0.08);
+    tl.fromTo("#t3-sub", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0.52);
+    // The grid fills on "Seventy-eight" (1.72 s); the count lands at 2.30 s.
+    tl.fromTo(".t3-cell", { opacity: 0, scale: 0.4 },
+      { opacity: 1, scale: 1, duration: 0.2, ease: "power3.out", stagger: 0.008 }, 1.72);
+    tl.fromTo("#t3-count", { opacity: 0, scale: 1.2, transformOrigin: "0% 50%" },
+      { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.4)" }, 2.3);
+    // License chip on "public domain" (3.24 s).
+    tl.fromTo("#t3-chip-license", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 3.24);
+    // "one on every cut" (4.84 s): the four cut cells punch.
+    tl.fromTo(".t3-cell.cut", { scale: 1 }, { scale: 1.35, duration: 0.12, ease: "power3.out", stagger: 0.07 }, 4.84);
+    tl.to(".t3-cell.cut", { scale: 1, duration: 0.25, ease: "power2.out", stagger: 0.07 }, 4.98);
+    // Dip cut: darken ~40% for the last three frames.
+    tl.fromTo("#t3-dip", { opacity: 0 }, { opacity: 0.4, duration: 0.1 }, 5.68);
+    window.__timelines["tool3"] = tl;
+  </script>
+</template>

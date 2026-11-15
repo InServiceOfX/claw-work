@@ -1,0 +1,72 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #t1-stage { position: absolute; inset: 0; }
+    .t1-num { position: absolute; top: 322px; left: 126px; font-size: 200px; line-height: 0.85; color: var(--color-accent); }
+    #t1-title { position: absolute; top: 494px; left: 120px; font-size: 88px; line-height: 1; }
+    #t1-code {
+      position: absolute; top: 600px; left: 120px; width: 768px; height: 186px; padding: 24px 34px;
+      border-radius: 28px; background: var(--color-panel);
+      font-family: var(--font-mono), monospace; font-size: 32px; line-height: 46px; color: var(--color-ink);
+    }
+    .t1-line { white-space: pre; }
+    .t1-tag { color: var(--color-accent); }
+    .t1-attr { color: var(--color-muted); }
+    #t1-arrow { position: absolute; top: 792px; left: 160px; width: 44px; height: 52px; }
+    #t1-film {
+      position: absolute; top: 850px; left: 120px; width: 300px; height: 100px; border-radius: 24px;
+      background: var(--color-accent); color: var(--color-ground);
+      display: flex; align-items: center; justify-content: center; gap: 24px; font-size: 46px;
+    }
+    #t1-play { width: 0; height: 0; border-top: 20px solid transparent; border-bottom: 20px solid transparent;
+      border-left: 32px solid var(--color-ground); }
+    #t1-chips { position: absolute; top: 970px; left: 120px; display: flex; gap: 16px; }
+    .chip {
+      padding: 8px 26px; border-radius: 999px; border: 3px solid var(--color-accent);
+      background: var(--color-panel); font-family: var(--font-mono), monospace; font-size: 34px; font-weight: 700;
+    }
+  </style>
+  <div id="root" data-composition-id="tool1" data-width="1080" data-height="1920">
+    <div id="t1-stage">
+      <div id="t1-num" class="t1-num">01</div>
+      <div id="t1-title">HyperFrames</div>
+      <div id="t1-code">
+        <div class="t1-line"><span class="t1-tag">&lt;div</span> <span class="t1-attr">class=</span>"clip"</div>
+        <div class="t1-line">  <span class="t1-attr">data-start=</span>"0.4"<span class="t1-tag">&gt;</span></div>
+        <div class="t1-line">  Hello<span class="t1-tag">&lt;/div&gt;</span></div>
+      </div>
+      <svg id="t1-arrow" viewBox="0 0 60 70">
+        <path d="M30 0 V52 M8 34 L30 60 L52 34" stroke="#4ade80" stroke-width="8" fill="none"
+          stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <div id="t1-film"><div id="t1-play"></div>MP4</div>
+      <div id="t1-chips">
+        <div id="t1-chip-local" class="chip">runs locally</div>
+        <div id="t1-chip-license" class="chip">Apache-2.0</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Arrive from the right, matching the hook's whip to the left.
+    tl.fromTo("#t1-stage", { x: 420, filter: "blur(14px)" },
+      { x: 0, filter: "blur(0px)", duration: 0.4, ease: "expo.out" }, 0);
+    // Title on "HyperFrames" (0.19 s local).
+    tl.fromTo("#t1-title", { opacity: 0, filter: "blur(8px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.18, ease: "power4.out" }, 0.19);
+    // Code card on "HTML" (1.40 s); lines arrive one by one.
+    tl.fromTo("#t1-code", { opacity: 0, scale: 0.96 },
+      { opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }, 1.4);
+    tl.fromTo(".t1-line", { opacity: 0 }, { opacity: 1, duration: 0.08, stagger: 0.12 }, 1.5);
+    // Arrow on "renders" (2.28 s), the film card on "video" (2.84 s).
+    tl.fromTo("#t1-arrow", { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, 2.28);
+    tl.fromTo("#t1-film", { opacity: 0, y: 40, scale: 0.9 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "back.out(1.4)" }, 2.84);
+    // Chips land on "own machine" (3.48 s) and "Apache" (4.22 s).
+    tl.fromTo("#t1-chip-local", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 3.48);
+    tl.fromTo("#t1-chip-license", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 4.22);
+    // Blur swap out.
+    tl.fromTo("#t1-stage", { opacity: 1 }, { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power2.in", immediateRender: false }, 5.5);
+    window.__timelines["tool1"] = tl;
+  </script>
+</template>

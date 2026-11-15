@@ -23,8 +23,10 @@ you need there; nothing here installs global tools on its own.
   voice is peaky) and fail a render that misses by more than 1 LU or clips.
   Do not hand-tune volume to "sound right"; read `verification.json` or
   `loudness.json`.
-- **Safe zones.** Keep text clear of the top ~150 px, the bottom ~300-420 px
-  (captions, buttons, username) and ~50-90 px at the sides of a 1080x1920 frame.
+- **Safe zones.** On a 1080x1920 frame every word sits inside y 288-1248 px,
+  x 120-888 px above y 840 and x 120-780 px below it (TikTok's action buttons).
+  This is the area clear on TikTok, Reels and Shorts at once, from the
+  platforms' vertical-ad guides as encoded in HyperFrames `check`.
 - **Disclosure and rights.** Disclose synthetic voices and sponsorships; use
   only licensed or royalty-free music and credit stock where its license asks.
 - **Originals are read-only.** Write to new work and output directories.
@@ -35,6 +37,7 @@ you need there; nothing here installs global tools on its own.
 | --- | --- | --- | --- |
 | A claim about a project or tool to explain with narration | **Voiced explainer** (default for anything you will post) | `Rust/claw-shorts`: `brief`, `check --strict`, `render` | `Rust/claw-shorts/README.md` |
 | The same, but want richer motion (live waveform, push-ins, word-by-word captions) | **Canvas** | `claw-shorts canvas`, then `skills/claw-shorts/canvas/scripts/render.mjs`, then `claw-shorts mux` | [canvas.md](references/canvas.md), [canvas-rendering.md](references/canvas-rendering.md) |
+| A listicle or explainer that needs designed motion graphics, charts or kinetic captions timed to the narration, plus a safe-area/contrast gate | **HyperFrames** | `skills/claw-shorts/hyperframes/` (pinned `hyperframes` CLI, `captions.py`, `finish.sh`) | [hyperframes.md](references/hyperframes.md) |
 | A topic or script, and stock footage or a folder of clips and photos | **Stock B-roll** | `Rust/shortform-video run` | [stock-broll.md](references/stock-broll.md) |
 | A screen recording or demo with spoken takes to tighten | **Recording cut** | transcript, reviewed cut table, `Rust/claw-edit` | [recording-cut.md](references/recording-cut.md), [recording-cut-rendering.md](references/recording-cut-rendering.md) |
 | A raw clip that needs a quick template (zoom, before/after, README scroll, terminal cast) | **Templates** | `skills/claw-shorts/scripts/claw_shorts.py render` | below |

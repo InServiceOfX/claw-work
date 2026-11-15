@@ -1,0 +1,36 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #o-links { position: absolute; top: 300px; left: 120px; right: 192px; font-size: 104px; line-height: 0.98;
+      text-transform: uppercase; }
+    .o-word { display: inline-block; }
+    #o-save { position: absolute; top: 650px; left: 120px; width: 768px; height: 170px; border-radius: 32px;
+      background: var(--color-accent); color: var(--color-ground); display: flex; align-items: center;
+      justify-content: center; font-size: 88px; }
+    #o-credits { position: absolute; top: 860px; left: 120px; right: 300px; font-family: var(--font-mono), monospace;
+      font-size: 28px; line-height: 42px; color: var(--color-muted); }
+  </style>
+  <div id="root" data-composition-id="outro" data-width="1080" data-height="1920">
+    <div id="o-links">
+      <span class="o-word">Links</span> <span class="o-word">in</span> <span class="o-word">the</span>
+      <span class="o-word">caption</span>
+    </div>
+    <div id="o-save">SAVE THIS</div>
+    <div id="o-credits">
+      <div>Voice: synthetic, VoxCPM2, local</div>
+      <div>Sounds: uisfx, CC0</div>
+      <div>Rendered with HyperFrames</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Hard cut in after the dip; words arrive 80 ms apart on "Links ... caption".
+    tl.fromTo(".o-word", { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "expo.out", stagger: 0.08 }, 0.02);
+    tl.fromTo("#o-credits", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.6);
+    // The payoff on "Save" (1.94 s), once in the film.
+    tl.fromTo("#o-save", { opacity: 0, scale: 1.15 },
+      { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" }, 1.94);
+    window.__timelines["outro"] = tl;
+  </script>
+</template>

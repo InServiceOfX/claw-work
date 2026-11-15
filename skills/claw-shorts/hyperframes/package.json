@@ -1,0 +1,17 @@
+{
+  "name": "claw-shorts-hyperframes",
+  "private": true,
+  "type": "module",
+  "description": "claw-shorts HyperFrames mode: example project and helpers. Renders locally; never posts.",
+  "scripts": {
+    "sfx": "sh scripts/sfx.sh",
+    "lint": "hyperframes lint",
+    "check": "hyperframes check",
+    "review": "hyperframes snapshot --review",
+    "render": "hyperframes render --output renders/raw.mp4"
+  },
+  "dependencies": {
+    "hyperframes": "0.9.50",
+    "uisfx": "0.4.0"
+  }
+}

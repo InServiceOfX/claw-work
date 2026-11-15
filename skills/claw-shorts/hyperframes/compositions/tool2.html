@@ -1,0 +1,65 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
+    #t2-stage { position: absolute; inset: 0; }
+    #t2-num { position: absolute; top: 322px; left: 126px; font-size: 200px; line-height: 0.85; color: var(--color-accent); }
+    #t2-title { position: absolute; top: 494px; left: 120px; font-size: 88px; line-height: 1; }
+    #t2-card { position: absolute; top: 600px; left: 120px; width: 768px; height: 236px; border-radius: 28px;
+      background: var(--color-panel); }
+    .t2-label { position: absolute; left: 34px; font-family: var(--font-mono), monospace; font-size: 30px; font-weight: 700; }
+    #t2-label-a { top: 18px; color: var(--color-muted); }
+    #t2-label-b { top: 124px; color: var(--color-accent); }
+    .t2-rail { position: absolute; left: 34px; width: 700px; height: 6px; border-radius: 3px; background: #2a3442; }
+    #t2-rail-a { top: 86px; }
+    #t2-rail-b { top: 192px; }
+    .t2-dot { position: absolute; left: 24px; width: 40px; height: 40px; border-radius: 50%; }
+    #t2-dot-a { top: 69px; background: var(--color-muted); }
+    #t2-dot-b { top: 175px; background: var(--color-accent); }
+    #t2-verdict { position: absolute; top: 18px; left: 190px; font-family: var(--font-mono), monospace;
+      font-size: 30px; font-weight: 700; color: #f87171; }
+    #t2-strike { position: absolute; top: 20px; left: -6px; width: 300px; height: 6px; background: #f87171;
+      transform-origin: 0% 50%; }
+    #t2-chips { position: absolute; top: 870px; left: 120px; display: flex; gap: 16px; }
+    .chip { padding: 8px 26px; border-radius: 999px; border: 3px solid var(--color-accent);
+      background: var(--color-panel); font-family: var(--font-mono), monospace; font-size: 34px; font-weight: 700; }
+  </style>
+  <div id="root" data-composition-id="tool2" data-width="1080" data-height="1920">
+    <div id="t2-stage">
+      <div id="t2-num">02</div>
+      <div id="t2-title">GSAP skills</div>
+      <div id="t2-card">
+        <div id="t2-label-a" class="t2-label">linear</div>
+        <div id="t2-verdict">looks generated<div id="t2-strike"></div></div>
+        <div id="t2-rail-a" class="t2-rail"></div>
+        <div id="t2-dot-a" class="t2-dot"></div>
+        <div id="t2-label-b" class="t2-label">expo.out</div>
+        <div id="t2-rail-b" class="t2-rail"></div>
+        <div id="t2-dot-b" class="t2-dot"></div>
+      </div>
+      <div id="t2-chips">
+        <div id="t2-chip-license" class="chip">MIT</div>
+        <div id="t2-chip-count" class="chip">8 agent skills</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // Blur swap in on the same stage (scene 1 blurred out).
+    tl.fromTo("#t2-stage", { opacity: 0, filter: "blur(8px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.16, ease: "power3.out" }, 0);
+    // Title per word from muted to ink on "GSAP skills" (0.48 s).
+    tl.fromTo("#t2-title", { color: "#9aa4b2" }, { color: "#ffffff", duration: 0.25, ease: "power2.out" }, 0.48);
+    tl.fromTo("#t2-chip-license", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.3);
+    tl.fromTo("#t2-chip-count", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "expo.out" }, 1.38);
+    tl.fromTo("#t2-card", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 1.9);
+    // The demonstration on "real easing" (3.12 s): same distance, same time, two eases.
+    tl.fromTo("#t2-dot-a", { x: 0 }, { x: 676, duration: 1.2, ease: "none" }, 3.12);
+    tl.fromTo("#t2-dot-b", { x: 0 }, { x: 676, duration: 1.2, ease: "expo.out" }, 3.12);
+    // "looks generated" appears and is struck through on "generated" (5.28 s).
+    tl.fromTo("#t2-verdict", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 4.6);
+    tl.fromTo("#t2-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, 5.28);
+    // Blur swap out.
+    tl.fromTo("#t2-stage", { opacity: 1 }, { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power2.in", immediateRender: false }, 6.0);
+    window.__timelines["tool2"] = tl;
+  </script>
+</template>
