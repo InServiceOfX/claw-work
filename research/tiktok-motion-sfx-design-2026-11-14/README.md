@@ -19,6 +19,7 @@ All links, licenses and star counts were checked on 2026-11-14. Video stats are 
 README.md          this index
 LINKS.md           only the extra links requested per video, verified
 BIBLIOGRAPHY.md    every verified link with its license
+EVALUATION-2026-11-14.md  hands-on results: what ran, what was adopted, corrections
 themes/            one write-up per video: walkthrough, links, licenses, verdicts
 transcripts/       cleaned spoken text from each video's captions
 screenshots/       3–5 readable stills per video (720 px wide)
@@ -43,3 +44,7 @@ screenshots/       3–5 readable stills per video (720 px wide)
 4. **A claw-dj `DESIGN.md` (04: Awesome Claude Design format) + Design Motion Principles (04)** — one brand file feeding both site and videos, plus an anti-slop motion audit.
 5. **Maybe later:** Remotion (free for individuals and companies up to 3 employees; Company License above that), huashu-motion (new; set `data-om-signature="off"` to remove the "Made with huashu-motion" signature), motion.dev / anime.js / shadcn charts / UI UX Pro Max / Taste Skill / Design.md Chrome for a landing page.
 6. **Skip:** the Claude Code Club paid community CTA (04), and the presenter-led video formats (02, 03, 04).
+
+## After installing them
+
+[EVALUATION-2026-11-14.md](EVALUATION-2026-11-14.md) records the hands-on test: HyperFrames was adopted as a claw-shorts mode (`skills/claw-shorts/hyperframes/`, local install preferred over Docker), uisfx is pinned for interface-like cues, and the DESIGN.md files turned out to live in `VoltAgent/awesome-design-md`.
