@@ -1,0 +1,8 @@
+<pdd-reason>Install current bundle per-user in ~/Applications/Personal Files</pdd-reason>
+<pdd-dependency>build_bash.prompt</pdd-dependency>
+<pdd-dependency>bundle_rust.prompt</pdd-dependency>
+Implement install.sh.
+Install current bundle per-user in ~/Applications/Personal Files.app. Refuse existing destination, build, ditto to a unique sibling staging directory, then invoke non-GUI exclusive atomic publication. MUST NOT overwrite/merge with an existing or concurrently installed app or require sudo. On failure retain staging with readable status.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.
+Honor PERSONAL_FILES_CACHE consistently with build.sh when reading the staged,
+verified cached bundle. The default remains the normal per-user cache.

@@ -1,0 +1,7 @@
+<pdd-reason>Rebuild then exec the cached app binary forwarding arguments, ensuring source changes cannot run a stale binary</pdd-reason>
+<pdd-dependency>build_bash.prompt</pdd-dependency>
+Implement launch.sh.
+Rebuild then exec the cached app binary forwarding arguments, ensuring source changes cannot run a stale binary. MUST NOT replace Finder or require sudo.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.
+Honor PERSONAL_FILES_CACHE consistently with build.sh; preserve literal argument
+forwarding and the existing rebuild-before-launch behavior.

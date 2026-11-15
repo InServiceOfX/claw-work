@@ -1,0 +1,15 @@
+<pdd-reason>Run formatting, warnings-denied Clippy, locked deterministic tests, explicit native fixture, native release bundle build and plist/signature checks</pdd-reason>
+<pdd-dependency>build_bash.prompt</pdd-dependency>
+Implement verify.sh.
+Run formatting, warnings-denied Clippy, locked deterministic tests, explicit native fixture, native release bundle build and plist/signature checks. MUST NOT claim foreground routing passed if the fixture reports it unverified.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.
+Run the isolated saved-tab native fixture and the full desktop/tiling fixture
+sequentially; neither replaces the other. Honor PERSONAL_FILES_CACHE and strictly
+verify the completed bundle. Deterministic tests include the synthetic packaging
+failure suite (Python 3 test dependency only).
+
+Run the synthetic native_new_windows_story desktop fixture sequentially before
+saved-tab and full native desktop/tiling fixtures. It must prove multiple actual
+visible NSWindows, independent state, focused command routing, shared settings
+and close/reopen isolation. Preserve strict existing checks and propagate any
+failure; do not claim a full pass when foreground tiling cannot run.

@@ -1,0 +1,6 @@
+<pdd-reason>Dispatch optional PATH, --help, --self-test and installer-only --install-bundle STAGED DESTINATION</pdd-reason>
+<pdd-dependency>library_rust.prompt</pdd-dependency>
+<pdd-dependency>native_rust.prompt</pdd-dependency>
+Implement src/main.rs.
+Dispatch optional PATH, --help, --self-test and installer-only --install-bundle STAGED DESTINATION. Reject unknown flags/extra arguments; CLI help and bundle publication MUST NOT initialize AppKit. Resolve relative CLI paths against process cwd. Native UI starts on initial thread.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.

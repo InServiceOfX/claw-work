@@ -1,0 +1,34 @@
+<pdd-reason>Testable asynchronous navigation independent of AppKit.</pdd-reason>
+<pdd-dependency>core_rust.prompt</pdd-dependency>
+Implement src/model.rs with Browser state and a single scan worker.
+R1 (MUST): Only successful latest navigation commits current location/history/
+visits; a file path opens parent and selects file. Bad paths retain current view.
+R2 (MUST): Back/forward/up, refresh preserving selection, directory poll refresh,
+sort toggles, favorites and history reset. Refresh MUST NOT inflate visit counts.
+R3 (MUST NOT): Display stale results, spawn unbounded workers, alter documents,
+or conflate automatic history with manual favorites. Expose errors for UI.
+R4 (MUST): Startup restore with Home fallback. Desktop fixtures can inject state.
+R5 (MUST): If an externally replaced directory becomes a file, refresh reports
+an error and retains the previous view, never showing its parent under an old path.
+R6 (MUST): TabbedBrowser manages independent per-tab snapshots of location, items,
+selection, navigation history/cursor, status, path draft and pending navigation.
+Share one Browser/preferences/worker. Opening/switching/closing tabs preserves
+shared settings, never adds visits by itself, invalidates stale replies, resumes
+a tab's pending navigation when activated and sorts restored items by that tab's
+sort key/direction. Closing the last tab signals the UI to close its window.
+R7 (MUST): Save ordered tab folders, independent sort choices and active index
+after successful navigation, sorting and tab lifecycle changes. Restore the
+session when launched without PATH; an explicit PATH starts one tab. Legacy
+settings without tabs restore last folder. Missing saved folders independently
+fall back to Home. Reuse one worker and reject stale replies; restoring/switching
+tabs does not increment visits. Never persist selection, unfinished path drafts
+or runtime navigation history across restarts. Failed navigation retains the
+last successfully displayed saved folder.
+
+R8 (MUST): Expose begin_connection() -> u64 and finish_connection(token,
+Result<PathBuf,String>) -> bool for platform connection work. Begin invalidates
+older scans and suspends polling without saving URL drafts. Finish only accepts
+the current generation; success requests ordinary asynchronous navigation,
+failure retains listing/history/saved path and shows an error. Any later
+navigation or tab transition invalidates the connection token, including a
+switch away and back; stale success/failure MUST NOT change the active view.

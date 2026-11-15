@@ -1,0 +1,93 @@
+<pdd-reason>Native macOS parity for the approved Ubuntu browsing story.</pdd-reason>
+<pdd-dependency>model_rust.prompt</pdd-dependency>
+Implement src/native.rs using Rust and native AppKit via Objective-C. main.rs is
+separately mapped by main_rust.prompt; keep both interfaces compatible.
+R1 (MUST): Resizable window, sidebar Places/Favorites/Recent/Frequent with full
+path tooltips, always-visible path field, back/forward/up/refresh/star/copy.
+Native multi-select table with Name/Modified/Size sorting and double-click/Return.
+R2 (MUST): Command+L/D/C/Shift+C/R, back/forward Command+[/], Command+Up.
+Path entry's native text copy MUST NOT be hijacked. Copy selection/current path
+to NSPasteboard; open documents with NSWorkspace URLs, never a shell.
+R3 (MUST): Context menus and local-directory drag/drop for favorites, URL export.
+Unavailable favorites removable. Drops MUST NOT move/delete or execute data.
+R4 (MUST): Silver/Midnight/Aurora/Automatic, validated NSImage background picker,
+remove background, shortcuts and clear-history menus. Invalid image retains prior.
+R5 (MUST): Main-thread AppKit, responsive single-worker-per-window scanning and stale result
+rejection; periodic metadata-only refresh without visits. Visible errors.
+R6 (MUST NOT): Telemetry, unsolicited network access, content inspection or
+source document mutations. Explicit SMB connections are allowed under R10.
+R7 (MUST): Native fixture mode uses temporary documents/preferences, exercises
+real controls, actual clipboard (restored afterward), callbacks, persistence,
+selection, appearance, drops, navigation and stale results; do not claim physical
+drag/default-app opening unless manually observed.
+R8 (MUST): Participate in native macOS window tiling and Apple's documented
+hotkeys for the OS version in use: Fill, Center, half-screen positioning, Return
+to Previous Size and supported multi-window arrangements. Preserve native
+dispatch with path-editor or file-list focus; MUST NOT reinterpret tiling keys
+as browsing/text actions, mutate browsing state/documents, override existing
+Command browsing shortcuts, or require global remapping/third-party tools.
+Keep controls usable at native permitted tiled sizes and avoid unnecessary
+window-sizing restrictions that prevent supported layouts. Desktop Fill is
+not full screen; do not invent shortcuts Apple marks unavailable or emulate
+unsupported OS features. Independent acceptance and version-specific hotkey
+matrix: user_stories/story__macos_window_tiling.md.
+Register the real NSApplication.windowsMenu so AppKit supplies its own tiling
+items/key equivalents. Submenu wrappers have no command action so native
+validation/key dispatch works. Do not synthesize a replacement window manager. Keep a
+compact usable minimum size/layout; verify OS-provided entries and window frames.
+R9 (MUST): Provide native AppKit tabs, File > New Tab and Command–T, Close Tab /
+Command–W (last closes window), and Control–Tab/Control–Shift–Tab. Tabs retain
+independent folder/history/selection/path draft/sorting, sharing favorites,
+visits/appearance and one
+scan worker through model TabbedBrowser. Tab switches MUST NOT increment visits,
+overwrite another tab's view with late results, mutate documents, or break
+native text editing. Native tab strip, add/close controls stay usable when tiled.
+Acceptance: user_stories/story__macos_tabs.md. Restore saved folder order,
+active index and independent sorts through the model. Verify actual restored
+NSTabView items and header callbacks with synthetic native preferences. Keep a
+separate saved-tab fixture so failures of OS tiling do not hide tab evidence;
+the existing full native/tiling fixture remains required and must still fail
+when its assertions do not pass. Run graphical fixture processes sequentially.
+Retain native_desktop.rs and native_tiling_test.rs as independent acceptance
+helpers. Geometry tests dispatch real OS actions from asynchronous outer-event-
+loop steps, assert complete frames (with native-margin tolerance), actual field-
+editor/list responder identities, non-fullscreen state and unchanged browse
+state. Key-equivalent synthesis is not a claim of physical keyboard coverage.
+
+R10 (MUST): Extend the always-visible full editable path bar to accept smb://
+URLs, and provide Go > Connect to Server… / Command–K with an address dialog.
+Use native NetFS/NetAuth with optional URL username and null password, allowing
+macOS authentication/share picker and saved Keychain credentials. Never read
+Keychain secrets or store passwords. Reject embedded passwords, query/fragment,
+invalid hosts/schemes and escaping subpaths without echoing URL contents; remove
+rejected URL text from the field. Accept server-only, share and nested-folder
+URLs, escaped spaces, Unicode and IP hosts. Use actual mountpoints returned by
+macOS, never a guessed /Volumes name; open first returned point if multiple.
+Show its POSIX subfolder path in the bar/list and retain ordinary local typing,
+folder opening, history, selection and favorites. One outstanding mount worker
+keeps NetFS off the main UI thread (Foundation parsing there is permitted);
+AppKit stays on main. Poll completion via the timer and Browser connection token;
+late results after local navigation or tab changes MUST NOT navigate the view.
+Report busy/cancel/failure visibly, preserving prior listing/history/preferences.
+No live-server/password fixtures. Test native timer delivery with injected
+synthetic mount results separately from real authentication acceptance.
+
+R11 (MUST): File > New Window / Command–N creates a separate visible NSWindow
+with one tab at the current successful folder, preserving the source window's
+selection, tabs, history and path draft. Independent window contexts own their
+TabbedBrowser, display/widgets, render/tab guards, displayed path, scan worker,
+connection receiver and timer. Route delegate/table callbacks to their owning
+window; shared menu actions route to the focused live window. Restore context
+after nested callbacks; background timer work must not steal command focus.
+Shared favorites, visits and appearance propagate between windows before saves
+without overwriting their independent folder/tab/sort/session data. Refresh
+shared UI without erasing drafts. Closing any window invalidates its timer,
+drops its browser/connection receiver and leaves other windows usable, including
+when the original closes. Command–W closes a tab or its last tab's window;
+closing the last window leaves New Window available. Command–Q quits normally.
+Retain last-saved single-window tab-session persistence; all-window restoration
+is not required. Never use personal preferences/documents in fixtures. Test
+real visible NSWindows, focused menu routing, independent tabs/folders/drafts/
+selection/connection replies, shared preferences, original/secondary close and
+New Window after last close. Keep existing tiling/SMB/tab tests intact.
+Acceptance: user_stories/story__macos_new_windows.md.

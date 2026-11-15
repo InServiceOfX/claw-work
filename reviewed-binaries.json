@@ -1414,6 +1414,46 @@
       "sha256": "b32a2cf1ea9eee4d536362bb804cad03c50a0d46bd7ff4e65713babb5a7885a2",
       "max_bytes": 141497,
       "note": "Public YouTube Shorts screenshot"
+    },
+    "Rust/personal-files/assets/icons/128.png": {
+      "sha256": "c096fdb26bcd125992033b5df59b03ef2bc1c14853e4320003026a372677d9e6",
+      "max_bytes": 6439,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/16.png": {
+      "sha256": "13a20ca54e51fcebc34c5933c95841c895fdf0bab18b979104674cd6df49a361",
+      "max_bytes": 631,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/24.png": {
+      "sha256": "f42739daa45688147d86bfcc3204337470c5557b35691c4bf8625cdf2ab82512",
+      "max_bytes": 1045,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/256.png": {
+      "sha256": "ab58faa20751661d6e8eb2c330a4e38ee1caba1e7cc3ea47e8c94f531eb00675",
+      "max_bytes": 14092,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/32.png": {
+      "sha256": "c932be668bb0e3ad0c5318a9b56a701e30f34d2e5524a7ca7a14274f20446381",
+      "max_bytes": 1429,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/48.png": {
+      "sha256": "4dc700ab9f795900bc29400f5d7d755630e98d2070d4f76de8f119bc3dd667b0",
+      "max_bytes": 2307,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/512.png": {
+      "sha256": "efb4604e26370c07587dfdc531ddaafa50682392b519ce1974ac3aa30549dd75",
+      "max_bytes": 33917,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
+    },
+    "Rust/personal-files/assets/icons/64.png": {
+      "sha256": "d80e5ac62db7a9bc5a3be7df71fd57de57113c1ec7ce2e61907fe7fcbb68a511",
+      "max_bytes": 3036,
+      "note": "Existing public Personal Files folder/star app icon derived from the tracked SVG; reviewed PNG format and no embedded text, EXIF or personal metadata."
     }
   }
 }

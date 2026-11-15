@@ -1,0 +1,18 @@
+<pdd-reason>Port the proven Ubuntu filesystem semantics to macOS without GTK.</pdd-reason>
+<pdd-interface>{"type":"module","module":{"functions":[{"name":"location","signature":"(&str, &Path) -> io::Result<PathBuf>"},{"name":"entries","signature":"(&Path) -> io::Result<Vec<Entry>>"},{"name":"clipboard_text","signature":"(&[PathBuf], bool) -> String"}]}}</pdd-interface>
+Implement src/core.rs, preserving the public Ubuntu core API and accepted story.
+R1 (MUST): Resolve absolute/tilde/relative paths lexically, preserve symlinks,
+include hidden/broken entries; sortable Name/Modified/Size, folders first.
+R2 (MUST NOT): Execute path input or mutate source documents, recurse for sizes.
+R3 (MUST): Literal plain/individually POSIX-quoted paths with injection tests.
+R4 (MUST): Save Favorites/visits/last path/sort/theme/image privately atomically
+at ~/Library/Application Support/Personal Files/preferences.json, mode 0600,
+bounded 200 visits; Recent 7, Frequent 5; favorites never implicitly changed.
+R5 (MUST): Preserve invalid state as backup before recovery; visible errors;
+temporary-save failure must leave valid state intact.
+R6 (MUST NOT): Replace an existing preferences file with defaults after a read
+failure. Block all storage-layer saves until successful reload; surface the error.
+R7 (MUST): Persist ordered tab folder paths, per-tab sort key/direction and active
+index, compatible with the recovered tabs/active_tab schema and legacy settings
+without tabs. Filter relative saved tab paths and bound the active index without
+discarding valid favorites; retain missing absolute paths for startup fallback.

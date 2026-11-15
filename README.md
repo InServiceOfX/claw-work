@@ -18,6 +18,10 @@ and [public/privacy boundary](PRIVACY.md).
   browser in Rust and GTK 3. Favorites, recent and frequent places, tabs, path
   copy, and local skins. Per-user install; it does not replace the system file
   manager.
+- [Personal Files for macOS](Rust/personal-files-macos/README.md): native Rust
+  and AppKit file browser with editable paths, SMB/Keychain integration, tabs,
+  independent windows and standard macOS tiling. Per-user application bundle;
+  separate from the Ubuntu version.
 - [Lean agent toolkit](Rust/lean-agent/README.md): mathlib-enabled Docker environment,
   Rust-first isolated proof checking and mathematical code-review workflows.
   [Local setup for Claude Code, Codex, Grok Build, Hermes and Pi](Rust/lean-agent/docs/SETUP.md)

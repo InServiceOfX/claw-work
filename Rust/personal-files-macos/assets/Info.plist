@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleName</key><string>Personal Files</string>
+<key>CFBundleDisplayName</key><string>Personal Files</string>
+<key>CFBundleIdentifier</key><string>io.monoclaw.PersonalFiles.macOS</string>
+<key>CFBundleExecutable</key><string>personal-files-macos</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleShortVersionString</key><string>0.2.0</string>
+<key>CFBundleVersion</key><string>2</string>
+<key>CFBundleIconFile</key><string>PersonalFiles</string>
+<key>LSMinimumSystemVersion</key><string>11.0</string>
+<key>NSHighResolutionCapable</key><true/>
+<key>NSPrincipalClass</key><string>NSApplication</string>
+<key>NSDocumentsFolderUsageDescription</key><string>Browse folders you choose in Personal Files.</string>
+<key>NSDesktopFolderUsageDescription</key><string>Browse your Desktop when you choose it.</string>
+<key>NSDownloadsFolderUsageDescription</key><string>Browse your Downloads when you choose it.</string>
+</dict></plist>

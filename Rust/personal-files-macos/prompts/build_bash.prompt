@@ -1,0 +1,22 @@
+<pdd-reason>Reproducible native Mac packaging without sudo.</pdd-reason>
+Implement build.sh with assets/Info.plist as static bundle metadata. Separate
+launch/install/verify/bundle prompts own their mapped outputs and share this
+packaging contract; do not silently regenerate those outputs from this unit.
+R1 (MUST): Locked release builds outside source in user cache, honor target dir;
+explicitly build/package the native host target so Cargo target configuration
+cannot silently select a stale binary.
+R2 (MUST): .app with correct binary, identifier, icon and macOS metadata;
+launch accepts optional PATH; per-user ~/Applications install, never Finder.
+R3 (MUST NOT): Silently overwrite an existing installed application or require sudo.
+Stage the full bundle, then publish by atomic exclusive rename. A concurrent
+install or failed copy must leave the installed application untouched. Rust
+src/bundle.rs and main.rs supply a non-GUI --install-bundle helper for publication.
+R4 (MUST): Verification runs deterministic tests, clippy, formatting and explicit
+real native fixture opt-in. Missing GUI must fail rather than silently skip.
+R5 (MUST): Build the cached app in a unique sibling staging directory, validate
+its plist, sign and strictly verify it before publishing. Build/copy/sign/check
+failures retain the previous cached app unchanged. If publication fails after
+moving the previous app aside, restore it without overwriting a concurrent app;
+retain and report its recovery location if restoration cannot safely publish.
+Never merge bundle directories. Honor PERSONAL_FILES_CACHE for isolated checks;
+normal per-user installation continues to refuse existing destinations.

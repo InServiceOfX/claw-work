@@ -1,0 +1,91 @@
+[
+  {
+    "filename": "core_rust.prompt",
+    "filepath": "src/core.rs",
+    "dependencies": [],
+    "description": "Private places, unreadable-preferences protection and compatible saved-tab schema"
+  },
+  {
+    "filename": "model_rust.prompt",
+    "filepath": "src/model.rs",
+    "dependencies": [
+      "core_rust.prompt"
+    ],
+    "description": "Single-worker navigation, ordered tab-session restoration and independent tab sorting"
+  },
+  {
+    "filename": "native_rust.prompt",
+    "filepath": "src/native.rs",
+    "dependencies": [
+      "model_rust.prompt"
+    ],
+    "description": "Native AppKit browser"
+  },
+  {
+    "filename": "build_bash.prompt",
+    "filepath": "build.sh",
+    "dependencies": [
+      "native_rust.prompt"
+    ],
+    "description": "Stage, validate, sign and verify cached macOS app bundles before safe publication"
+  },
+  {
+    "filename": "appearance_rust.prompt",
+    "filepath": "src/appearance.rs",
+    "dependencies": [
+      "core_rust.prompt"
+    ],
+    "description": "Classify Automatic theme using file extensions only; honor explicit Silver/Midnight/Aurora. Picture majority selects Aurora, code majority Midnight, mixed/empty Silver. MUST NOT inspect document contents."
+  },
+  {
+    "filename": "library_rust.prompt",
+    "filepath": "src/lib.rs",
+    "dependencies": [
+      "core_rust.prompt",
+      "model_rust.prompt",
+      "appearance_rust.prompt",
+      "bundle_rust.prompt"
+    ],
+    "description": "Expose core, appearance, model and bundle modules without AppKit initialization, so deterministic tests can run without a display."
+  },
+  {
+    "filename": "main_rust.prompt",
+    "filepath": "src/main.rs",
+    "dependencies": [
+      "library_rust.prompt",
+      "native_rust.prompt"
+    ],
+    "description": "Dispatch optional PATH, --help, --self-test and installer-only --install-bundle STAGED DESTINATION. Reject unknown flags/extra arguments; CLI help and bundle publication MUST NOT initialize AppKit. Resolve relative CLI paths against process cwd. Native UI starts on initial thread."
+  },
+  {
+    "filename": "bundle_rust.prompt",
+    "filepath": "src/bundle.rs",
+    "dependencies": [],
+    "description": "Publish a complete staged bundle with Darwin renamex_np RENAME_EXCL. Atomic collision failure MUST NOT replace, merge or alter either staged or installed bundle. Return io::Result; non-macOS reports Unsupported. Preserve collision regression tests."
+  },
+  {
+    "filename": "install_bash.prompt",
+    "filepath": "install.sh",
+    "dependencies": [
+      "build_bash.prompt",
+      "bundle_rust.prompt"
+    ],
+    "description": "Install current bundle per-user in ~/Applications/Personal Files.app. Refuse existing destination, build, ditto to a unique sibling staging directory, then invoke non-GUI exclusive atomic publication. MUST NOT overwrite/merge with an existing or concurrently installed app or require sudo. On failure retain staging with readable status."
+  },
+  {
+    "filename": "launch_bash.prompt",
+    "filepath": "launch.sh",
+    "dependencies": [
+      "build_bash.prompt"
+    ],
+    "description": "Rebuild then exec the cached app binary forwarding arguments, ensuring source changes cannot run a stale binary. MUST NOT replace Finder or require sudo."
+  },
+  {
+    "filename": "verify_bash.prompt",
+    "filepath": "verify.sh",
+    "dependencies": [
+      "build_bash.prompt"
+    ],
+    "description": "Run formatting, warnings-denied Clippy, locked deterministic tests, explicit native fixture, native release bundle build and plist/signature checks. MUST NOT claim foreground routing passed if the fixture reports it unverified."
+  }
+]

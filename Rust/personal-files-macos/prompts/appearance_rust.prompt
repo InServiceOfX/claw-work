@@ -1,0 +1,5 @@
+<pdd-reason>Classify Automatic theme using file extensions only; honor explicit Silver/Midnight/Aurora</pdd-reason>
+<pdd-dependency>core_rust.prompt</pdd-dependency>
+Implement src/appearance.rs.
+Classify Automatic theme using file extensions only; honor explicit Silver/Midnight/Aurora. Picture majority selects Aurora, code majority Midnight, mixed/empty Silver. MUST NOT inspect document contents.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.

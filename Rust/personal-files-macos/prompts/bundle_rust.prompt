@@ -1,0 +1,5 @@
+<pdd-reason>Publish a complete staged bundle with Darwin renamex_np RENAME_EXCL</pdd-reason>
+
+Implement src/bundle.rs.
+Publish a complete staged bundle with Darwin renamex_np RENAME_EXCL. Atomic collision failure MUST NOT replace, merge or alter either staged or installed bundle. Return io::Result; non-macOS reports Unsupported. Preserve collision regression tests.
+Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.
