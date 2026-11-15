@@ -87,6 +87,15 @@ but failed at the local model request. Artifacts were maintained directly;
 automatic sync, generated contracts and semantic detection are not claimed.
 See docs/VERIFICATION.md for final verification and installation evidence.
 
+## App icon — 2026-11-14
+
+The launcher was showing Yaru's generic gear because the desktop entry named a
+theme icon the running shell was not drawing. The mark is now a blue-to-teal
+rounded tile with a cream folder, gold tab, and indigo star
+(`assets/personal-files.svg`, PNG sizes in `assets/icons/`). Install copies
+those sizes into hicolor and points the desktop entry at the 512 PNG. The
+window uses the bundled 128 PNG.
+
 Final verification: 27 deterministic tests plus the explicit isolated GTK story
 pass; fmt, strict Clippy, Bash syntax, prompt graph and Desktop Entry pass.
 Installed release c4927dcf matches the build; desktop search and actual isolated

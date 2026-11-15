@@ -1,6 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <defs><linearGradient id="folder" x2="0" y2="1"><stop stop-color="#64beff"/><stop offset="1" stop-color="#3979df"/></linearGradient></defs>
-  <path d="M14 24h35l12 12h49a8 8 0 0 1 8 8v58a10 10 0 0 1-10 10H20a10 10 0 0 1-10-10V32a8 8 0 0 1 4-8z" fill="#2459ab"/>
-  <rect x="10" y="42" width="108" height="70" rx="10" fill="url(#folder)"/>
-  <path d="m65 53 6 14 15 2-12 10 3 15-12-8-13 8 3-15-12-10 16-2z" fill="#fff" fill-opacity=".95"/>
+  <defs>
+    <linearGradient id="bg" x1="12" y1="0" x2="116" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4c8dff"/>
+      <stop offset="0.46" stop-color="#1d3f86"/>
+      <stop offset="1" stop-color="#0e7c78"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="64" y1="40" x2="64" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#f3e4c8"/>
+    </linearGradient>
+    <linearGradient id="tab" x1="47" y1="36" x2="47" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe7b0"/>
+      <stop offset="1" stop-color="#e39a2b"/>
+    </linearGradient>
+    <clipPath id="tile">
+      <rect width="128" height="128" rx="28"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#tile)">
+    <rect width="128" height="128" fill="url(#bg)"/>
+    <ellipse cx="42" cy="6" rx="80" ry="44" fill="#ffffff" opacity="0.18"/>
+    <path d="M30 54V48a6 6 0 0 1 6-6h22a6 6 0 0 1 6 6v6h30a10 10 0 0 1 10 10v28a10 10 0 0 1-10 10H34a10 10 0 0 1-10-10V64a10 10 0 0 1 10-10z" fill="#07182c" opacity="0.28" transform="translate(0 3)"/>
+    <path d="M30 52V46a6 6 0 0 1 6-6h22a6 6 0 0 1 6 6v6h30a10 10 0 0 1 10 10v28a10 10 0 0 1-10 10H34a10 10 0 0 1-10-10V62a10 10 0 0 1 10-10z" fill="url(#paper)"/>
+    <path d="M30 52V46a6 6 0 0 1 6-6h22a6 6 0 0 1 6 6v6z" fill="url(#tab)"/>
+    <polygon points="64.00,61.50 67.76,71.82 78.74,72.21 70.09,78.98 73.11,89.54 64.00,83.40 54.89,89.54 57.91,78.98 49.26,72.21 60.24,71.82" fill="#1c4f9a"/>
+  </g>
 </svg>
