@@ -17,7 +17,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
-    <!-- Version B, "Bug. Fix. Receipts.": HyperFrames.
+    <!-- Version B, "Bug. Fix. Test.": HyperFrames.
          Times come from assets/transcript.json (narration.txt read by VoxCPM2). See PLAN.md. -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
     <style>
@@ -37,7 +37,7 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="43.3" data-width="1080" data-height="1920">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="41.1" data-width="1080" data-height="1920">
       <div id="ground" data-layout-ignore></div>
 
       <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html"
@@ -50,25 +50,25 @@
         data-start="14.45" data-duration="4.55" data-track-index="1" data-track-kind="graphics"
         data-width="1080" data-height="1920"></div>
       <div id="timing" data-composition-id="timing" data-composition-src="compositions/timing.html"
-        data-start="19.0" data-duration="8.85" data-track-index="1" data-track-kind="graphics"
+        data-start="18.95" data-duration="9.45" data-track-index="1" data-track-kind="graphics"
         data-width="1080" data-height="1920"></div>
-      <div id="receipt" data-composition-id="receipt" data-composition-src="compositions/receipt.html"
-        data-start="27.85" data-duration="5.45" data-track-index="1" data-track-kind="graphics"
+      <div id="report" data-composition-id="report" data-composition-src="compositions/report.html"
+        data-start="28.4" data-duration="5.4" data-track-index="1" data-track-kind="graphics"
         data-width="1080" data-height="1920"></div>
       <div id="cta" data-composition-id="cta" data-composition-src="compositions/cta.html"
-        data-start="33.3" data-duration="10.0" data-track-index="1" data-track-kind="graphics"
+        data-start="33.8" data-duration="7.3" data-track-index="1" data-track-kind="graphics"
         data-width="1080" data-height="1920"></div>
 
-      <!-- Signature: BUG / FIX / RECEIPTS tracker over the scenes until the end card. -->
+      <!-- Signature: BUG / FIX / TEST tracker over the scenes until the end card. -->
       <div id="steps" data-composition-id="steps" data-composition-src="compositions/steps.html"
-        data-start="0" data-duration="33.3" data-track-index="2" data-track-kind="graphics"
+        data-start="0" data-duration="33.8" data-track-index="2" data-track-kind="graphics"
         data-width="1080" data-height="1920"></div>
 
       <div id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html"
-        data-start="0" data-duration="43.3" data-track-index="3" data-track-kind="captions"
+        data-start="0" data-duration="41.1" data-track-index="3" data-track-kind="captions"
         data-width="1080" data-height="1920"></div>
 
-      <audio id="narration" class="clip" data-start="0" data-duration="41.8" data-track-index="4" data-volume="1"
+      <audio id="narration" class="clip" data-start="0" data-duration="39.5" data-track-index="4" data-volume="1"
         src="assets/narration.wav"></audio>
 
       <!-- uisfx CC0 cues: start = picture time + 1 frame - the cue's peak. -->
@@ -77,15 +77,15 @@
       <audio id="sfx-cut-1" class="clip" data-start="9.691" data-duration="0.686" data-track-index="5" data-volume="0.5" src="assets/sfx/swipe-cinematic.mp3"></audio>
       <audio id="sfx-cut-2" class="clip" data-start="14.463" data-duration="0.334" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-studio.mp3"></audio>
       <audio id="sfx-fixed" class="clip" data-start="17.629" data-duration="0.595" data-track-index="5" data-volume="0.45" src="assets/sfx/success-studio.mp3"></audio>
-      <audio id="sfx-cut-3" class="clip" data-start="18.996" data-duration="0.498" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-soft.mp3"></audio>
-      <audio id="sfx-bar" class="clip" data-start="26.827" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
-      <audio id="sfx-cut-4" class="clip" data-start="27.841" data-duration="0.686" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-cinematic.mp3"></audio>
-      <audio id="sfx-total" class="clip" data-start="30.617" data-duration="1.224" data-track-index="5" data-volume="0.45" src="assets/sfx/complete-cinematic.mp3"></audio>
-      <audio id="sfx-note" class="clip" data-start="31.347" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
-      <audio id="sfx-cut-5" class="clip" data-start="33.313" data-duration="0.334" data-track-index="5" data-volume="0.5" src="assets/sfx/swipe-studio.mp3"></audio>
-      <audio id="sfx-sign-bug" class="clip" data-start="33.467" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
-      <audio id="sfx-sign-fix" class="clip" data-start="34.507" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
-      <audio id="sfx-sign-rec" class="clip" data-start="35.787" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-cut-3" class="clip" data-start="18.946" data-duration="0.498" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-soft.mp3"></audio>
+      <audio id="sfx-bar" class="clip" data-start="27.307" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-cut-4" class="clip" data-start="28.391" data-duration="0.686" data-track-index="6" data-volume="0.5" src="assets/sfx/swipe-cinematic.mp3"></audio>
+      <audio id="sfx-total" class="clip" data-start="31.297" data-duration="1.224" data-track-index="5" data-volume="0.45" src="assets/sfx/complete-cinematic.mp3"></audio>
+      <audio id="sfx-note" class="clip" data-start="31.947" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-cut-5" class="clip" data-start="33.813" data-duration="0.334" data-track-index="5" data-volume="0.5" src="assets/sfx/swipe-studio.mp3"></audio>
+      <audio id="sfx-sign-bug" class="clip" data-start="34.347" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-sign-fix" class="clip" data-start="34.987" data-duration="0.195" data-track-index="5" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
+      <audio id="sfx-sign-test" class="clip" data-start="35.787" data-duration="0.195" data-track-index="6" data-volume="0.5" src="assets/sfx/snap-studio.mp3"></audio>
     </div>
     <script>
       const tl = gsap.timeline({ paused: true });

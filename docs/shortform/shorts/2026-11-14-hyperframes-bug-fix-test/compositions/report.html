@@ -1,7 +1,7 @@
 <template>
   <style>
     #root { position: absolute; inset: 0; font-family: var(--font-display), sans-serif; color: var(--color-ink); }
-    /* A printer slot; the receipt feeds out of it one line per spoken fact. */
+    /* A printer slot; the test report feeds out of it one line per spoken fact. */
     #r-slot { position: absolute; top: 296px; left: 110px; width: 688px; height: 22px; border-radius: 11px;
       background: #2a3442; }
     #r-window { position: absolute; top: 307px; left: 134px; width: 640px; height: 540px; }
@@ -17,11 +17,11 @@
     #r-total { font-size: 34px; font-weight: 700; }
     #r-note { margin-top: 6px; color: #8a5a00; font-weight: 700; }
   </style>
-  <div id="root" data-composition-id="receipt" data-width="1080" data-height="1920">
+  <div id="root" data-composition-id="report" data-width="1080" data-height="1920">
     <div id="r-window" data-layout-allow-overflow data-layout-allow-safe-zone>
       <div id="r-paper">
         <div class="r-head">CLAW-WORK SHORTS</div>
-        <div class="r-head">RECEIPT 2026-11-14</div>
+        <div class="r-head">TEST REPORT 2026-11-14</div>
         <div class="r-rule"></div>
         <div id="r-1" class="r-row"><span>safe-area check</span><b>0 warn</b></div>
         <div id="r-2" class="r-row"><span>word timing</span><b>2.5 s</b></div>
@@ -29,7 +29,7 @@
         <div id="r-4" class="r-row"><span>license</span><b>Apache-2.0</b></div>
         <div id="r-5" class="r-row"><span>runs on</span><b>your Mac</b></div>
         <div class="r-rule"></div>
-        <div id="r-total" class="r-row"><span>TOTAL</span><span>$0.00</span></div>
+        <div id="r-total" class="r-row"><span>COST</span><span>$0.00</span></div>
         <div class="r-rule"></div>
         <div id="r-note">telemetry: set it off</div>
       </div>
@@ -38,16 +38,16 @@
   </div>
   <script>
     // Scene-local anchor times from the transcript; filled per voice take.
-    const A = { apache: 0.99, local: 2.35, total: 2.75, catchWord: 3.47 };
+    const A = { apache: 1.04, local: 2.48, total: 2.88, catchWord: 3.52 };
     const tl = gsap.timeline({ paused: true });
-    // The receipt prints header first: a mask on the window opens downward, one row per spoken fact.
-    // 540 px paper; rows end at 273 (render), 317 (license), 361 (runs on), 428 (total), 540 (note + edge).
+    // The report prints header first: a mask on the window opens downward, one row per spoken fact.
+    // 540 px paper; rows end at 273 (render), 317 (license), 361 (runs on), 428 (cost), 540 (note + edge).
     tl.fromTo("#r-window", { clipPath: "inset(0px 0px 540px 0px)" },
       { clipPath: "inset(0px 0px 267px 0px)", duration: 0.6, ease: "power1.out" }, 0.05);       // header + check + timing + render
     tl.to("#r-window", { clipPath: "inset(0px 0px 223px 0px)", duration: 0.25, ease: "power1.out" }, A.apache);   // license
     tl.to("#r-window", { clipPath: "inset(0px 0px 179px 0px)", duration: 0.25, ease: "power1.out" }, A.local);    // runs on
-    tl.to("#r-window", { clipPath: "inset(0px 0px 112px 0px)", duration: 0.3, ease: "power1.out" }, A.total);     // total
+    tl.to("#r-window", { clipPath: "inset(0px 0px 112px 0px)", duration: 0.3, ease: "power1.out" }, A.total);     // cost
     tl.to("#r-window", { clipPath: "inset(0px 0px 0px 0px)", duration: 0.35, ease: "power1.out" }, A.catchWord); // the note
-    window.__timelines["receipt"] = tl;
+    window.__timelines["report"] = tl;
   </script>
 </template>

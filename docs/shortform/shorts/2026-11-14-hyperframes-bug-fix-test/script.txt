@@ -4,8 +4,8 @@ The fix is HyperFrames. You write the video in HTML, and it renders on your own 
 
 It checks every frame against TikTok, Reels and Shorts. That's how it caught mine.
 
-Now the receipts. It timed every word of a 25-second voiceover in 2.5 seconds. A 27-second short rendered in under 14 seconds.
+Then I tested it. It timed every word of a 25-second voiceover in 2.5 seconds. A 27-second short rendered in under 14 seconds.
 
 It's free, Apache 2, and local. One catch: turn telemetry off.
 
-Bug. Fix. Receipts. The template is on our GitHub. Save this for your next short.
+Find the bug. Fix it. Test it. The template is on our GitHub. Save this for your next short.

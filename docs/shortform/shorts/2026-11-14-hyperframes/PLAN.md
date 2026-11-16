@@ -1,6 +1,6 @@
 # Short (version A): "My captions were hiding under TikTok's buttons" (HyperFrames, fact or hype)
 
-Version B, in our own format, is `../2026-11-14-hyperframes-receipts/`. This
+Version B, in our own format, is `../2026-11-14-hyperframes-bug-fix-test/`. This
 version borrows @itstundealao's "Fact or Hype?" phrase: credit the format in the
 post caption.
 
