@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>claw-shorts | Free Tools for Vertical Short-Form Video</title>
+  <meta name="description" content="Free open-source tools for creating launch videos, checking safe zones, and converting terminal recordings to vertical Shorts. No accounts, works offline.">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "claw-shorts",
+    "description": "Free open-source tools for creating vertical short-form videos. Plan launch videos, check caption safe zones, and convert terminal recordings to 9:16 MP4s.",
+    "url": "https://PLACEHOLDER_BASE_URL/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://PLACEHOLDER_BASE_URL/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="tools/planner.html">Planner</a></li>
+        <li><a href="tools/safe-zones.html">Safe Zones</a></li>
+        <li><a href="tools/command-builder.html">Command Builder</a></li>
+        <li><a href="pages/launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <header style="text-align: center; margin-bottom: 3rem;">
+      <h1>claw-shorts</h1>
+      <p class="text-muted" style="font-size: 1.25rem; max-width: 600px; margin: 0 auto;">
+        Free tools for making launch videos for dev tools and indie apps.
+        No accounts, no tracking, works offline.
+      </p>
+    </header>
+
+    <section>
+      <h2>Tools</h2>
+      <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <a href="tools/planner.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title" style="color: var(--accent);">Launch Shorts Planner</h3>
+          <p>
+            Paste your README and get a 5-Short launch plan: hooks, shot list,
+            captions, and <code>claw_shorts.py</code> render commands.
+          </p>
+        </a>
+
+        <a href="tools/safe-zones.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title" style="color: var(--accent);">Safe Zone Checker</h3>
+          <p>
+            Drop a frame to see caption danger zones for YouTube Shorts, TikTok,
+            and Instagram Reels. Keep text in the green zone.
+          </p>
+        </a>
+
+        <a href="tools/command-builder.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title" style="color: var(--accent);">Command Builder</h3>
+          <p>
+            Generate ffmpeg and agg commands to convert terminal recordings and
+            screen captures to 1080×1920 vertical videos.
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <section style="margin-top: 3rem;">
+      <h2>Guides</h2>
+      <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <a href="pages/launch-video.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title">How to Make a Launch Video for a GitHub Repo</h3>
+          <p class="text-muted">
+            Step-by-step guide to creating a 5-Short launch series for your
+            open source project.
+          </p>
+        </a>
+
+        <a href="pages/safe-zones.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title">Safe Zones for Captions</h3>
+          <p class="text-muted">
+            Caption and text placement guide for YouTube Shorts, TikTok, and
+            Instagram Reels.
+          </p>
+        </a>
+
+        <a href="pages/terminal-to-short.html" class="card" style="text-decoration: none; color: inherit;">
+          <h3 class="card-title">Terminal Recording to Vertical MP4</h3>
+          <p class="text-muted">
+            Convert asciinema recordings to 9:16 videos with agg and ffmpeg.
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <section style="margin-top: 3rem;">
+      <h2>About</h2>
+      <p>
+        claw-shorts is a free, open-source toolkit for creating vertical short-form
+        videos (YouTube Shorts, TikTok, Reels). It's designed for developers and
+        indie makers who want to promote their projects without learning video editing.
+      </p>
+      <p>
+        These web tools work entirely in your browser—no data is sent to any server.
+        For rendering videos locally, use the
+        <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw_shorts.py</a>
+        Python script or the Rust tools in the claw-work repository.
+      </p>
+      <h3>Features</h3>
+      <ul>
+        <li>Generate launch video plans from README files</li>
+        <li>Check caption safe zones for all major platforms</li>
+        <li>Build ffmpeg commands for scaling, padding, and captioning</li>
+        <li>Convert terminal recordings (asciinema) to vertical videos</li>
+        <li>No accounts, no cloud services, no tracking</li>
+        <li>MIT licensed, fully open source</li>
+      </ul>
+      <h3>Get the Full Toolkit</h3>
+      <pre><code>git clone https://github.com/InServiceOfX/claw-work.git
+cd claw-work/skills/claw-shorts
+
+# Check dependencies
+python3 scripts/claw_shorts.py doctor
+
+# List available templates
+python3 scripts/claw_shorts.py templates</code></pre>
+    </section>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">Source on GitHub</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+</body>
+</html>

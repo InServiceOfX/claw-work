@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Turn a Terminal Recording into a Vertical MP4 | claw-shorts</title>
+  <meta name="description" content="Convert asciinema terminal recordings to 9:16 vertical videos for YouTube Shorts, TikTok, and Reels using agg and ffmpeg.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Turn a Terminal Recording into a Vertical MP4",
+    "description": "Convert an asciinema .cast file to a 1080x1920 vertical video suitable for YouTube Shorts, TikTok, and Instagram Reels.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Record with asciinema",
+        "text": "Use asciinema rec to capture your terminal session to a .cast file."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Convert to GIF with agg",
+        "text": "Use agg (asciinema GIF generator) to render the cast to an animated GIF."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Convert GIF to MP4 with ffmpeg",
+        "text": "Scale and pad the GIF to 1080x1920 using ffmpeg."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Add hook and CTA (optional)",
+        "text": "Use claw_shorts.py terminal_typer template to add hook and CTA cards."
+      }
+    ],
+    "tool": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "asciinema",
+        "url": "https://asciinema.org/"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "agg",
+        "url": "https://github.com/asciinema/agg"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "ffmpeg",
+        "url": "https://ffmpeg.org/"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="../tools/planner.html">Planner</a></li>
+        <li><a href="../tools/safe-zones.html">Safe Zones</a></li>
+        <li><a href="../tools/command-builder.html">Command Builder</a></li>
+        <li><a href="launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <h1>How to Turn a Terminal Recording into a Vertical MP4</h1>
+      
+      <p>
+        Terminal demos are perfect for dev-tool Shorts: quick, focused, and
+        immediately useful. This guide shows how to convert an asciinema
+        recording to a 1080×1920 vertical MP4 ready for YouTube Shorts, TikTok,
+        and Instagram Reels.
+      </p>
+
+      <h2>Prerequisites</h2>
+      <ul>
+        <li><a href="https://asciinema.org/" target="_blank" rel="noopener">asciinema</a> — terminal recorder</li>
+        <li><a href="https://github.com/asciinema/agg" target="_blank" rel="noopener">agg</a> — asciinema GIF generator</li>
+        <li><a href="https://ffmpeg.org/" target="_blank" rel="noopener">ffmpeg</a> — video encoder</li>
+      </ul>
+      <pre><code># macOS
+brew install asciinema ffmpeg
+cargo install --git https://github.com/asciinema/agg
+
+# Ubuntu/Debian
+sudo apt install asciinema ffmpeg
+cargo install --git https://github.com/asciinema/agg</code></pre>
+
+      <h2>Step 1: Record Your Terminal</h2>
+      <p>
+        Use asciinema to capture your session:
+      </p>
+      <pre><code>asciinema rec demo.cast</code></pre>
+      <p>
+        Tips for a good recording:
+      </p>
+      <ul>
+        <li>Clear your terminal first (<code>clear</code> or <code>Ctrl+L</code>)</li>
+        <li>Use a simple prompt (hide long paths)</li>
+        <li>Type at a readable pace—you can speed up later</li>
+        <li>Keep it under 60 seconds for Shorts</li>
+        <li>Press <code>Ctrl+D</code> or type <code>exit</code> to stop</li>
+      </ul>
+
+      <h2>Step 2: Convert to GIF with agg</h2>
+      <p>
+        agg renders the cast file to an animated GIF. Use vertical-friendly settings:
+      </p>
+      <pre><code>agg \
+  --cols 60 \
+  --rows 40 \
+  --font-size 24 \
+  demo.cast \
+  demo.gif</code></pre>
+      <p>
+        These settings create a narrower, taller terminal view that fits better
+        in a 9:16 frame. Adjust <code>--rows</code> if your demo needs more
+        vertical space.
+      </p>
+
+      <h2>Step 3: Convert GIF to Vertical MP4</h2>
+      <p>
+        Use ffmpeg to scale and pad the GIF to 1080×1920:
+      </p>
+      <pre><code>ffmpeg -y \
+  -i demo.gif \
+  -movflags faststart \
+  -pix_fmt yuv420p \
+  -vf "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2:black" \
+  -r 30 \
+  demo_vertical.mp4</code></pre>
+      <p>
+        This command:
+      </p>
+      <ul>
+        <li>Scales to fit within 1080×1920 while preserving aspect ratio</li>
+        <li>Pads with black bars to fill the frame</li>
+        <li>Outputs H.264 video at 30fps (standard for Shorts)</li>
+      </ul>
+
+      <h2>Generate Commands Automatically</h2>
+      <p>
+        Use the command builder below to generate these commands with your file names:
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Command Builder</h3>
+        </div>
+        <form id="command-form">
+          <div class="form-group">
+            <label for="input-type">Input Type</label>
+            <select id="input-type" name="input-type">
+              <option value="cast" selected>Terminal Recording (asciinema .cast)</option>
+              <option value="video">Screen Recording (MP4/MOV)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="input-file">Input File Path</label>
+            <input type="text" id="input-file" name="input-file" placeholder="demo.cast" value="demo.cast">
+          </div>
+
+          <div class="form-group">
+            <label for="output-name">Output Name Prefix</label>
+            <input type="text" id="output-name" name="output-name" placeholder="demo" value="demo">
+          </div>
+
+          <div id="cast-options"></div>
+          <div id="video-options" style="display: none;"></div>
+
+          <button type="submit" class="btn btn-primary">Generate Commands</button>
+        </form>
+
+        <div id="command-output" style="margin-top: 1rem;"></div>
+      </div>
+
+      <h2>Step 4: Add Hook and CTA (Optional)</h2>
+      <p>
+        For a polished Short, add a hook card at the start and a CTA at the end.
+        The <code>claw_shorts.py terminal_typer</code> template does this automatically:
+      </p>
+      <pre><code>python3 claw_shorts.py render \
+  --template terminal_typer \
+  --cast demo.cast \
+  --output output/ \
+  --title "Quick CLI Demo" \
+  --hook "Watch this terminal trick" \
+  --cta "Follow for more"</code></pre>
+      <p>
+        This wraps your terminal recording with:
+      </p>
+      <ul>
+        <li>A 2-second hook card with your text</li>
+        <li>Your terminal recording, scaled and padded</li>
+        <li>A 3-second CTA card at the end</li>
+      </ul>
+
+      <h2>Example: claw-work CLI Demo</h2>
+      <p>
+        Here's a real example from the claw-work repository. This demo shows
+        running <code>claw_shorts.py doctor</code> to check dependencies:
+      </p>
+      <ol>
+        <li>Record: <code>asciinema rec doctor-demo.cast</code></li>
+        <li>Run the doctor command during recording</li>
+        <li>Convert: <code>agg --cols 60 --rows 40 --font-size 24 doctor-demo.cast doctor-demo.gif</code></li>
+        <li>Encode: <code>ffmpeg -i doctor-demo.gif -vf "scale=1080:1920:..." -r 30 doctor-demo.mp4</code></li>
+        <li>Or use the template: <code>python3 claw_shorts.py render --template terminal_typer --cast doctor-demo.cast ...</code></li>
+      </ol>
+      <p>
+        The result is a clean, vertical video showing the CLI in action—perfect
+        for a "here's how to check if your setup is ready" Short.
+      </p>
+
+      <h2>Tips for Terminal Shorts</h2>
+      <ul>
+        <li><strong>Use a dark theme:</strong> High contrast text on dark background reads well on mobile</li>
+        <li><strong>Increase font size:</strong> <code>--font-size 24</code> or higher for readability</li>
+        <li><strong>Keep it short:</strong> 15-45 seconds is ideal for Shorts</li>
+        <li><strong>Add context:</strong> A hook card explains what viewers are about to see</li>
+        <li><strong>Test on mobile:</strong> Watch on a phone before posting</li>
+      </ul>
+
+      <h2>Troubleshooting</h2>
+      <h3>agg not found</h3>
+      <p>Install with Cargo:</p>
+      <pre><code>cargo install --git https://github.com/asciinema/agg</code></pre>
+      <p>Make sure <code>~/.cargo/bin</code> is in your PATH.</p>
+
+      <h3>GIF is too fast/slow</h3>
+      <p>
+        asciinema recordings play back at the same speed you typed. To adjust:
+      </p>
+      <pre><code># Speed up 2x
+agg --speed 2 demo.cast demo.gif
+
+# Slow down to 0.5x
+agg --speed 0.5 demo.cast demo.gif</code></pre>
+
+      <h3>Output has wrong colors</h3>
+      <p>
+        Specify a theme that matches your terminal:
+      </p>
+      <pre><code>agg --theme monokai demo.cast demo.gif</code></pre>
+      <p>Available themes: asciinema, monokai, solarized-dark, solarized-light, and more.</p>
+
+      <h2>Related Guides</h2>
+      <ul>
+        <li><a href="launch-video.html">How to Make a Launch Video for a GitHub Repo</a></li>
+        <li><a href="safe-zones.html">Safe Zones for Captions on Shorts, TikTok, and Reels</a></li>
+      </ul>
+    </article>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/command-builder.js"></script>
+</body>
+</html>
