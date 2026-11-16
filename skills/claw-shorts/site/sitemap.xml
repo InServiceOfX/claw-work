@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sitemap for claw-shorts site
+  
+  PLACEHOLDER_BASE_URL should be replaced with the actual base URL
+  when the site is deployed (e.g., https://example.com/claw-shorts)
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/tools/planner.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/tools/safe-zones.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/tools/command-builder.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/pages/launch-video.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/pages/safe-zones.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://PLACEHOLDER_BASE_URL/pages/terminal-to-short.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

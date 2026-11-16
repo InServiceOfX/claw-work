@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safe Zones for Captions on YouTube Shorts, TikTok, and Reels | claw-shorts</title>
+  <meta name="description" content="Caption and text safe zone dimensions for vertical video. See where UI elements overlap on YouTube Shorts, TikTok, and Instagram Reels.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What are the safe zones for YouTube Shorts captions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "YouTube Shorts overlays the title and subscribe button in the bottom 288 pixels (15%) of a 1080x1920 frame. Keep captions above that area, leaving at least 100px from the top for the status bar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the safe zones for TikTok captions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "TikTok uses the bottom 480 pixels (25%) for username, caption, and sound info. The right edge has action buttons (like, comment, share) that extend 150 pixels into the frame. Keep text in the middle-left area."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the safe zones for Instagram Reels captions?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Instagram Reels overlays username and audio info in the bottom 384 pixels (20%). Action buttons on the right extend 130 pixels. The top 150 pixels have the status bar and camera button."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the combined safe zone for all three platforms?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "To be safe on YouTube Shorts, TikTok, and Reels simultaneously, keep text within: top margin 150px, bottom margin 480px, left margin 48px, right margin 150px. This leaves a safe area of 882x1290 pixels in the center of a 1080x1920 frame."
+        }
+      }
+    ]
+  }
+  </script>
+  <style>
+    .preview-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto 1.5rem;
+    }
+    #preview-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    #preview-canvas,
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+    #overlay-canvas {
+      pointer-events: none;
+    }
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toggle-item input {
+      width: auto;
+    }
+    .color-swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+    .swatch-yt { background: rgba(255, 0, 0, 0.6); }
+    .swatch-tiktok { background: rgba(0, 255, 255, 0.6); }
+    .swatch-reels { background: rgba(255, 0, 255, 0.6); }
+    .info-panel {
+      margin-top: 1rem;
+    }
+    .info-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
+    .info-panel li {
+      padding: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="../tools/planner.html">Planner</a></li>
+        <li><a href="../tools/safe-zones.html">Safe Zones</a></li>
+        <li><a href="../tools/command-builder.html">Command Builder</a></li>
+        <li><a href="launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <h1>Safe Zones for Captions on YouTube Shorts, TikTok, and Reels</h1>
+      
+      <p>
+        Each short-form video platform overlays UI elements on your video—usernames,
+        like buttons, sound info, subscribe prompts. If your captions or important
+        text land under these overlays, viewers can't read them.
+      </p>
+
+      <p>
+        This guide covers the danger zones for each platform and provides a tool
+        to check your frames before rendering.
+      </p>
+
+      <h2>Try the Safe Zone Checker</h2>
+      <p>
+        Drop a screenshot or frame from your video to see where the danger zones fall:
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Platform Overlays</h3>
+        </div>
+        <div class="toggle-row">
+          <label class="toggle-item">
+            <input type="checkbox" class="platform-toggle" data-platform="youtube" checked>
+            <span class="color-swatch swatch-yt"></span>
+            YouTube Shorts
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" class="platform-toggle" data-platform="tiktok" checked>
+            <span class="color-swatch swatch-tiktok"></span>
+            TikTok
+          </label>
+          <label class="toggle-item">
+            <input type="checkbox" class="platform-toggle" data-platform="reels" checked>
+            <span class="color-swatch swatch-reels"></span>
+            Instagram Reels
+          </label>
+        </div>
+
+        <div class="preview-wrapper">
+          <div id="preview-container">
+            <div id="drop-zone" class="drop-zone">
+              <span>Drop image here</span>
+              <span class="text-sm">or click to browse</span>
+              <input type="file" id="file-input" accept="image/*">
+            </div>
+            <canvas id="preview-canvas"></canvas>
+            <canvas id="overlay-canvas"></canvas>
+          </div>
+          <button id="reset-btn" class="btn btn-sm mt-1" style="display: block; margin: 0.5rem auto;">Reset</button>
+        </div>
+
+        <div id="zone-info" class="info-panel"></div>
+      </div>
+
+      <h2>Platform-Specific Danger Zones</h2>
+
+      <h3>YouTube Shorts</h3>
+      <p>
+        YouTube Shorts shows the video title and a subscribe/like row at the bottom.
+        On a 1080×1920 frame:
+      </p>
+      <ul>
+        <li><strong>Top danger zone:</strong> ~100px for status bar</li>
+        <li><strong>Bottom danger zone:</strong> ~288px (15%) for title and buttons</li>
+        <li><strong>Right side:</strong> Safe except for the bottom corner</li>
+      </ul>
+
+      <h3>TikTok</h3>
+      <p>
+        TikTok has the most aggressive overlays. The right edge is covered by
+        action buttons (like, comment, share, profile). The bottom holds the
+        username, caption, and sound info.
+      </p>
+      <ul>
+        <li><strong>Top danger zone:</strong> ~120px for status bar</li>
+        <li><strong>Bottom danger zone:</strong> ~480px (25%) for username/caption/sound</li>
+        <li><strong>Right danger zone:</strong> ~150px for action buttons</li>
+      </ul>
+
+      <h3>Instagram Reels</h3>
+      <p>
+        Instagram Reels is similar to TikTok but with slightly smaller overlays:
+      </p>
+      <ul>
+        <li><strong>Top danger zone:</strong> ~150px for status bar and camera button</li>
+        <li><strong>Bottom danger zone:</strong> ~384px (20%) for username/audio</li>
+        <li><strong>Right danger zone:</strong> ~130px for action buttons</li>
+      </ul>
+
+      <h2>Combined Safe Zone</h2>
+      <p>
+        If you want one video to work well on all three platforms, use the
+        intersection of safe areas:
+      </p>
+      <table class="shot-list">
+        <thead>
+          <tr>
+            <th>Edge</th>
+            <th>Margin (px)</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Top</td>
+            <td>150</td>
+            <td>Reels has the tallest top bar</td>
+          </tr>
+          <tr>
+            <td>Bottom</td>
+            <td>480</td>
+            <td>TikTok has the tallest bottom overlay</td>
+          </tr>
+          <tr>
+            <td>Left</td>
+            <td>48</td>
+            <td>All platforms are similar</td>
+          </tr>
+          <tr>
+            <td>Right</td>
+            <td>150</td>
+            <td>TikTok has the widest right buttons</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        This leaves a <strong>882×1290 pixel</strong> safe area in the center of
+        a 1080×1920 frame. Place all important text and graphics within this region.
+      </p>
+
+      <h2>Applying Safe Zones in claw_shorts.py</h2>
+      <p>
+        The claw_shorts.py renderer uses these constants for text placement:
+      </p>
+      <pre><code>SAFE_TOP = 150      # pixels from top
+SAFE_BOTTOM = 300   # pixels from bottom
+SAFE_SIDE = 50      # pixels from each side</code></pre>
+      <p>
+        These values are more conservative than the minimum danger zones, giving
+        extra breathing room. For TikTok specifically, you may want to avoid the
+        right 150px even in the middle of the frame.
+      </p>
+
+      <h2>Sources</h2>
+      <p>
+        These dimensions are approximations based on:
+      </p>
+      <ul>
+        <li>YouTube Shorts ad specifications (2023)</li>
+        <li>TikTok vertical video advertising best practices</li>
+        <li>Meta Business Help Center: Reels ad specifications</li>
+        <li>Direct measurement on iOS and Android devices (2024)</li>
+      </ul>
+      <p class="text-muted">
+        UI layouts change with app updates. Always test on actual devices before
+        a major release.
+      </p>
+
+      <h2>Related Guides</h2>
+      <ul>
+        <li><a href="launch-video.html">How to Make a Launch Video for a GitHub Repo</a></li>
+        <li><a href="terminal-to-short.html">How to Turn a Terminal Recording into a Vertical MP4</a></li>
+      </ul>
+    </article>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/safe-zones.js"></script>
+</body>
+</html>
