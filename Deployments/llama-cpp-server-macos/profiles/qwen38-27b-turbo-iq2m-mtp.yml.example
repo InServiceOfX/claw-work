@@ -1,0 +1,48 @@
+# Qwen3.8-27B Turbo Fable Cold Fusion, IQ2_M with MTP.
+# Quantizer: https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF
+# Fine-tune: https://huggingface.co/DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NM-DAU
+# Base: https://huggingface.co/Qwen/Qwen3.8-27B
+# Download: ./fetch-model.sh download DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF Qwen3.8-27B-TurboFCFusion-735-882-Here-Uncen-NEO-CODER-MAX-MTP-IQ2_M.gguf
+#
+# 262144 is the native window, one slot. Qwen config: 64 blocks, 16 full
+# attention, 4 KV heads x 256; f16 KV: 16 x 4 x 256 x 2 x 2 =
+# 64 KiB/token, ~16 GiB at 256K, plus ~11.29 GiB weights,
+# recurrent states and compute buffers. Verify on your machine.
+# 64 GB target. Long prefills may be very slow; window is not a quality claim.
+# The publisher warns below Q4_K_M tool calling may fail; test independently.
+# Thinking mode at the card's aggressive general-task temperature 1.0.
+# For precise coding/tool calling card suggests temperature 0.6-0.7.
+# Client request sampling settings override server defaults.
+# draft-mtp is explicitly enabled; support and speed depend on llama.cpp build.
+# Benchmark acceptance and compare regular: MTP is not automatically faster.
+
+hf_repo: DavidAU/Qwen3.8-27B-TURBO-Fable-Cold-Fusion-735-882-Heretic-Uncensored-NEO-CODER-MAX-MTP-GGUF
+hf_file: Qwen3.8-27B-TurboFCFusion-735-882-Here-Uncen-NEO-CODER-MAX-MTP-IQ2_M.gguf
+alias: qwen38-27b-turbo-iq2m-mtp
+server:
+  host: 127.0.0.1
+n_gpu_layers: 99
+ctx_size: 262144
+parallel: 1
+n_predict: -1
+flash_attn: "on"
+batch_size: 2048
+ubatch_size: 2048
+cont_batching: true
+cache_ram: 8192
+mlock: false
+threads: 10
+priority: 1
+jinja: true
+reasoning_format: deepseek
+temp: 1.0
+top_p: 0.95
+top_k: 20
+min_p: 0.0
+presence_penalty: 0.0
+repeat_penalty: 1.0
+extra_args:
+  - --spec-type
+  - draft-mtp
+  - --spec-draft-n-max
+  - '2'
