@@ -46,3 +46,7 @@ Rust/voxcpm-tts/reference/.venv/
 Rust/voxcpm-tts/reference/golden/
 Rust/voxcpm-tts/dist/
 Rust/voxcpm-tts/**/*.wav
+
+# macOS Finder metadata and AppleDouble files (e.g. from a Mac mounting this drive).
+.DS_Store
+._*
