@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>9:16 Safe Zone Checker | claw-shorts</title>
+  <meta name="description" content="Check caption and text safe zones for YouTube Shorts, TikTok, and Instagram Reels. Drop an image to see danger areas.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "9:16 Safe Zone Checker",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Visual safe zone checker for vertical video captions on YouTube Shorts, TikTok, and Instagram Reels. Drop an image to preview danger areas.",
+    "url": "https://PLACEHOLDER_BASE_URL/tools/safe-zones.html"
+  }
+  </script>
+  <style>
+    .preview-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    #preview-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    #preview-canvas,
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+    #overlay-canvas {
+      pointer-events: none;
+    }
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toggle-item input {
+      width: auto;
+    }
+    .color-swatch {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+    }
+    .swatch-yt { background: rgba(255, 0, 0, 0.6); }
+    .swatch-tiktok { background: rgba(0, 255, 255, 0.6); }
+    .swatch-reels { background: rgba(255, 0, 255, 0.6); }
+    .info-panel {
+      margin-top: 1rem;
+    }
+    .info-panel ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
+    .info-panel li {
+      padding: 0.25rem 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="planner.html">Planner</a></li>
+        <li><a href="safe-zones.html">Safe Zones</a></li>
+        <li><a href="command-builder.html">Command Builder</a></li>
+        <li><a href="../pages/launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>9:16 Safe Zone Checker</h1>
+    <p class="text-muted">
+      Drop a frame or screenshot to preview caption danger zones for each platform.
+      Keep important text in the green safe zone.
+    </p>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Platform Overlays</h3>
+      </div>
+      <div class="toggle-row">
+        <label class="toggle-item">
+          <input type="checkbox" class="platform-toggle" data-platform="youtube" checked>
+          <span class="color-swatch swatch-yt"></span>
+          YouTube Shorts
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" class="platform-toggle" data-platform="tiktok" checked>
+          <span class="color-swatch swatch-tiktok"></span>
+          TikTok
+        </label>
+        <label class="toggle-item">
+          <input type="checkbox" class="platform-toggle" data-platform="reels" checked>
+          <span class="color-swatch swatch-reels"></span>
+          Instagram Reels
+        </label>
+      </div>
+      <p class="text-sm text-muted">
+        Green dashed line = combined safe zone when all platforms are selected.
+      </p>
+    </div>
+
+    <div class="preview-wrapper">
+      <div id="preview-container">
+        <div id="drop-zone" class="drop-zone">
+          <span>Drop image here</span>
+          <span class="text-sm">or click to browse</span>
+          <input type="file" id="file-input" accept="image/*">
+        </div>
+        <canvas id="preview-canvas"></canvas>
+        <canvas id="overlay-canvas"></canvas>
+      </div>
+      <button id="reset-btn" class="btn btn-sm mt-1" style="display: block; margin: 0.5rem auto;">Reset</button>
+    </div>
+
+    <div id="zone-info" class="info-panel card"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Zone Dimensions (1080×1920 frame)</h3>
+      </div>
+      <table class="shot-list">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Top Margin</th>
+            <th>Bottom Margin</th>
+            <th>Right Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>YouTube Shorts</td>
+            <td>100px</td>
+            <td>288px</td>
+            <td>48px</td>
+          </tr>
+          <tr>
+            <td>TikTok</td>
+            <td>120px</td>
+            <td>480px</td>
+            <td>150px</td>
+          </tr>
+          <tr>
+            <td>Instagram Reels</td>
+            <td>150px</td>
+            <td>384px</td>
+            <td>130px</td>
+          </tr>
+          <tr style="background: var(--bg-input);">
+            <td><strong>Combined Safe</strong></td>
+            <td><strong>150px</strong></td>
+            <td><strong>480px</strong></td>
+            <td><strong>150px</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="text-sm text-muted mt-1">
+        These dimensions are approximate and based on platform ad specs and creator
+        guidelines (YouTube Shorts 2023, TikTok vertical ads guide, Meta Reels specs).
+        UI elements vary by device and app version. Always test on target devices.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/safe-zones.js"></script>
+</body>
+</html>

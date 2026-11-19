@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ffmpeg / asciinema Command Builder | claw-shorts</title>
+  <meta name="description" content="Generate ffmpeg and agg commands to convert terminal recordings and screen captures to 9:16 vertical videos.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ffmpeg / asciinema Command Builder",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Generate copy-paste ffmpeg and agg commands for converting terminal recordings and screen recordings to 9:16 vertical videos for social media.",
+    "url": "https://PLACEHOLDER_BASE_URL/tools/command-builder.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="planner.html">Planner</a></li>
+        <li><a href="safe-zones.html">Safe Zones</a></li>
+        <li><a href="command-builder.html">Command Builder</a></li>
+        <li><a href="../pages/launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>ffmpeg / asciinema Command Builder</h1>
+    <p class="text-muted">
+      Generate copy-paste commands to convert terminal recordings or screen captures
+      to 1080×1920 vertical videos ready for Shorts, TikTok, and Reels.
+    </p>
+
+    <form id="command-form" class="card">
+      <div class="form-group">
+        <label for="input-type">Input Type</label>
+        <select id="input-type" name="input-type">
+          <option value="video">Screen Recording (MP4/MOV)</option>
+          <option value="cast">Terminal Recording (asciinema .cast)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="input-file">Input File Path</label>
+        <input type="text" id="input-file" name="input-file" placeholder="recording.mp4">
+        <p class="form-hint">Path to your source file</p>
+      </div>
+
+      <div class="form-group">
+        <label for="output-name">Output Name Prefix</label>
+        <input type="text" id="output-name" name="output-name" placeholder="short" value="short">
+        <p class="form-hint">Output files will be named short_vertical.mp4, etc.</p>
+      </div>
+
+      <div id="cast-options" style="display: none;">
+        <h4>Terminal Recording Options</h4>
+        <p class="text-sm text-muted">
+          Requires <a href="https://github.com/asciinema/agg" target="_blank" rel="noopener">agg</a> 
+          (asciinema GIF generator).
+        </p>
+      </div>
+
+      <div id="video-options">
+        <h4>Video Options</h4>
+        
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="trim" style="width: auto; margin-right: 0.5rem;">
+            Trim video
+          </label>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="start-time">Start Time</label>
+            <input type="text" id="start-time" name="start-time" placeholder="00:00:05">
+            <p class="form-hint">HH:MM:SS format</p>
+          </div>
+          <div class="form-group">
+            <label for="duration">Duration (seconds)</label>
+            <input type="text" id="duration" name="duration" placeholder="30">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="caption-file">Caption File (SRT/ASS)</label>
+          <input type="text" id="caption-file" name="caption-file" placeholder="captions.srt">
+          <p class="form-hint">Leave blank to skip caption burn-in</p>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="generate-captions" style="width: auto; margin-right: 0.5rem;">
+            Include Whisper command to generate captions
+          </label>
+          <p class="form-hint">
+            Requires <a href="https://github.com/openai/whisper" target="_blank" rel="noopener">OpenAI Whisper</a> 
+            installed locally.
+          </p>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Generate Commands</button>
+    </form>
+
+    <section id="command-output"></section>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Prerequisites</h3>
+      </div>
+      <ul>
+        <li><strong>ffmpeg</strong>: <code>brew install ffmpeg</code> or <code>apt install ffmpeg</code></li>
+        <li><strong>agg</strong> (for .cast files): <code>cargo install --git https://github.com/asciinema/agg</code></li>
+        <li><strong>Whisper</strong> (optional, for captions): <code>pip install openai-whisper</code></li>
+      </ul>
+      <p class="text-sm text-muted">
+        All processing runs locally on your machine. No files are uploaded anywhere.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/command-builder.js"></script>
+</body>
+</html>

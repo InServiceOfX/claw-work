@@ -1,0 +1,9 @@
+# robots.txt for claw-shorts site
+#
+# PLACEHOLDER_BASE_URL should be replaced with the actual base URL
+# when the site is deployed (e.g., https://example.com/claw-shorts)
+
+User-agent: *
+Allow: /
+
+Sitemap: https://PLACEHOLDER_BASE_URL/sitemap.xml

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Make a Launch Video for a GitHub Repo | claw-shorts</title>
+  <meta name="description" content="Step-by-step guide to creating launch videos for open source projects. Generate hooks, plan 5 Shorts, and render locally with claw_shorts.py.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to Make a Launch Video for a GitHub Repo",
+    "description": "Create a 5-Short launch video series for your open source project using the claw-shorts planner and renderer.",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Prepare your README",
+        "text": "Make sure your README has a clear title, tagline, feature list, and installation instructions."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Generate a launch plan",
+        "text": "Paste your README into the Launch Shorts Planner to get hooks, a shot list, and render commands."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Record source clips",
+        "text": "Record screen demos, terminal sessions, or gather screenshots for each of the 5 Shorts."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Render with claw_shorts.py",
+        "text": "Run the generated commands to create 1080x1920 vertical videos with hooks and CTAs."
+      },
+      {
+        "@type": "HowToStep",
+        "name": "Review and post",
+        "text": "Watch each video, check audio levels, then upload to YouTube Shorts, TikTok, or Reels."
+      }
+    ],
+    "tool": {
+      "@type": "SoftwareApplication",
+      "name": "claw-shorts",
+      "url": "https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts"
+    }
+  }
+  </script>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="../tools/planner.html">Planner</a></li>
+        <li><a href="../tools/safe-zones.html">Safe Zones</a></li>
+        <li><a href="../tools/command-builder.html">Command Builder</a></li>
+        <li><a href="launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <article>
+      <h1>How to Make a Launch Video for a GitHub Repo</h1>
+      
+      <p>
+        A 5-Short launch series can introduce your open source project to developers
+        who scroll TikTok, YouTube Shorts, or Instagram Reels. Each Short targets a
+        different angle: overview, installation, demo, features, and a call to action.
+      </p>
+
+      <p>
+        This guide walks through the process using the free
+        <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a>
+        toolkit, which renders videos locally without accounts or cloud services.
+      </p>
+
+      <h2>What You'll Create</h2>
+      <ul>
+        <li><strong>Short 1:</strong> Hook + project overview (15-30s)</li>
+        <li><strong>Short 2:</strong> Installation walkthrough (20-45s)</li>
+        <li><strong>Short 3:</strong> Quick demo showing the tool in action (30-60s)</li>
+        <li><strong>Short 4:</strong> Top features or use cases (30-45s)</li>
+        <li><strong>Short 5:</strong> Call to action with README scroll (15-30s)</li>
+      </ul>
+
+      <h2>Step 1: Prepare Your README</h2>
+      <p>
+        The planner extracts project info from markdown. For best results, include:
+      </p>
+      <ul>
+        <li>A clear <code># Project Name</code> heading</li>
+        <li>A one-line tagline or description</li>
+        <li>A <code>## Features</code> section with bullet points</li>
+        <li>A <code>## Installation</code> section with a code block</li>
+        <li>A <code>## Usage</code> section with example commands</li>
+      </ul>
+
+      <h2>Step 2: Generate Your Launch Plan</h2>
+      <p>
+        Paste your README into the planner below. It will generate:
+      </p>
+      <ul>
+        <li>5 hook options to grab attention</li>
+        <li>A shot list for all 5 Shorts</li>
+        <li>Caption text for each video</li>
+        <li>Ready-to-run <code>claw_shorts.py</code> commands</li>
+      </ul>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Launch Shorts Planner</h3>
+        </div>
+        <form id="planner-form">
+          <div class="form-group">
+            <label for="readme-input">README or Product Description</label>
+            <textarea id="readme-input" name="readme" rows="10" placeholder="# My Project
+
+A tool that helps developers do X faster.
+
+## Features
+
+- Fast processing
+- Simple API
+- Zero dependencies
+
+## Installation
+
+```
+npm install my-project
+```"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Generate Plan</button>
+        </form>
+
+        <section id="results" style="display: none; margin-top: 1.5rem;">
+          <h4>Hook Options</h4>
+          <p class="text-sm text-muted">Click to select:</p>
+          <div id="hooks-container"></div>
+
+          <h4 class="mt-1">Shot List</h4>
+          <div id="shot-list-container"></div>
+
+          <h4 class="mt-1">Captions</h4>
+          <div id="captions-container"></div>
+
+          <h4 class="mt-1">Render Commands</h4>
+          <div id="commands-container"></div>
+
+          <button id="download-json" class="btn btn-primary mt-1">Download Plan JSON</button>
+        </section>
+      </div>
+
+      <h2>Step 3: Record Source Clips</h2>
+      <p>
+        Before rendering, you need raw footage for each Short:
+      </p>
+      <ul>
+        <li><strong>Screen recordings:</strong> Use OBS, QuickTime, or any screen recorder</li>
+        <li><strong>Terminal sessions:</strong> Record with <a href="https://asciinema.org/" target="_blank" rel="noopener">asciinema</a></li>
+        <li><strong>Static frames:</strong> Screenshots work for simple overlays</li>
+      </ul>
+      <p>
+        Organize clips in folders: <code>input/short1/</code>, <code>input/short2/</code>, etc.
+      </p>
+
+      <h2>Step 4: Render with claw_shorts.py</h2>
+      <p>
+        Clone the claw-work repository and run the generated commands:
+      </p>
+      <pre><code>git clone https://github.com/InServiceOfX/claw-work.git
+cd claw-work/skills/claw-shorts
+
+# Check dependencies
+python3 scripts/claw_shorts.py doctor
+
+# Run each render command from your plan
+python3 scripts/claw_shorts.py render \
+  --input input/short1/ \
+  --output output/ \
+  --template hook_reveal \
+  --title "My Project Overview" \
+  --hook "My Project in 30 seconds" \
+  --cta "Follow for more"</code></pre>
+
+      <p>
+        Each render outputs a 1080×1920 MP4 at 30fps plus a JSON sidecar with
+        metadata, suggested captions, and hashtags.
+      </p>
+
+      <h2>Step 5: Review and Post</h2>
+      <p>
+        Before uploading:
+      </p>
+      <ul>
+        <li>Watch each video end-to-end</li>
+        <li>Check that text stays within safe zones (<a href="../tools/safe-zones.html">use the checker</a>)</li>
+        <li>Verify audio levels (target -14 LUFS for consistent playback)</li>
+        <li>Add any missing disclosures (synthetic voice, etc.)</li>
+      </ul>
+      <p>
+        Upload to YouTube Shorts, TikTok, and/or Instagram Reels. Space them out
+        over a few days or post all at once—test what works for your audience.
+      </p>
+
+      <h2>Example: claw-dj Launch</h2>
+      <p>
+        The <a href="https://github.com/InServiceOfX/claw-work/tree/master/Rust/claw-dj" target="_blank" rel="noopener">claw-dj</a>
+        audio toolkit used this approach for its launch. The 5-Short series covered:
+      </p>
+      <ol>
+        <li>"claw-dj in 30 seconds" — hook + overview</li>
+        <li>"Installing claw-dj" — cargo install walkthrough</li>
+        <li>"Stem separation demo" — splitting a track into vocals/drums/bass/other</li>
+        <li>"3 claw-dj features" — step breakdown of key capabilities</li>
+        <li>"Get claw-dj" — README scroll with link</li>
+      </ol>
+      <p>
+        Each video was rendered locally with claw_shorts.py, reviewed for safe zones
+        and audio levels, then uploaded manually.
+      </p>
+
+      <h2>Related Guides</h2>
+      <ul>
+        <li><a href="safe-zones.html">Safe Zones for Captions on Shorts, TikTok, and Reels</a></li>
+        <li><a href="terminal-to-short.html">How to Turn a Terminal Recording into a Vertical MP4</a></li>
+      </ul>
+    </article>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/planner.js"></script>
+</body>
+</html>
