@@ -8,6 +8,11 @@ sequentially; neither replaces the other. Honor PERSONAL_FILES_CACHE and strictl
 verify the completed bundle. Deterministic tests include the synthetic packaging
 failure suite (Python 3 test dependency only).
 
+Run native_clipboard_story sequentially too: actual async copy, same-volume move,
+conflict reporting, native Command-C/V/Option-V, path-field text editing,
+menu window routing, invalid batch rejection and transfer quit cancellation.
+These tests use synthetic files/preferences and restore the clipboard. They do
+not prove physical Finder interaction.
 Run the synthetic native_new_windows_story desktop fixture sequentially before
 saved-tab and full native desktop/tiling fixtures. It must prove multiple actual
 visible NSWindows, independent state, focused command routing, shared settings

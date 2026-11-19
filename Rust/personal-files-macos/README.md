@@ -57,9 +57,20 @@ for inspection; it does not alter an installed app.
   menu removes favorites, including disconnected ones. Drops never move files.
 - **Name / Modified / Size** headers sort; click again to reverse. Folders
   always stay first. Folder sizes are “—”, not recursive totals.
-- Multiple selection; **Copy Path / ⌘C** copies selected full paths, or the
-  current folder when selection is empty. **⇧⌘C** shell-quotes each path.
-  Copy inside the path editor stays native text copying.
+- Multiple selection; **⌘C** copies selected files/folders as native file URLs.
+  **⌘V** pastes copies into the displayed folder; **⌥⌘V** explicitly moves them
+  within the same volume. Edit and file-list context menus expose these actions.
+  Path-editor Copy/Paste stays normal text editing. **Copy Full Path / ⌥⌘C**
+  copies selected full paths (or the current folder); **⇧⌘C** shell-quotes them.
+- Copy preserves macOS resource forks, extended attributes, ACLs and permissions;
+  symlinks stay links. Conflicting names are skipped with a visible error, never
+  silently overwritten or merged. Partial results are shown in a dialog. One
+  transfer runs at a time; Close/Quit cancels remaining items and waits for the
+  current item before allowing closure. Do not edit source files during copying.
+- Cross-volume **copy** is allowed if metadata can be preserved. Cross-volume
+  **move** is currently refused with the original retained; use Copy/Paste.
+  Native URL clipboard interoperability is tested using AppKit representations;
+  physical Finder-to-app and app-to-Finder interaction remains manual acceptance.
 - Double-click / Return / **⌘O** opens the selection; documents use NSWorkspace
   and the registered Mac application, never shell execution.
 - **⌘[ / ⌘]** or Option–Left/Right: back/forward. **⌘↑**: parent.
@@ -71,8 +82,9 @@ for inspection; it does not alter an installed app.
   to 200 distinct directories. Successful navigation counts as a visit;
   refresh/metadata polling does not. A single scan worker rejects stale results.
 
-This remains a browsing app: no file create/rename/move/delete or thumbnails,
-recursive folder sizes or automatic default-file-manager replacement.
+General file creation/rename/delete, thumbnails, recursive folder sizes and
+automatic default-file-manager replacement remain out of scope. Only explicit
+move-by-paste relocates source items.
 
 ## Local state and macOS permissions
 

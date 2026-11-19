@@ -15,15 +15,21 @@ use objc2::{
 use personal_files::{
     appearance,
     core::{self, Preferences, Sort},
+    file_ops::{self, Action},
     model::{Browser, TabbedBrowser},
 };
 use std::{
     cell::{Cell, RefCell},
     ffi::{CStr, CString},
+    os::unix::ffi::{OsStrExt, OsStringExt},
     path::{Path, PathBuf},
     ptr,
     rc::Rc,
-    sync::mpsc::{self, Receiver},
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        mpsc::{self, Receiver},
+        Arc,
+    },
     time::{Duration, Instant},
 };
 
@@ -242,6 +248,7 @@ impl<T> Slot<T> {
 }
 struct WindowState {
     connection: Slot<Option<Receiver<ConnectionReply>>>,
+    transfer: Slot<Option<Transfer>>,
     model: Slot<Option<TabbedBrowser>>,
     ui: Cell<Option<Widgets>>,
     rendering: Cell<bool>,
@@ -257,6 +264,7 @@ impl WindowState {
     fn new(preferences_path: PathBuf) -> Self {
         Self {
             connection: Slot::new(None),
+            transfer: Slot::new(None),
             model: Slot::new(None),
             ui: Cell::new(None),
             rendering: Cell::new(false),
@@ -339,22 +347,36 @@ fn enter_window(object: &AnyObject, sender: Id) -> WindowGuard {
             result.as_bool()
         };
     let focused = if menu { FOCUSED.get() } else { NIL };
+    let sender_menu: Id = if menu {
+        unsafe { msg_send![sender, menu] }
+    } else {
+        NIL
+    };
     let target = WINDOWS.with_borrow(|windows| {
         windows
             .iter()
             .find(|state| {
                 (!menu || !state.closed.get())
                     && state.ui.get().is_some_and(|w| {
-                        if menu {
-                            w.delegate == focused
-                        } else {
-                            w.delegate == object || w.table == object
-                        }
+                        w.table == object
+                            || (menu
+                                && !sender_menu.is_null()
+                                && unsafe {
+                                    let files: Id = msg_send![w.table, menu];
+                                    let places: Id = msg_send![w.sidebar, menu];
+                                    sender_menu == files || sender_menu == places
+                                })
+                            || (!menu && w.delegate == object)
                     })
             })
             .or_else(|| {
                 if menu {
-                    windows.iter().find(|s| !s.closed.get())
+                    windows
+                        .iter()
+                        .find(|s| {
+                            !s.closed.get() && s.ui.get().is_some_and(|w| w.delegate == focused)
+                        })
+                        .or_else(|| windows.iter().find(|s| !s.closed.get()))
                 } else {
                     None
                 }
@@ -425,7 +447,12 @@ fn app() -> Id {
     unsafe { msg_send![class!(NSApplication), sharedApplication] }
 }
 fn file_url(path: &Path) -> Id {
-    unsafe { msg_send![class!(NSURL),fileURLWithPath:ns(&path.to_string_lossy())] }
+    let Ok(path) = CString::new(path.as_os_str().as_bytes()) else {
+        return NIL;
+    };
+    unsafe {
+        msg_send![class!(NSURL),fileURLWithFileSystemRepresentation:path.as_ptr(),isDirectory:Bool::NO,relativeToURL:NIL]
+    }
 }
 fn frame(view: Id, r: Rect, mask: usize) {
     unsafe {
@@ -517,6 +544,22 @@ fn menu_bar(delegate: Id) {
     item(edit, "Cut", sel!(cut:), "x", CMD, NIL);
     item(edit, "Copy", sel!(copy:), "c", CMD, NIL);
     item(edit, "Paste", sel!(paste:), "v", CMD, NIL);
+    item(
+        edit,
+        "Move Items Here",
+        sel!(pasteMove:),
+        "v",
+        CMD | ALT,
+        NIL,
+    );
+    item(
+        edit,
+        "Copy Full Path",
+        sel!(copyPath:),
+        "c",
+        CMD | ALT,
+        delegate,
+    );
     item(edit, "Select All", sel!(selectAll:), "a", CMD, NIL);
     item(
         edit,
@@ -812,6 +855,9 @@ fn setup(prefs: Preferences, start: Option<PathBuf>) -> Id {
         let fm = new_menu("Files");
         for (title, action) in [
             ("Open", sel!(open:)),
+            ("Copy Items", sel!(copyFiles:)),
+            ("Paste Items", sel!(pasteFiles:)),
+            ("Move Items Here", sel!(moveFiles:)),
             ("Copy Full Path", sel!(copyPath:)),
             ("Copy Shell-Quoted Path", sel!(copyShell:)),
             ("Add Folders to Favorites", sel!(addFavorites:)),
@@ -831,6 +877,7 @@ fn setup(prefs: Preferences, start: Option<PathBuf>) -> Id {
         let _: () = msg_send![sidebar,setMenu:sm];
         if WINDOWS.with_borrow(|windows| windows.len()) == 1 {
             menu_bar(delegate);
+            let _: () = msg_send![app(),setDelegate:delegate];
         }
         FOCUSED.set(delegate);
         context()
@@ -1197,18 +1244,252 @@ fn copy(shell: bool, context: bool) {
         let _: Bool = msg_send![p,setString:ns(&text),forType:ns("public.utf8-plain-text")];
     }
 }
-fn is_context(sender: Id) -> bool {
+fn copy_files(from_context: bool) {
+    sync_selection(from_context);
+    let paths = model(|m| m.selected.iter().cloned().collect::<Vec<_>>());
+    if paths.is_empty() {
+        model(|m| m.status = "Select files or folders to copy.".into());
+        render();
+        return;
+    }
     unsafe {
-        !sender.is_null() && {
-            let key: Id = msg_send![sender, keyEquivalent];
-            string(key).is_empty()
+        let pb: Id = msg_send![class!(NSPasteboard), generalPasteboard];
+        let urls: Vec<Id> = paths.iter().map(|p| file_url(p)).collect();
+        if urls.iter().any(|url| url.is_null()) {
+            model(|m| {
+                m.status =
+                    "macOS could not represent one of the selected filenames; clipboard unchanged."
+                        .into()
+            });
+            render();
+            return;
+        }
+        let _: isize = msg_send![pb, clearContents];
+        let ok: Bool = msg_send![pb,writeObjects:array(&urls)];
+        if !ok.as_bool() {
+            model(|m| m.status = "Could not copy file URLs to the clipboard.".into());
+            render();
         }
     }
 }
+
+fn clipboard_paths(pb: Id) -> Result<Vec<PathBuf>, String> {
+    let invalid = || {
+        "Clipboard contains an invalid or non-local file item; no items were transferred."
+            .to_string()
+    };
+    unsafe {
+        let items: Id = msg_send![pb, pasteboardItems];
+        if items.is_null() {
+            return Ok(Vec::new());
+        }
+        let count: usize = msg_send![items, count];
+        let mut paths = Vec::new();
+        for i in 0..count {
+            let item: Id = msg_send![items,objectAtIndex:i];
+            let raw: Id = msg_send![item,stringForType:ns("public.file-url")];
+            if raw.is_null() {
+                return Err(invalid());
+            }
+            let url: Id = msg_send![class!(NSURL),URLWithString:raw];
+            if url.is_null() {
+                return Err(invalid());
+            }
+            let local: Bool = msg_send![url, isFileURL];
+            let host: Id = msg_send![url, host];
+            let query: Id = msg_send![url, query];
+            let fragment: Id = msg_send![url, fragment];
+            let host = string(host);
+            if !local.as_bool()
+                || (!host.is_empty() && host != "localhost")
+                || !query.is_null()
+                || !fragment.is_null()
+            {
+                return Err(invalid());
+            }
+            let bytes: *const std::ffi::c_char = msg_send![url, fileSystemRepresentation];
+            if bytes.is_null() {
+                return Err(invalid());
+            }
+            let path = PathBuf::from(std::ffi::OsString::from_vec(
+                CStr::from_ptr(bytes).to_bytes().to_vec(),
+            ));
+            if !path.is_absolute() {
+                return Err(invalid());
+            }
+            paths.push(path);
+        }
+        Ok(paths)
+    }
+}
+
+struct Transfer {
+    cancel: Arc<AtomicBool>,
+    reply: Receiver<String>,
+}
+
+// A single worker process-wide prevents repeated paste actions from creating
+// unbounded threads, including across multiple windows.
+static TRANSFER_BUSY: AtomicBool = AtomicBool::new(false);
+struct TransferPermit;
+impl TransferPermit {
+    fn acquire() -> Option<Self> {
+        TRANSFER_BUSY
+            .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)
+            .ok()
+            .map(|_| Self)
+    }
+}
+impl Drop for TransferPermit {
+    fn drop(&mut self) {
+        TRANSFER_BUSY.store(false, Ordering::Release);
+    }
+}
+
+fn transfer_items(
+    paths: &[PathBuf],
+    cancel: &AtomicBool,
+    mut perform: impl FnMut(&Path) -> Result<(), String>,
+) -> String {
+    let mut errors = Vec::new();
+    let mut succeeded = 0;
+    let mut attempted = 0;
+    for path in paths {
+        if cancel.load(Ordering::Acquire) {
+            break;
+        }
+        attempted += 1;
+        match perform(path) {
+            Ok(()) => succeeded += 1,
+            Err(error) => errors.push(format!("{}: {error}", path.display())),
+        }
+    }
+    let mut message = format!(
+        "Transferred {succeeded} item(s); {} failed; {} not attempted.",
+        errors.len(),
+        paths.len() - attempted
+    );
+    if !errors.is_empty() {
+        message.push_str(&format!("\n\n{}", errors.join("\n")));
+    }
+    message
+}
+
+fn paste_files(action: Action) {
+    let pb: Id = unsafe { msg_send![class!(NSPasteboard), generalPasteboard] };
+    let paths = match clipboard_paths(pb) {
+        Ok(paths) => paths,
+        Err(message) => {
+            model(|m| m.status = message.clone());
+            render();
+            alert("Invalid clipboard", &message);
+            return;
+        }
+    };
+    if paths.is_empty() {
+        model(|m| m.status = "Clipboard contains no local file URLs.".into());
+        render();
+        return;
+    }
+    if context().transfer.with_borrow(Option::is_some) {
+        alert(
+            "Transfer in progress",
+            "Wait for the current transfer to finish.",
+        );
+        return;
+    }
+    let Some(permit) = TransferPermit::acquire() else {
+        alert(
+            "Transfer in progress",
+            "Wait for the current transfer in the other window to finish.",
+        );
+        return;
+    };
+    let destination = model(|m| m.current.clone());
+    let cancel = Arc::new(AtomicBool::new(false));
+    let worker_cancel = cancel.clone();
+    let (tx, rx) = mpsc::channel();
+    match std::thread::Builder::new()
+        .name("file-transfer".into())
+        .spawn(move || {
+            let _permit = permit;
+            let message = transfer_items(&paths, &worker_cancel, |path| {
+                file_ops::perform(action, path, &destination)
+                    .map(|_| ())
+                    .map_err(|e| e.to_string())
+            });
+            let _ = tx.send(message);
+        }) {
+        Ok(_) => {
+            context()
+                .transfer
+                .with_borrow_mut(|slot| *slot = Some(Transfer { cancel, reply: rx }));
+            model(|m| m.status = "Transferring items…".into());
+        }
+        Err(error) => {
+            let message = format!("Could not start transfer: {error}");
+            model(|m| m.status = message.clone());
+            alert("Transfer failed", &message);
+        }
+    }
+    render();
+}
+
+#[cfg(test)]
+mod transfer_tests {
+    use super::*;
+
+    #[test]
+    fn cancellation_stops_remaining_items_and_reports_partial_failure() {
+        let cancel = AtomicBool::new(false);
+        let paths = ["first", "second", "third"].map(PathBuf::from);
+        let mut calls = 0;
+        let result = transfer_items(&paths, &cancel, |path| {
+            calls += 1;
+            if path == Path::new("second") {
+                cancel.store(true, Ordering::Release);
+                Err("permission denied".into())
+            } else {
+                Ok(())
+            }
+        });
+        assert_eq!(calls, 2);
+        assert!(result.contains("Transferred 1 item(s); 1 failed; 1 not attempted."));
+        assert!(result.contains("second: permission denied"));
+        assert!(!result.contains("third:"));
+    }
+
+    #[test]
+    fn pre_cancelled_transfer_does_not_start_items() {
+        let cancel = AtomicBool::new(true);
+        let result = transfer_items(&[PathBuf::from("item")], &cancel, |_| {
+            panic!("cancelled item started")
+        });
+        assert!(result.contains("0 failed; 1 not attempted"));
+    }
+
+    #[test]
+    fn transfer_permit_is_exclusive_and_released() {
+        let permit = TransferPermit::acquire().unwrap();
+        assert!(TransferPermit::acquire().is_none());
+        drop(permit);
+        assert!(TransferPermit::acquire().is_some());
+    }
+}
+
 fn context_sender(sender: Id) -> bool {
     unsafe {
+        if sender.is_null() {
+            return false;
+        }
         let is_menu: Bool = msg_send![sender,isKindOfClass:class!(NSMenuItem)];
-        is_menu.as_bool() && is_context(sender)
+        if !is_menu.as_bool() {
+            return false;
+        }
+        let menu: Id = msg_send![sender, menu];
+        let files: Id = msg_send![widgets().table, menu];
+        let places: Id = msg_send![widgets().sidebar, menu];
+        !menu.is_null() && (menu == files || menu == places)
     }
 }
 fn load_image(path: &Path) -> Id {
@@ -1494,18 +1775,74 @@ extern "C" fn tick(this: &AnyObject, _: Sel, sender: Id) {
                 .displayed_location
                 .with_borrow_mut(|last| *last = None);
         }
+        let completed = context().transfer.with_borrow_mut(|slot| {
+            let result = slot.as_ref()?.reply.try_recv();
+            match result {
+                Ok(message) => { *slot = None; Some(message) }
+                Err(mpsc::TryRecvError::Disconnected) => { *slot = None; Some("Transfer worker stopped unexpectedly; some items may have completed. Check the destination.".into()) }
+                Err(mpsc::TryRecvError::Empty) => None,
+            }
+        });
+        if let Some(message) = completed {
+            model(|m| {
+                m.refresh();
+                m.status = message.clone();
+            });
+            render();
+            alert("Transfer outcome", &message);
+            if context().closed.get() {
+                return;
+            }
+        }
         if model(|m| m.tick()) || connected || context().shared_dirty.get() {
             render();
         }
     });
 }
 extern "C" fn noop(_: &AnyObject, _: Sel, _: Id) {}
+// App termination otherwise bypasses windowShouldClose. Reject this quit while
+// active work finishes; retain timers/receivers so the outcome is visible.
+extern "C" fn should_terminate(_: &AnyObject, _: Sel, _: Id) -> usize {
+    let states = WINDOWS.with_borrow(Clone::clone);
+    let mut allowed = true;
+    for state in states.iter().filter(|state| !state.closed.get()) {
+        if let Some(w) = state.ui.get() {
+            if !should_close(unsafe { &*w.delegate }, sel!(windowShouldClose:), w.window).as_bool()
+            {
+                allowed = false;
+            }
+        }
+    }
+    usize::from(allowed)
+}
+extern "C" fn should_close(this: &AnyObject, _: Sel, _: Id) -> Bool {
+    let _window = enter_window(this, NIL);
+    let active = context().transfer.with_borrow(|slot| {
+        if let Some(transfer) = slot {
+            transfer.cancel.store(true, Ordering::Release);
+            true
+        } else {
+            false
+        }
+    });
+    if active {
+        model(|m| m.status = "Cancelling remaining items; waiting for the current item…".into());
+        render();
+        alert("Cancelling transfer", "The current item must finish. Remaining items will not start. Close the window after the outcome appears.");
+    }
+    Bool::new(!active)
+}
 extern "C" fn closed(this: &AnyObject, _: Sel, _: Id) {
     let _window = enter_window(this, NIL);
     let state = context();
     if state.closed.replace(true) {
         return;
     }
+    state.transfer.with_borrow(|slot| {
+        if let Some(transfer) = slot {
+            transfer.cancel.store(true, Ordering::Release);
+        }
+    });
     state.model.with_borrow_mut(|m| {
         if let Some(m) = m {
             m.browser.save();
@@ -1712,7 +2049,25 @@ extern "C" fn table_copy(this: &AnyObject, _: Sel, sender: Id) {
     if context().closed.get() {
         return;
     }
-    copy(false, false);
+    copy_files(false);
+}
+extern "C" fn table_paste(this: &AnyObject, _: Sel, sender: Id) {
+    let _window = enter_window(this, sender);
+    if !context().closed.get() {
+        paste_files(Action::Copy);
+    }
+}
+extern "C" fn table_move(this: &AnyObject, _: Sel, sender: Id) {
+    let _window = enter_window(this, sender);
+    if !context().closed.get() {
+        paste_files(Action::Move);
+    }
+}
+extern "C" fn menu_copy_files(this: &AnyObject, _: Sel, sender: Id) {
+    let _window = enter_window(this, sender);
+    if !context().closed.get() {
+        copy_files(true);
+    }
 }
 extern "C" fn key_down(this: &AnyObject, _: Sel, event: Id) {
     let _window = enter_window(this, event);
@@ -1839,22 +2194,53 @@ extern "C" fn clear_history(this: &AnyObject, _: Sel, sender: Id) {
     model(|m| m.clear_visits());
     render();
 }
+thread_local! {
+    // Only the explicit synthetic clipboard acceptance fixture captures dialogs.
+    static FIXTURE_ALERTS: RefCell<Option<Vec<String>>> = const { RefCell::new(None) };
+}
 fn alert(title: &str, text: &str) {
+    if FIXTURE_ALERTS.with_borrow_mut(|slot| {
+        if let Some(messages) = slot {
+            messages.push(format!("{title}: {text}"));
+            true
+        } else {
+            false
+        }
+    }) {
+        return;
+    }
     unsafe {
         let alert: Id = msg_send![class!(NSAlert), new];
         let _: () = msg_send![alert,setMessageText:ns(title)];
-        let _: () = msg_send![alert,setInformativeText:ns(text)];
+        if text.lines().count() > 10 || text.len() > 800 {
+            let scroll: Id = msg_send![class!(NSScrollView), alloc];
+            let scroll: Id = msg_send![scroll,initWithFrame:rect(0.,0.,560.,260.)];
+            let view: Id = msg_send![class!(NSTextView), alloc];
+            let view: Id = msg_send![view,initWithFrame:rect(0.,0.,540.,260.)];
+            let _: () = msg_send![view,setString:ns(text)];
+            let _: () = msg_send![view,setEditable:Bool::NO];
+            let _: () = msg_send![view,setVerticallyResizable:Bool::YES];
+            let _: () = msg_send![scroll,setHasVerticalScroller:Bool::YES];
+            let _: () = msg_send![scroll,setDocumentView:view];
+            let _: () =
+                msg_send![alert,setInformativeText:ns("Full details (scroll to read all items):")];
+            let _: () = msg_send![alert,setAccessoryView:scroll];
+            let _: () = msg_send![view, release];
+            let _: () = msg_send![scroll, release];
+        } else {
+            let _: () = msg_send![alert,setInformativeText:ns(text)];
+        }
         let _: isize = msg_send![alert, runModal];
         let _: () = msg_send![alert, release];
     }
 }
 extern "C" fn shortcuts(this: &AnyObject, _: Sel, sender: Id) {
     let _window = enter_window(this, sender);
-    alert("Keyboard Shortcuts","⌘L Edit full path or SMB address\n⌘K Connect to Server\n⌘D Pin/unpin current folder\n⌘C Copy selected/current paths (native copy in path field)\n⇧⌘C Copy shell-quoted paths\n⌘[ / ⌘] Back / Forward\n⌘↑ Parent folder\n⌘R or F5 Refresh\nReturn or ⌘O Open selection\n⌘A Select all\n⌘N New window\n⌘T New tab · ⌘W Close tab (last closes window)\nControl–Tab / Control–Shift–Tab Next / previous tab\nFn–Control–F/C/R Fill / Center / Restore\nFn–Control–arrows Tile (see native Window menu)\n⌘Q Quit");
+    alert("Keyboard Shortcuts","⌘L Edit full path or SMB address\n⌘K Connect to Server\n⌘D Pin/unpin current folder\n⌘C Copy selected files/folders\n⌘V Paste copies · ⌥⌘V Move items here\n⌥⌘C Copy full paths · ⇧⌘C Copy shell-quoted paths\nPath field retains native text editing\n⌘[ / ⌘] Back / Forward\n⌘↑ Parent folder\n⌘R or F5 Refresh\nReturn or ⌘O Open selection\n⌘A Select all\n⌘N New window\n⌘T New tab · ⌘W Close tab (last closes window)\nControl–Tab / Control–Shift–Tab Next / previous tab\nFn–Control–F/C/R Fill / Center / Restore\nFn–Control–arrows Tile (see native Window menu)\n⌘Q Quit");
 }
 extern "C" fn about(this: &AnyObject, _: Sel, sender: Id) {
     let _window = enter_window(this, sender);
-    alert("Personal Files","A native Rust macOS browser for your familiar places.\nFavorites stay yours. Recent and Frequent remember the rest.\nLocal preferences only. No telemetry. No destructive file operations.");
+    alert("Personal Files","A native Rust macOS browser for your familiar places.\nFavorites stay yours. Recent and Frequent remember the rest.\nLocal preferences only. No telemetry. File copy/paste and explicit move; existing destination items are never overwritten.");
 }
 extern "C" fn appearance_menu(this: &AnyObject, _: Sel, sender: Id) {
     let _window = enter_window(this, sender);
@@ -1937,6 +2323,9 @@ fn register_classes() {
             (sel!(focus:), focus),
             (sel!(copyPath:), copy_path),
             (sel!(copyShell:), copy_shell),
+            (sel!(copyFiles:), menu_copy_files),
+            (sel!(pasteFiles:), table_paste),
+            (sel!(moveFiles:), table_move),
             (sel!(open:), open),
             (sel!(addFavorites:), add_favorites),
             (sel!(removeFavorite:), remove_favorite),
@@ -1950,6 +2339,14 @@ fn register_classes() {
         ] {
             b.add_method(s, f);
         }
+        b.add_method(
+            sel!(applicationShouldTerminate:),
+            should_terminate as extern "C" fn(&'static AnyObject, Sel, Id) -> usize,
+        );
+        b.add_method(
+            sel!(windowShouldClose:),
+            should_close as extern "C" fn(&'static AnyObject, Sel, Id) -> Bool,
+        );
         b.add_method(
             sel!(asyncTilingStep:),
             tiling_test::step as extern "C" fn(&'static AnyObject, Sel, Id),
@@ -1995,6 +2392,14 @@ fn register_classes() {
         t.add_method(
             sel!(copy:),
             table_copy as extern "C" fn(&'static AnyObject, Sel, Id),
+        );
+        t.add_method(
+            sel!(paste:),
+            table_paste as extern "C" fn(&'static AnyObject, Sel, Id),
+        );
+        t.add_method(
+            sel!(pasteMove:),
+            table_move as extern "C" fn(&'static AnyObject, Sel, Id),
         );
         t.add_method(
             sel!(keyDown:),
@@ -2149,7 +2554,9 @@ extern "C" fn execute_fixture(_: &AnyObject, _: Sel, _: Id) {
         return;
     }
     let result = std::panic::catch_unwind(|| {
-        if std::env::var_os("PERSONAL_FILES_NEW_WINDOWS_TEST").is_some() {
+        if std::env::var_os("PERSONAL_FILES_CLIPBOARD_TEST").is_some() {
+            desktop_tests::clipboard_fixture()
+        } else if std::env::var_os("PERSONAL_FILES_NEW_WINDOWS_TEST").is_some() {
             desktop_tests::new_windows_fixture()
         } else if std::env::var_os("PERSONAL_FILES_SAVED_TABS_TEST").is_some() {
             desktop_tests::saved_tabs_fixture()
@@ -2255,6 +2662,12 @@ fn desktop_fixture() -> Result<(), String> {
         let text: Id = msg_send![pb,stringForType:ns("public.utf8-plain-text")];
         assert_eq!(string(text), file.to_string_lossy());
     }
+    copy_files(false);
+    clipboard.capture_change_count();
+    unsafe {
+        let pb: Id = msg_send![class!(NSPasteboard), generalPasteboard];
+        assert_eq!(clipboard_paths(pb).unwrap(), vec![file.clone()]);
+    }
     copy(true, false);
     clipboard.capture_change_count();
     unsafe {
@@ -2346,6 +2759,7 @@ fn desktop_fixture() -> Result<(), String> {
             let _: isize = msg_send![pb, clearContents];
             let _: Bool = msg_send![pb,setString:ns(raw),forType:ns("public.file-url")];
             assert!(dropped_paths(pb).is_empty());
+            assert!(clipboard_paths(pb).is_err());
         }
         let _: () = msg_send![pb, releaseGlobally];
     }

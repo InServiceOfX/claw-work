@@ -1,21 +1,24 @@
 <pdd-reason>Native macOS parity for the approved Ubuntu browsing story.</pdd-reason>
 <pdd-dependency>model_rust.prompt</pdd-dependency>
+<pdd-dependency>file_ops_rust.prompt</pdd-dependency>
 Implement src/native.rs using Rust and native AppKit via Objective-C. main.rs is
 separately mapped by main_rust.prompt; keep both interfaces compatible.
 R1 (MUST): Resizable window, sidebar Places/Favorites/Recent/Frequent with full
 path tooltips, always-visible path field, back/forward/up/refresh/star/copy.
 Native multi-select table with Name/Modified/Size sorting and double-click/Return.
 R2 (MUST): Command+L/D/C/Shift+C/R, back/forward Command+[/], Command+Up.
-Path entry's native text copy MUST NOT be hijacked. Copy selection/current path
-to NSPasteboard; open documents with NSWorkspace URLs, never a shell.
+Path entry's native text editing MUST NOT be hijacked. Copy selected files to
+the Finder-compatible NSPasteboard with Command+C; provide explicit plain and
+shell-quoted path copying; open documents with NSWorkspace URLs, never a shell.
 R3 (MUST): Context menus and local-directory drag/drop for favorites, URL export.
 Unavailable favorites removable. Drops MUST NOT move/delete or execute data.
 R4 (MUST): Silver/Midnight/Aurora/Automatic, validated NSImage background picker,
 remove background, shortcuts and clear-history menus. Invalid image retains prior.
 R5 (MUST): Main-thread AppKit, responsive single-worker-per-window scanning and stale result
 rejection; periodic metadata-only refresh without visits. Visible errors.
-R6 (MUST NOT): Telemetry, unsolicited network access, content inspection or
-source document mutations. Explicit SMB connections are allowed under R10.
+R6 (MUST NOT): Telemetry, unsolicited network access, content inspection for
+themes, or incidental source document mutations. Explicit SMB connections are
+allowed under R10; explicit file copy and move are allowed under R12.
 R7 (MUST): Native fixture mode uses temporary documents/preferences, exercises
 real controls, actual clipboard (restored afterward), callbacks, persistence,
 selection, appearance, drops, navigation and stale results; do not claim physical
@@ -91,3 +94,29 @@ real visible NSWindows, focused menu routing, independent tabs/folders/drafts/
 selection/connection replies, shared preferences, original/secondary close and
 New Window after last close. Keep existing tiling/SMB/tab tests intact.
 Acceptance: user_stories/story__macos_new_windows.md.
+
+R12 (MUST): Finder-compatible file clipboard: Command+C copies selected files
+and folders; Command+V copies them into the destination; Command+Option+V
+explicitly moves them. Support native Edit/context menus and Finder clipboard
+interoperability. Preserve native text editing and explicit path-copy commands.
+Never silently overwrite collisions or move sources on ordinary paste. Preserve
+symlinks, reject self/descendant operations including aliases, show errors and
+partial results, and protect source data on cross-volume failures. Cross-volume
+moves are visibly refused with source retained; same-volume move and copies are
+enabled. Serialize transfers process-wide, keep work off the AppKit thread,
+cancel remaining items and keep results visible if Close/Quit is attempted during
+work. Reject mixed invalid clipboard batches atomically. Use filesystem URL
+representations instead of lossy text for filenames. Route context commands to
+the menu's owning window, application menus to focused window. Long outcome
+messages must be scrollable. Use synthetic fixtures and cover negative cases,
+real asynchronous operations, and native Command-C/V/Option-V responder routing. Acceptance:
+user_stories/story__macos_file_clipboard.md.
+R12a (MUST): Preserve filesystem bytes (including non-UTF8 names) through NSURL
+creation and clipboard decoding via filesystem representations, not lossy text.
+Reject a mixed malformed/non-local clipboard batch visibly before any mutation.
+Application termination must use the same cancellation gate as window closing:
+cancel between items, retain the active receiver/timer/window until its outcome
+is visible, and require a later quit request. Context menus target their owning
+window even when another is focused; application menus target the focused live
+window. Synthetic native acceptance must exercise async paste success and a
+no-overwrite conflict using file_ops::perform, plus URL/batch/routing/quit cases.

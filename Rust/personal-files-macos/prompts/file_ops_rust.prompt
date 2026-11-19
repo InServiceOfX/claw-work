@@ -1,0 +1,28 @@
+<pdd-reason>Safe explicit file clipboard operations with native macOS metadata preservation.</pdd-reason>
+Implement src/file_ops.rs. Expose Action::{Copy, Move}, destination(source,
+directory) and perform(action, source, directory) returning io::Result<PathBuf>.
+Validate local source names and destination folders. Reject existing targets
+including dangling symlinks, same-source pastes, and descendant destinations,
+including through aliases. Preflight is not a reservation: publish with Darwin
+exclusive descriptor-relative rename so late collisions never overwrite data.
+Use narrowly scoped Darwin/POSIX FFI here; no Objective-C, shell, networking or
+user-state access. Copies stage privately in the destination volume. Traverse
+source directories relative to pinned descriptors, never follow symbolic links,
+reject special filesystem items and excessive nesting, and use native fcopyfile
+to preserve data, resource forks, extended attributes, ACLs, permissions and
+stat metadata. Preserve symbolic links as links, including dangling links. Refuse
+publication if the source root identity changed. Normal copy never mutates the
+source. Concurrent source edits may cause a visible failure; this is not a
+transactional snapshot or a sandbox against hostile ancestor relocation.
+Moves within one volume claim the source under a private name, verify identity,
+then publish by exclusive rename; don't require content read permission just to
+rename. Roll back exclusively on failure. Never let staging cleanup delete a
+claimed source. If restoring the original name is blocked by a concurrent item,
+retain the source in the private recovery directory and report the actual path.
+Cross-volume moves MUST return Unsupported and restore/retain the original,
+never use a destructive copy/delete fallback. Cross-volume copies are supported
+subject to the destination filesystem's metadata capabilities. Do not imply full
+Finder overwrite/merge/keep-both behavior: conflicting items are skipped with a
+visible error. Keep synthetic positive and negative tests for files, directories,
+symlinks, metadata/resource forks, no-read rename, alias descendants, special
+items, root replacement, late collisions, blocked restoration and EXDEV refusal.

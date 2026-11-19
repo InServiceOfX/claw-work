@@ -3,6 +3,7 @@
 <pdd-dependency>model_rust.prompt</pdd-dependency>
 <pdd-dependency>appearance_rust.prompt</pdd-dependency>
 <pdd-dependency>bundle_rust.prompt</pdd-dependency>
+<pdd-dependency>file_ops_rust.prompt</pdd-dependency>
 Implement src/lib.rs.
-Expose core, appearance, model and bundle modules without AppKit initialization, so deterministic tests can run without a display.
+Expose core, appearance, model, bundle and file_ops modules without AppKit initialization, so deterministic tests can run without a display.
 Acceptance: user_stories/story__macos_places.md; preserve accumulated tests.

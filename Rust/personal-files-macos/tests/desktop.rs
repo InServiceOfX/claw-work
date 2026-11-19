@@ -1,6 +1,26 @@
 static DESKTOP_FIXTURES: std::sync::Mutex<()> = std::sync::Mutex::new(());
 
 #[test]
+#[ignore = "requires a logged-in macOS graphical session; synthetic clipboard fixtures"]
+fn native_clipboard_story() {
+    let _serial = DESKTOP_FIXTURES.lock().unwrap();
+    let output = std::process::Command::new(env!("CARGO_BIN_EXE_personal-files-macos"))
+        .arg("--self-test")
+        .env("PERSONAL_FILES_CLIPBOARD_TEST", "1")
+        .output()
+        .expect("launch native clipboard fixture");
+    assert!(
+        output.status.success(),
+        "stdout: {}\nstderr: {}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("PASS native clipboard"));
+    println!("{stdout}");
+}
+
+#[test]
 #[ignore = "requires a logged-in macOS graphical session; creates only synthetic fixtures"]
 fn native_desktop_story() {
     let _serial = DESKTOP_FIXTURES.lock().unwrap();

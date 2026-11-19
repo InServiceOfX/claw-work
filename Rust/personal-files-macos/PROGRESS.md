@@ -1,3 +1,35 @@
+# 2026-11-18 — Finder-style file clipboard
+
+- Implemented on `feat/macos-file-copy-paste`: native file-URL Command-C,
+  Command-V copy and Command-Option-V same-volume move. Edit/context menus,
+  Command-Option-C full paths and existing shell-path command remain available;
+  the path field retains ordinary text editing. Ubuntu is unchanged.
+- Copies use descriptor-relative, no-follow traversal and Darwin fcopyfile for
+  data, ACLs, resource forks, extended attributes, permissions and timestamps.
+  Private staging plus exclusive rename prevents partial target publication or
+  silent overwrites. Same-volume moves claim/verify/publish the source, restoring
+  exclusively on failure; blocked restoration retains a reported recovery copy.
+- Cross-volume move deliberately returns an unsupported error with source
+  retained; Copy/Paste is available across volumes. No destructive copy/delete
+  fallback: open writers cannot be safely excluded. Conflicts report failure;
+  replace/merge/keep-both dialogs are not implemented. Source files should not be
+  edited during copies; these operations are not transactional snapshots.
+- Serialized background work, owned context-menu routing, visible outcomes
+  (scrollable for long messages), invalid batch rejection and Close/Quit
+  cancellation preserve responsive native UI and observable partial results.
+- The earlier disabled draft is superseded. Full verification and evidence are
+  recorded in docs/VERIFICATION.md: 44 deterministic tests and all four native
+  GUI groups pass, as does the release clipboard fixture. Installed the tested
+  release per-user, preserving the previous bundle in a dated `.noindex` backup;
+  byte comparison, installed signature and registered/running path checks pass. Independent review found cross-volume
+  mutable-source hazards (resolved by safe refusal), read-permission limitations
+  (resolved with fstatat), and descriptor-restoration/empty-directory cleanup
+  defects (fixed with regression tests).
+- PDD read-only plans ran earlier; prompts/story/architecture/code/tests are
+  maintained in this harness. No authorized provider-backed apply/sync, generated
+  contract or semantic-validation result is claimed. Physical Finder interaction,
+  live SMB authentication and actual external-volume copy remain manual checks.
+
 # 2026-11-14 — migrated to claw-work and rebuilt
 
 - Canonical source is now claw-work `Rust/personal-files-macos/`, on local

@@ -15,17 +15,38 @@ remain removable. Clearing automatic history preserves explicit favorites.
 Use standard macOS Command shortcuts, native clipboard/default application APIs,
 and a launchable per-user .app bundle. Do not replace Finder.
 
-Browsing, copying, favoriting and drops MUST NOT alter source files or execute
-path text. No network service, telemetry, content upload or document-content
+Browsing, copying paths, favoriting and drops MUST NOT alter source files or execute
+path text. Explicit file copy and move operations follow the requirements below. No network service, telemetry, content upload or document-content
 inspection for themes. Scanning uses a single worker and UI stays on main thread.
 Save local state atomically with mode 0600 under
 ~/Library/Application Support/Personal Files/preferences.json; recover invalid
 state with a preserved backup and visible warning. Show filesystem/save errors.
 Tests use synthetic temporary files/preferences, never real personal state.
 
-Non-goals remain file creation/rename/move/delete, thumbnails, recursive
-folder sizes. Package builds in the user's cache, not tracked source.
+Non-goals remain general file creation/rename/delete, thumbnails, recursive
+folder sizes. Explicit Finder-style move by paste is in scope below. Package builds in the user's cache, not tracked source.
 See user_stories/story__macos_places.md for independent acceptance.
+
+## Finder-style file clipboard — requested 2026-11-18
+
+Copy selected files and folders using Command–C and paste copies with Command–V;
+Command–Option–V explicitly moves the copied items to the destination instead.
+Use native Finder-compatible file clipboard representations and native Edit and
+context-menu commands. Normal text editing in the path field and explicit plain
+and shell-quoted path copying remain available. Copy and move must not silently
+overwrite conflicts, and ordinary copy must not alter the originals. Preserve
+symlinks as links; prevent copying or moving a folder into itself or its own
+descendant, including through aliases. Display failures and partial results.
+Do not implement move as a side effect of ordinary paste. Protect source data on
+cross-volume failure. Initial delivery supports moves within the same volume;
+move between volumes is visibly refused, retaining the original. Copy/paste
+across volumes is allowed when filesystem metadata can be preserved. Conflicts
+are skipped with a visible error, not replaced or merged. Copy uses native macOS
+metadata facilities; this is not a transactional snapshot of concurrently edited
+files. Close/Quit during work cancels remaining items and waits for the current
+item's outcome before allowing closure. Rebuild the native per-user app after verification while
+preserving a recoverable previous installation. Ubuntu is unchanged.
+Independent acceptance: user_stories/story__macos_file_clipboard.md.
 
 ## Native window tiling — requested 2026-10-30
 

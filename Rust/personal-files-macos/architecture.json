@@ -17,7 +17,8 @@
     "filename": "native_rust.prompt",
     "filepath": "src/native.rs",
     "dependencies": [
-      "model_rust.prompt"
+      "model_rust.prompt",
+      "file_ops_rust.prompt"
     ],
     "description": "Native AppKit browser"
   },
@@ -38,13 +39,20 @@
     "description": "Classify Automatic theme using file extensions only; honor explicit Silver/Midnight/Aurora. Picture majority selects Aurora, code majority Midnight, mixed/empty Silver. MUST NOT inspect document contents."
   },
   {
+    "filename": "file_ops_rust.prompt",
+    "filepath": "src/file_ops.rs",
+    "dependencies": [],
+    "description": "Metadata-aware descriptor-relative staged copy and exclusive same-volume move with recoverable failures"
+  },
+  {
     "filename": "library_rust.prompt",
     "filepath": "src/lib.rs",
     "dependencies": [
       "core_rust.prompt",
       "model_rust.prompt",
       "appearance_rust.prompt",
-      "bundle_rust.prompt"
+      "bundle_rust.prompt",
+      "file_ops_rust.prompt"
     ],
     "description": "Expose core, appearance, model and bundle modules without AppKit initialization, so deterministic tests can run without a display."
   },

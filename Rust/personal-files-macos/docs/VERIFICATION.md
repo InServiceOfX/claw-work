@@ -1,3 +1,45 @@
+## 2026-11-18 — native file clipboard
+
+- Full `./verify.sh`: fmt, strict all-target Clippy, 44 deterministic tests,
+  all four opt-in GUI groups sequentially, release build, plist lint and strict
+  signature verification. No operation success tests remain disabled. GUI tests
+  remain opt-in in the default Cargo run but are explicitly run by verify.sh.
+- File-operation tests exercise files, folders, dangling/nested symlinks,
+  extended attributes, resource forks, ACLs, permissions/timestamps, no-read
+  rename, alias descendants, special-item copy failure, late target collision,
+  root replacement by a link, blocked source restoration and parent renaming
+  during forced EXDEV. The EXDEV test is injected, not a live external volume.
+- Native clipboard fixture creates synthetic windows/files/preferences and
+  restores the clipboard. It exercises native Command-C/V/Option-V key
+  equivalents, actual asynchronous copy/move, conflict errors, normal path-field
+  text editing, Unicode/escaping, invalid mixed batches, context versus app menu
+  window routing, serialized work and rejecting Quit until cancellation outcome.
+- Existing native windows, saved tabs, browsing/SMB injection and strict actual
+  tiling geometry continue to pass. New fixture dialogs are captured only in
+  the explicitly selected synthetic fixture; normal application dialogs remain
+  native and long results are scrollable.
+- Independent static review and fixes were performed separately from execution.
+  Cross-volume destructive fallback was removed to avoid late-writer data loss;
+  those moves are refused, not represented as supported. The reviewed stale
+  recovery-path bug was fixed with unconditional descriptor-relative restoration
+  and empty-directory cleanup plus a regression test.
+- This is AppKit representation and native key-equivalent evidence, not physical
+  Finder-to-app/app-to-Finder keyboard automation or a transactional filesystem
+  snapshot. Real external-volume metadata behavior and live SMB remain manual.
+  APFS rejected the attempted invalid-byte filename fixture with EILSEQ; the
+  executable fixture therefore covers Unicode/escaping, not actual invalid-byte
+  file creation. Filesystem URL conversion no longer uses lossy UTF-8.
+- The freshly built release also passed the synthetic native clipboard fixture.
+  After graceful shutdown, the installed per-user app was upgraded by staged,
+  signature-verified, exclusive publication. The previous bundle is preserved
+  in a dated `.noindex` backup under Applications. Installed executable byte-
+  matched the tested release and its signature passed. NSWorkspace verified
+  registration and the running bundle resolve to the installed app. Preferences
+  were not reset or inspected and Finder was not replaced.
+- No provider-backed PDD apply/sync, generated contract or semantic-validation
+  result is claimed; reviewed intent, prompts, independent story and tests are
+  maintained with the implementation in this harness.
+
 ## 2026-11-14 — claw-work relocation
 
 - Full `./verify.sh` passed from `Rust/personal-files-macos/` in claw-work:

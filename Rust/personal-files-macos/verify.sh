@@ -6,6 +6,7 @@ export CARGO_TARGET_DIR=${CARGO_TARGET_DIR:-$HOME/Library/Caches/personal-files-
 cargo fmt --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked
+cargo test --locked --test desktop native_clipboard_story -- --ignored --nocapture
 cargo test --locked --test desktop native_new_windows_story -- --ignored --nocapture
 cargo test --locked --test desktop native_saved_session_story -- --ignored --nocapture
 cargo test --locked --test desktop native_desktop_story -- --ignored --nocapture
