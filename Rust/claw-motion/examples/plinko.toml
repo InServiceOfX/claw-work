@@ -1,0 +1,143 @@
+# Galton board: balls drop through a funnel and a staggered peg grid into
+# bins, and the pile in the bins grows into a bell curve (each peg is a coin
+# flip; the bin count is binomial). Everything sits inside the 1080x1920 safe
+# area (y 288-1248, x 120-960), so a title or captions can go above or below.
+#
+#   claw-motion physics examples/plinko.toml -o plinko.mp4
+#   claw-motion physics examples/plinko.toml --still 6 -o frame.png
+
+seed = 7
+
+[video]
+width = 1080
+height = 1920
+fps = 30
+duration = 18
+background = "#111318"
+
+[physics]
+gravity = [0, 1960]
+restitution = 0.1
+friction = 0.1
+# Drag stands in for a tilted board: balls reach about gravity / air = 435 px/s,
+# so a peg moves them half a spacing instead of flinging them across the board.
+air = 4.5
+substeps = 8
+min_impact_speed = 220
+color = "#e8e6e3"
+
+[sfx]
+enabled = true
+base_hz = 900
+per_window = 2
+
+# Outer box: left wall, floor, right wall.
+[[wall]]
+points = [[180, 300], [180, 1240], [900, 1240], [900, 300]]
+radius = 6
+
+# Funnel into the top peg.
+[[wall]]
+points = [[180, 330], [515, 420]]
+radius = 6
+
+[[wall]]
+points = [[900, 330], [565, 420]]
+radius = 6
+
+# Pegs close enough that each one moves a ball about half a spacing left or
+# right: one coin flip per row.
+[[pegs]]
+origin = [198, 460]
+rows = 14
+cols = 20
+spacing = [36, 34]
+radius = 4
+stagger = true
+
+# Bin dividers, under the pegs of the last row.
+[[wall]]
+points = [[216, 940], [216, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[252, 940], [252, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[288, 940], [288, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[324, 940], [324, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[360, 940], [360, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[396, 940], [396, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[432, 940], [432, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[468, 940], [468, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[504, 940], [504, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[540, 940], [540, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[576, 940], [576, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[612, 940], [612, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[648, 940], [648, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[684, 940], [684, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[720, 940], [720, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[756, 940], [756, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[792, 940], [792, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[828, 940], [828, 1240]]
+radius = 2.5
+
+[[wall]]
+points = [[864, 940], [864, 1240]]
+radius = 2.5
+
+[[emitter]]
+at = [540, 270]
+count = 300
+every = 0.04
+start = 0.3
+jitter = 8
+velocity = [0, 0]
+radius = [6, 7]
+colors = ["#ff5a4e", "#ffb547", "#3ecfb2", "#4ea3ff", "#f2efe9"]

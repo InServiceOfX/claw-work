@@ -1,0 +1,12 @@
+[project]
+name = "claw-shorts-manim"
+version = "0.1.0"
+description = "Math mode for claw-shorts: vertical Manim Community scenes, rendered headless"
+requires-python = ">=3.13,<3.14"
+# Manim Community Edition, MIT. 0.22.1 (2026-10-27) is the newest stable
+# release; 0.30.0a1 is an alpha. Bump deliberately and re-run the
+# determinism check in README.md.
+dependencies = ["manim==0.22.1"]
+
+[tool.uv]
+package = false

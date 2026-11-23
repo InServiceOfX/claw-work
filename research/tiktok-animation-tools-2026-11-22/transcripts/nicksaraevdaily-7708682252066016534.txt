@@ -1,0 +1,13 @@
+Claude Opus 5.5 can run an entire animation studio with these 20 free tools.
+They cover everything from timing and morphing to rigging, physics and particles.
+The first is Remotion Skills, which gives Opus guidance on how to make video.
+So it knows how to build a video before it gets started.
+The second is Motion Canvas, which is built for animated explainers.
+So you can just give Opus an idea and it'll animate the explanation for you.
+The third is Manim, which puts math in motion.
+So equations and graphs actually move on screen.
+The fourth is Blender for rigging and character animation.
+So your characters can actually move, not just pose.
+And finally, there's Matter.js, which adds real-time 2D physics
+so objects can fall and collide with gravity.
+Follow for more AI news just like this.

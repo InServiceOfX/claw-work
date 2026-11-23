@@ -23,6 +23,8 @@ Planning (hooks, retention, engagement, script rhythm) is the separate
 | Voiced explainer with validated copy and -14 LUFS audio | [`Rust/claw-shorts`](../../Rust/claw-shorts/README.md) |
 | Canvas motion graphics | `Rust/claw-shorts canvas` + [`canvas/`](canvas/) |
 | Designed motion graphics with word-timed captions (HyperFrames) | [`hyperframes/`](hyperframes/README.md) |
+| Animated math: equations, graphs, derivations (Manim CE, used as is) | [`manim/`](manim/README.md) |
+| Physics demos and shape morphs with collision-timed sound | [`Rust/claw-motion`](../../Rust/claw-motion/README.md) |
 | Stock B-roll or photo videos (Ken Burns) | [`Rust/shortform-video`](../../Rust/shortform-video/README.md) |
 | Transcript cut of a recording | [`Rust/claw-edit`](../../Rust/claw-edit/README.md) |
 | Quick templates on raw clips | `scripts/claw_shorts.py` (below) |

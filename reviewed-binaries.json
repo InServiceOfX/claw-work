@@ -1155,6 +1155,41 @@
       "max_bytes": 69632,
       "note": "Public TikTok screenshot - @jackroberts____ chart matching design"
     },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/01-hook-20-free-tools-x-post.jpg": {
+      "sha256": "6404504142fc62e6ee6cb2d7e4a0f3cd33b775889c0d0f0af89c4cbd093950b4",
+      "max_bytes": 131072,
+      "note": "Public TikTok screenshot - @nicksaraevdaily hook card quoting an X post, \"20 free tools\" badge"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/02-x-post-tool-grid-crop.jpg": {
+      "sha256": "a970dc9ad231569cfbcee216a3ed9b4dee8fc374b75fd9e89c986bb40a8ee203",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily crop of the quoted X post tool grid (Anime.js, mo.js, Flubber, Lottie Web, Rive Runtime, KUTE.js, AnimXYZ, Inochi2D)"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/03-remotion-skills-claude-skills.jpg": {
+      "sha256": "5113cd65d5a17e50379bbea6e892d43f96db21cc59d7636ae2a95b899e9bc23b",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily Remotion Skills card (.claude/skills)"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/04-motion-canvas-prism-explainer.jpg": {
+      "sha256": "797b640830906bbef83f6ffa3a86ff0932bcb6b25eec5e34e51e6be725dd9a7b",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily Motion Canvas prism explainer insert"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/05-manim-sine-wave.jpg": {
+      "sha256": "b7e140aae5a2266d892bbcb0f20fec315d155d874488763fa36906550e8fa3f6",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily Manim y = sin(x - t) insert"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/06-blender-rig-keyframes.jpg": {
+      "sha256": "492d60ab13fe5922ede8ac21442be8a59d15918c44469742036382e2b441f86d",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily Blender rig with keyframe strip"
+    },
+    "research/tiktok-animation-tools-2026-11-22/screenshots/nicksaraevdaily/07-matter-js-gravity.jpg": {
+      "sha256": "8b2ce72ab4462d2179474591fa05eca7d6976bb3146ef9971ab803bf75530d80",
+      "max_bytes": 65536,
+      "note": "Public TikTok screenshot - @nicksaraevdaily Matter.js balls falling under 9.81 m/s^2"
+    },
     "docs/shortform/tiktok/danidocumented-7698978039249521933/screenshots/001.0s.jpg": {
       "sha256": "a0200f87a6ad7c6194a76a05452038534a6c29fa45bcd3ed7cff508e8c49b91f",
       "max_bytes": 60793,

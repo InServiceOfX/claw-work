@@ -1,6 +1,6 @@
 ---
 name: claw-shorts
-description: Produce faceless vertical short-form videos (TikTok, Reels, Shorts) locally, in every production mode - voiced explainer Shorts with validated copy, canvas motion graphics, automated stock B-roll or photo videos with TTS and burned captions, transcript-based cuts of screen recordings, and template edits of raw clips. Use when the user asks to "make a short", "generate a faceless video", "turn this script/topic into a video", "add captions + voiceover to b-roll", "animate an explainer", "cut this recording into a short", or runs /claw-shorts. Enforces script, hook and loudness rules; renders offline; never posts. For hooks, retention and what to say, load short-form-strategy first.
+description: Produce faceless vertical short-form videos (TikTok, Reels, Shorts) locally, in every production mode - voiced explainer Shorts with validated copy, canvas motion graphics, animated math (Manim), physics demos and shape morphs with collision-timed sound, automated stock B-roll or photo videos with TTS and burned captions, transcript-based cuts of screen recordings, and template edits of raw clips. Use when the user asks to "make a short", "generate a faceless video", "turn this script/topic into a video", "add captions + voiceover to b-roll", "animate an explainer", "animate this equation", "make a physics/Galton board video", "cut this recording into a short", or runs /claw-shorts. Enforces script, hook and loudness rules; renders offline; never posts. For hooks, retention and what to say, load short-form-strategy first.
 ---
 
 # claw-shorts: produce the Short
@@ -38,6 +38,8 @@ you need there; nothing here installs global tools on its own.
 | A claim about a project or tool to explain with narration | **Voiced explainer** (default for anything you will post) | `Rust/claw-shorts`: `brief`, `check --strict`, `render` | `Rust/claw-shorts/README.md` |
 | The same, but want richer motion (live waveform, push-ins, word-by-word captions) | **Canvas** | `claw-shorts canvas`, then `skills/claw-shorts/canvas/scripts/render.mjs`, then `claw-shorts mux` | [canvas.md](references/canvas.md), [canvas-rendering.md](references/canvas-rendering.md) |
 | A listicle or explainer that needs designed motion graphics, charts or kinetic captions timed to the narration, plus a safe-area/contrast gate | **HyperFrames** | `skills/claw-shorts/hyperframes/` (pinned `hyperframes` CLI, `captions.py`, `finish.sh`) | [hyperframes.md](references/hyperframes.md) |
+| An equation, derivation or plot to animate for a STEM explainer (typeset math that transforms, graphs that draw) | **Math (Manim)** | `skills/claw-shorts/manim/scripts/render.sh` (pinned `manim==0.22.1`, safe-area gate, beats from `timeline.json`), then `claw-shorts mux` | [manim.md](references/manim.md) |
+| A physical demo (balls through a Galton board, Plinko, a pile-up) or a shape-to-shape morph, with sounds on every collision | **Physics / morph** | `Rust/claw-motion` (`physics`, `morph`, `--still` preview, `--narration`) | [motion.md](references/motion.md) |
 | A topic or script, and stock footage or a folder of clips and photos | **Stock B-roll** | `Rust/shortform-video run` | [stock-broll.md](references/stock-broll.md) |
 | A screen recording or demo with spoken takes to tighten | **Recording cut** | transcript, reviewed cut table, `Rust/claw-edit` | [recording-cut.md](references/recording-cut.md), [recording-cut-rendering.md](references/recording-cut-rendering.md) |
 | A raw clip that needs a quick template (zoom, before/after, README scroll, terminal cast) | **Templates** | `skills/claw-shorts/scripts/claw_shorts.py render` | below |
@@ -103,3 +105,9 @@ Posting needs its own authorization.
 `skills/install-shortform-skills.sh` in claw-work copies this skill and
 `short-form-strategy` into Claude Code, Codex/Grok/Pi (`~/.agents/skills`) and
 Hermes. See [harnesses.md](references/harnesses.md).
+
+- Math mode: `uv`, FFmpeg, LaTeX (MacTeX/BasicTeX or TeX Live) and, on macOS,
+  `brew install cairo pkgconf`. The first `skills/claw-shorts/manim/scripts/render.sh`
+  builds `.venv` from `uv.lock`.
+- Physics / morph mode: Rust and FFmpeg;
+  `cargo build --release --manifest-path Rust/claw-motion/Cargo.toml`.

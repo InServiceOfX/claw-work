@@ -1,0 +1,50 @@
+# Shape morph loop (Flubber-style): circle -> triangle -> star -> heart ->
+# bolt (an SVG path) -> back to the circle. The shape sits in the safe area.
+#
+#   claw-motion morph examples/morph.toml -o morph.mp4
+
+[video]
+width = 1080
+height = 1920
+fps = 30
+duration = 9
+background = "#111318"
+
+[morph]
+center = [540, 768]
+scale = 300
+points = 256
+loop = true
+
+[[morph.shapes]]
+shape = "circle"
+color = "#ff5a4e"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "triangle"
+color = "#ffb547"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "star"
+points = 5
+inner = 0.42
+color = "#3ecfb2"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "heart"
+color = "#ff5a4e"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "path"
+d = "M 13 2 L 3 14 H 12 L 11 22 L 21 10 H 12 Z"
+color = "#4ea3ff"
+hold = 0.6
+morph = 0.8
