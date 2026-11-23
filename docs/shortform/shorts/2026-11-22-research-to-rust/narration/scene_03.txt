@@ -1,0 +1,1 @@
+Then an agent parses it, like Claude Code, Codex, Grok or pi. It pulls the transcript and key frames, and checks every license.

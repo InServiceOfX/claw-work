@@ -75,6 +75,9 @@ pub struct Spec {
     /// Voice used to narrate scenes that have no `audio` file.
     #[serde(default)]
     pub voice: Option<Voice>,
+    /// Sound effects added by the render (a soft tick on every scene change).
+    #[serde(default)]
+    pub sfx: Option<Sfx>,
     #[serde(default)]
     pub style: Style,
     pub scenes: Vec<Scene>,
@@ -136,6 +139,25 @@ pub struct Voice {
     pub binary: Option<String>,
 }
 
+/// Render-made sound effects. Levels are peak dBFS before the whole mix is
+/// normalized to -14 LUFS, so they sit relative to a raw TTS narration.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Sfx {
+    /// A short two-partial tick at the start of every scene after the first.
+    #[serde(default = "default_true")]
+    pub cuts: bool,
+    #[serde(default = "default_cut_db")]
+    pub cut_db: f64,
+}
+
+fn default_true() -> bool {
+    true
+}
+fn default_cut_db() -> f64 {
+    -24.0
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SceneKind {
@@ -146,6 +168,9 @@ pub enum SceneKind {
     Terminal,
     Verdict,
     Endcard,
+    /// A rendered video (claw-motion, Manim, HyperFrames, a recording) shown
+    /// full frame, with optional caption `lines` in a band at the top.
+    Clip,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -187,6 +212,16 @@ pub struct Scene {
     /// `endcard`: the visible source URL.
     #[serde(default)]
     pub url: Option<String>,
+    /// `clip`: the video file, relative to the spec.
+    #[serde(default)]
+    pub video: Option<String>,
+    /// `clip`: seconds into the video where the scene starts.
+    #[serde(default)]
+    pub video_start: Option<f64>,
+    /// `clip`: gain in dB for the video's own sound under the narration;
+    /// absent means the clip plays muted.
+    #[serde(default)]
+    pub video_volume_db: Option<f64>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -372,7 +407,7 @@ impl Spec {
         if let Some(&first) = back_to_back.first() {
             issues.push(Issue::warn(format!(
                 "{} pair(s) of long sentences run back to back, first {:?} then {:?} ({} and {} words); \
-                 put a line of {SHORT_SENTENCE_WORDS} words or fewer between them",
+                 split one of them; keep full sentences of about 6-12 words",
                 back_to_back.len(),
                 spoken[first],
                 spoken[first + 1],
@@ -383,7 +418,7 @@ impl Spec {
         if spoken.len() >= 4 && !words.iter().any(|w| *w <= SHORT_SENTENCE_WORDS) {
             issues.push(Issue::warn(format!(
                 "no sentence of {SHORT_SENTENCE_WORDS} words or fewer in {} sentences; \
-                 a short line such as a question or a twist breaks up the rhythm",
+                 one short line, for emphasis or the closing summary, breaks up the read",
                 spoken.len()
             )));
         }
@@ -401,7 +436,18 @@ impl Spec {
                 )));
             }
         };
+        if scene.kind != SceneKind::Clip {
+            forbid(scene.video.is_some(), "video");
+            forbid(scene.video_start.is_some(), "video_start");
+            forbid(scene.video_volume_db.is_some(), "video_volume_db");
+        }
         match scene.kind {
+            SceneKind::Clip => {
+                forbid(scene.command.is_some(), "command");
+                forbid(!scene.output.is_empty(), "output");
+                forbid(!scene.rows.is_empty(), "rows");
+                forbid(scene.url.is_some(), "url");
+            }
             SceneKind::Title | SceneKind::Cloning => {
                 forbid(scene.command.is_some(), "command");
                 forbid(!scene.output.is_empty(), "output");
@@ -454,6 +500,20 @@ impl Spec {
             }
             SceneKind::Endcard if scene.url.as_deref().is_none_or(|u| u.trim().is_empty()) => {
                 issues.push(Issue::error(format!("{label}: an endcard needs a url")));
+            }
+            SceneKind::Clip => {
+                if scene.video.as_deref().is_none_or(|v| v.trim().is_empty()) {
+                    issues.push(Issue::error(format!("{label}: a clip needs a video")));
+                }
+                if scene.lines.len() > 2 {
+                    issues.push(Issue::error(format!("{label}: a clip takes at most 2 caption lines")));
+                }
+                if scene.video_start.is_some_and(|s| !(s >= 0.0 && s.is_finite())) {
+                    issues.push(Issue::error(format!("{label}: video_start must be 0 or more seconds")));
+                }
+                if scene.video_volume_db.is_some_and(|d| !(-60.0..=12.0).contains(&d)) {
+                    issues.push(Issue::error(format!("{label}: video_volume_db must be -60 to 12")));
+                }
             }
             _ => {}
         }

@@ -1,0 +1,1 @@
+The third one, Manim, we kept exactly as it is. Its math typography is too good to rebuild.

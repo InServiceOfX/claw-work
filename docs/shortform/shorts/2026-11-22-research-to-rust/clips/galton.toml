@@ -1,0 +1,139 @@
+# Galton board for the 2026-11-22 build-log Short: Rust/claw-motion's example
+# with every position (points, origin, at) moved 150 px down, so a caption
+# band fits above it, on the claw-shorts background color.
+
+seed = 7
+
+[video]
+width = 1080
+height = 1920
+fps = 30
+duration = 18
+background = "#0b0f14"
+
+[physics]
+gravity = [0, 1960]
+restitution = 0.1
+friction = 0.1
+# Drag stands in for a tilted board: balls reach about gravity / air = 435 px/s,
+# so a peg moves them half a spacing instead of flinging them across the board.
+air = 4.5
+substeps = 8
+min_impact_speed = 220
+color = "#e8e6e3"
+
+[sfx]
+enabled = true
+base_hz = 900
+per_window = 2
+
+# Outer box: left wall, floor, right wall.
+[[wall]]
+points = [[180, 450], [180, 1390], [900, 1390], [900, 450]]
+radius = 6
+
+# Funnel into the top peg.
+[[wall]]
+points = [[180, 480], [515, 570]]
+radius = 6
+
+[[wall]]
+points = [[900, 480], [565, 570]]
+radius = 6
+
+# Pegs close enough that each one moves a ball about half a spacing left or
+# right: one coin flip per row.
+[[pegs]]
+origin = [198, 610]
+rows = 14
+cols = 20
+spacing = [36, 34]
+radius = 4
+stagger = true
+
+# Bin dividers, under the pegs of the last row.
+[[wall]]
+points = [[216, 1090], [216, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[252, 1090], [252, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[288, 1090], [288, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[324, 1090], [324, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[360, 1090], [360, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[396, 1090], [396, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[432, 1090], [432, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[468, 1090], [468, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[504, 1090], [504, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[540, 1090], [540, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[576, 1090], [576, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[612, 1090], [612, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[648, 1090], [648, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[684, 1090], [684, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[720, 1090], [720, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[756, 1090], [756, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[792, 1090], [792, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[828, 1090], [828, 1390]]
+radius = 2.5
+
+[[wall]]
+points = [[864, 1090], [864, 1390]]
+radius = 2.5
+
+[[emitter]]
+at = [540, 420]
+count = 300
+every = 0.04
+start = 0.3
+jitter = 8
+velocity = [0, 0]
+radius = [6, 7]
+colors = ["#ff5a4e", "#ffb547", "#3ecfb2", "#4ea3ff", "#f2efe9"]

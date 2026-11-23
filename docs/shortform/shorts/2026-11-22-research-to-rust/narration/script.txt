@@ -1,0 +1,17 @@
+I watched one TikTok, and my coding agents turned it into this. Every bounce you hear is computed in Rust.
+
+It starts when I save a Short that names some tools. This one promised twenty free tools for animation.
+
+Then an agent parses it, like Claude Code, Codex, Grok or pi. It pulls the transcript and key frames, and checks every license.
+
+Next comes the judgment, one tool at a time. Can an agent render it frame by frame, with no screen? Three of fifteen passed.
+
+Two of them we rewrote as our own Rust code. This shape morph is one of them.
+
+The third one, Manim, we kept exactly as it is. Its math typography is too good to rebuild.
+
+Every new tool ships with tests and measured results. The same scene renders to the same bytes every time.
+
+That is the whole loop, and we run it every week or two. Watch. Parse. Judge. Build.
+
+Everything is open source on GitHub. Which tool should my agents rebuild next?

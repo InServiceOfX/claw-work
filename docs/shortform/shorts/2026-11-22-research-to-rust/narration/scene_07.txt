@@ -1,0 +1,1 @@
+Every new tool ships with tests and measured results. The same scene renders to the same bytes every time.

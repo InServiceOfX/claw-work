@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "project": "claw-work",
+  "repo_url": "github.com/InServiceOfX/claw-work",
+  "title": "I watch TikToks so my agents can build tools",
+  "caption": "One TikTok listed 20 free animation tools. My coding agents transcribed it, checked every link and license, judged each tool, and built the useful ones in Rust: a physics engine with a sound on every bounce, shape morphs, and a Manim math mode. Open source.",
+  "hashtags": [
+    "rust",
+    "opensource",
+    "aiagents",
+    "claudecode",
+    "physics",
+    "manim",
+    "buildinpublic"
+  ],
+  "disclosure": "AI-generated voice",
+  "credits": [
+    "Footage: Rust/claw-motion and Manim CE",
+    "Research: @nicksaraevdaily TikTok"
+  ],
+  "engagement": {
+    "device": "judgment invite: viewers pick the next tool",
+    "token": "comment",
+    "prompt": "Which tool should we rebuild next?",
+    "pinned_comment": "Name a tool or library you want rebuilt in Rust. I'll run it through the loop next."
+  },
+  "sfx": {
+    "cuts": true,
+    "cut_db": -24.0
+  },
+  "scenes": [
+    {
+      "kind": "clip",
+      "narration": "I watched one TikTok, and my coding agents turned it into this. Every bounce you hear is computed in Rust.",
+      "audio": "narration/scene_01.wav",
+      "lines": [
+        "One TikTok became this."
+      ],
+      "video": "clips/out/galton.mp4",
+      "video_start": 3.0,
+      "video_volume_db": -12.0
+    },
+    {
+      "kind": "title",
+      "narration": "It starts when I save a Short that names some tools. This one promised twenty free tools for animation.",
+      "audio": "narration/scene_02.wav",
+      "lines": [
+        "1. Watch",
+        "A 36 s TikTok:",
+        "20 free animation tools"
+      ]
+    },
+    {
+      "kind": "terminal",
+      "narration": "Then an agent parses it, like Claude Code, Codex, Grok or pi. It pulls the transcript and key frames, and checks every license.",
+      "audio": "narration/scene_03.wav",
+      "command": "uv run shortform_ingest.py transcribe",
+      "output": [
+        "13 timestamped transcript lines",
+        "44 candidate frames, 7 kept",
+        "15 of 20 tools identified",
+        "every link and license checked"
+      ]
+    },
+    {
+      "kind": "verdict",
+      "narration": "Next comes the judgment, one tool at a time. Can an agent render it frame by frame, with no screen? Three of fifteen passed.",
+      "audio": "narration/scene_04.wav",
+      "rows": [
+        {
+          "mark": "ADOPT",
+          "tone": "pass",
+          "text": "Manim: animated math, used as is"
+        },
+        {
+          "mark": "REWRITE",
+          "tone": "pass",
+          "text": "Matter.js and Flubber, in our own Rust"
+        },
+        {
+          "mark": "SKIP",
+          "tone": "fail",
+          "text": "12 others, each with a written reason"
+        }
+      ]
+    },
+    {
+      "kind": "clip",
+      "narration": "Two of them we rewrote as our own Rust code. This shape morph is one of them.",
+      "audio": "narration/scene_05.wav",
+      "lines": [
+        "2. Rewritten in Rust"
+      ],
+      "video": "clips/out/morph.mp4",
+      "video_start": 0.0
+    },
+    {
+      "kind": "clip",
+      "narration": "The third one, Manim, we kept exactly as it is. Its math typography is too good to rebuild.",
+      "audio": "narration/scene_06.wav",
+      "video": "clips/out/manim/video.mp4",
+      "video_start": 6.0
+    },
+    {
+      "kind": "terminal",
+      "narration": "Every new tool ships with tests and measured results. The same scene renders to the same bytes every time.",
+      "audio": "narration/scene_07.wav",
+      "command": "cargo test --release",
+      "output": [
+        "26 tests passed",
+        "18 s video rendered in 5 s",
+        "same bytes on every run",
+        "loudness: -14.0 LUFS"
+      ]
+    },
+    {
+      "kind": "clip",
+      "narration": "That is the whole loop, and we run it every week or two. Watch. Parse. Judge. Build.",
+      "audio": "narration/scene_08.wav",
+      "lines": [
+        "Watch. Parse. Judge. Build."
+      ],
+      "video": "clips/out/galton.mp4",
+      "video_start": 15.5,
+      "video_volume_db": -12.0
+    },
+    {
+      "kind": "endcard",
+      "narration": "Everything is open source on GitHub. Which tool should my agents rebuild next?",
+      "audio": "narration/scene_09.wav",
+      "lines": [
+        "claw-work",
+        "open source"
+      ],
+      "url": "github.com/InServiceOfX/claw-work"
+    }
+  ]
+}

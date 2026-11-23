@@ -151,9 +151,10 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
     fs::create_dir_all(&opts.work_dir).map_err(|e| format!("cannot create work dir: {e}"))?;
 
     let wavs = narrate(spec, opts)?;
+    let clips = clip_files(spec, opts)?;
     let audio_ms: Vec<u64> = wavs.iter().map(|w| media::probe_duration_ms(w)).collect::<Result<_, _>>()?;
     let timings = timeline::build(&audio_ms, spec.style.pad_ms);
-    let normalization = normalize_narration(&wavs, &timings)?;
+    let normalization = normalize_mix(spec, &wavs, &clips, &timings)?;
     let plan = filters::build_with_audio(spec, &timings, Some(&normalization.filter));
 
     let text_dir = opts.work_dir.join("text");
@@ -182,8 +183,8 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
             style.fps,
             timeline::secs(plan.total_ms)
         ));
-    for wav in &wavs {
-        ffmpeg.arg("-i").arg(fs::canonicalize(wav).map_err(|e| format!("{}: {e}", wav.display()))?);
+    for file in wavs.iter().chain(&clips) {
+        ffmpeg.arg("-i").arg(fs::canonicalize(file).map_err(|e| format!("{}: {e}", file.display()))?);
     }
     ffmpeg
         .arg("-filter_complex")
@@ -254,6 +255,29 @@ pub fn render(spec: &Spec, opts: &RenderOptions) -> Result<Report, String> {
 pub fn normalize_narration(wavs: &[PathBuf], timings: &[SceneTiming]) -> Result<Normalization, String> {
     let inputs: Vec<&Path> = wavs.iter().map(PathBuf::as_path).collect();
     loudness::plan(|pre| loudness::measure_graph(&inputs, &filters::audio_graph_then(timings, 0, pre)))
+}
+
+/// The video file of every clip scene, in order, checked to exist and, when
+/// its sound is used, to have an audio stream.
+pub fn clip_files(spec: &Spec, opts: &RenderOptions) -> Result<Vec<PathBuf>, String> {
+    let mut out = Vec::new();
+    for (i, scene) in filters::clip_scenes(spec) {
+        let path = spec::resolve(&opts.spec_dir, scene.video.as_deref().unwrap_or_default());
+        if !path.is_file() {
+            return Err(format!("scene {}: video {} not found", i + 1, path.display()));
+        }
+        if scene.video_volume_db.is_some() && !media::probe(&path)?.has_audio {
+            return Err(format!("scene {}: video_volume_db is set but {} has no audio", i + 1, path.display()));
+        }
+        out.push(path);
+    }
+    Ok(out)
+}
+
+/// Like [`normalize_narration`], for the full mix: narration, clip sound and cut ticks.
+pub fn normalize_mix(spec: &Spec, wavs: &[PathBuf], clips: &[PathBuf], timings: &[SceneTiming]) -> Result<Normalization, String> {
+    let inputs: Vec<&Path> = wavs.iter().chain(clips).map(PathBuf::as_path).collect();
+    loudness::plan(|pre| loudness::measure_graph(&inputs, &filters::audio_mix_graph(spec, timings, 0, wavs.len(), pre)))
 }
 
 /// One frame from the middle of each scene, side by side. A reviewer's first

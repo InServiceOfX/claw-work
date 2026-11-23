@@ -124,13 +124,15 @@ Produce a **beat / shot list**, not just prose:
 
 Story shape: setup → progression → payoff (not topic dump).
 
-**Script rhythm** (*enforced* as a `claw-shorts check` warning): after a long
-sentence, put a line of 5 words or fewer, so the read goes long, short, long,
-short. Make the short lines do story work: a question ("Let's find out."), a
-twist ("But there was a problem."), a stakes line. No two sentences over 12
-words back to back. This matters more with TTS, which flattens prosody. Write
-the script yourself or edit the LLM draft hard; keep it short so it does not
-repeat itself (`references/creator-lessons.md`).
+**Script rhythm** (house style, *enforced* in part as a `claw-shorts check`
+warning): write **full sentences** of moderate length, about 6 to 12 words,
+and vary that length. No two sentences over 12 words back to back; split one
+instead. The trendy two-word cadence ("Watch. Parse. Build.") is the
+exception, not the texture: use it **rarely**, for one point you want to
+land, or for the final summary. A question ("Which tool should we rebuild
+next?") also breaks up a run of statements. This matters more with TTS,
+which flattens prosody. Write the script yourself or edit the LLM draft hard;
+keep it short so it does not repeat itself (`references/creator-lessons.md`).
 
 ### Step 3 — Engagement design
 

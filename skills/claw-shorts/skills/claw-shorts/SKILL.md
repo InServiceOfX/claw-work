@@ -35,7 +35,7 @@ you need there; nothing here installs global tools on its own.
 
 | You have | Mode | Tool | Read |
 | --- | --- | --- | --- |
-| A claim about a project or tool to explain with narration | **Voiced explainer** (default for anything you will post) | `Rust/claw-shorts`: `brief`, `check --strict`, `render` | `Rust/claw-shorts/README.md` |
+| A claim about a project or tool to explain with narration | **Voiced explainer** (default for anything you will post). `clip` scenes play footage from the other modes (claw-motion, Manim, recordings) between title, terminal and verdict cards, with the clip's sound under the voice and a tick on each cut (`sfx`) | `Rust/claw-shorts`: `brief`, `check --strict`, `render`. Worked example with your own voxcpm takes: `docs/shortform/shorts/2026-11-22-research-to-rust/` | `Rust/claw-shorts/README.md` |
 | The same, but want richer motion (live waveform, push-ins, word-by-word captions) | **Canvas** | `claw-shorts canvas`, then `skills/claw-shorts/canvas/scripts/render.mjs`, then `claw-shorts mux` | [canvas.md](references/canvas.md), [canvas-rendering.md](references/canvas-rendering.md) |
 | A listicle or explainer that needs designed motion graphics, charts or kinetic captions timed to the narration, plus a safe-area/contrast gate | **HyperFrames** | `skills/claw-shorts/hyperframes/` (pinned `hyperframes` CLI, `captions.py`, `finish.sh`) | [hyperframes.md](references/hyperframes.md) |
 | An equation, derivation or plot to animate for a STEM explainer (typeset math that transforms, graphs that draw) | **Math (Manim)** | `skills/claw-shorts/manim/scripts/render.sh` (pinned `manim==0.22.1`, safe-area gate, beats from `timeline.json`), then `claw-shorts mux` | [manim.md](references/manim.md) |
@@ -62,7 +62,8 @@ claw-shorts render --spec short.json --work /tmp/work --output /tmp/out --strict
 - **Warnings:** an on-screen hook over 8 words; no engagement device; no
   visible source URL, number, verdict or synthetic-voice disclosure; narration
   over ~45 s; **script rhythm** (two sentences over 12 words back to back, or
-  4+ sentences with none of 5 words or fewer).
+  4+ sentences with none of 5 words or fewer). House style is full sentences;
+  a very short line is rare, for emphasis or the closing summary.
 
 `render` writes `short.mp4`, `contact.png`, `captions.srt`, `timeline.json`,
 `verification.json` (dimensions, duration, full decode, narration and output

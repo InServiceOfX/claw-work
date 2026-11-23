@@ -69,9 +69,11 @@ scene's length plus `pad_ms` of silence.
 | `verdict` | Colored badges with a sentence each | `rows` of `mark`, `tone` (`pass`, `warn`, `fail`), `text` |
 | `clone` | Reference voice in, generated voice out (canvas path draws both waveforms) | `lines` (exactly 2 labels) |
 | `endcard` | Lines and the visible source URL | `lines`, `url` |
+| `clip` | A rendered video full frame (claw-motion, Manim, HyperFrames, a recording), fitted and padded to 1080x1920, its last frame held if it is shorter than the scene | `video`, optional `video_start` (seconds into it), `video_volume_db` (its own sound under the narration; absent = muted), up to 2 caption `lines` on a band at the top. FFmpeg path only |
 
 Top level: `project`, `title`, `caption`, `hashtags`, `repo_url`, `claims`,
-`voice` (`reference`, `transcript`, `seed`, `binary`), `style`, and the optional
+`voice` (`reference`, `transcript`, `seed`, `binary`), `style`, `sfx` (`cuts`:
+a soft tick on every scene change, at `cut_db` peak dBFS, default -24), and the optional
 `disclosure`, `credits`, `scoreboard` (up to 4 short real numbers) and
 `engagement` (`device`, `token`, `prompt`, `pinned_comment`).
 
@@ -119,7 +121,7 @@ cached `mlx-community/whisper-large-v3-turbo-asr-fp16` offline.
 | Hook: readable muted | An on-screen hook over 8 words is a warning. |
 | Hook: motion in the first seconds | The canvas scene animates a waveform from frame 0. |
 | Retention | A scene held over 10 s is a warning from `canvas`. |
-| Script rhythm | Two sentences over 12 words back to back, or 4+ sentences with none of 5 words or fewer, is a warning. Sentences run across scenes. TTS flattens prosody, so short lines (a question, a twist) do the work a human read would. |
+| Script rhythm | Two sentences over 12 words back to back, or 4+ sentences with none of 5 words or fewer, is a warning. Sentences run across scenes. House style is full sentences of about 6-12 words; a very short line is used rarely, for emphasis or the closing summary. |
 | Loudness | Every render is normalized to -14 LUFS integrated, -1 dBTP, in two passes (measure, then linear `loudnorm`). `render` fails if the finished file is more than 1 LU off or clips; `verification.json` records narration and output loudness. The canvas path normalizes `narration.wav`, and `mux` reports the final level. |
 | Close reel: one real number | `scoreboard` appears from about 1.4 s and returns on the end card. Use the same numbers in narration, terminal output and caption. |
 | Engagement | No `engagement` device is a warning. A device must name a token (`like`, `comment`, `save`, `share`); its prompt appears on the end card and its pinned comment in the posting kit. |

@@ -15,7 +15,7 @@ is a planning rule for you or the agent.
 
 | Lesson | Source | Status |
 | --- | --- | --- |
-| Put a line of 5 words or fewer between long sentences (long, short, long, short). Short lines carry turns: "Let's find out.", "But there was a problem." | @ginyboi, crediting @kallaway (2026-10-23) | Enforced: warning on two sentences over 12 words back to back, or 4+ sentences with no short one |
+| Vary sentence length; never run two long sentences back to back. House style (2026-11-22): full sentences of about 6-12 words by default; a line of 5 words or fewer only rarely, to land one point or for the final summary. The source's long-short-long-short cadence is too choppy for us | @ginyboi, crediting @kallaway (2026-10-23); adapted | Enforced: warning on two sentences over 12 words back to back, or 4+ sentences with no short line at all |
 | A human writes the script, or edits the LLM draft hard. LLM scripts read cheesy and repeat themselves as they get longer; keep them short. Automate cuts, captions and motion, not the words. | @ginyboi, a month testing AI as an editor (2026-10-28) | Plan |
 | Value earns follows; views alone do not. Give a reason to come back: a specific skill or knowledge most people lack. | @themekhicarter (2026-10) | Plan |
 | Claim, visible source, live run, measured number, verdict. | @itstundealao "Fact or Hype?" | Enforced as warnings (URL, number, verdict, disclosure) |

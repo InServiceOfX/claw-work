@@ -225,6 +225,24 @@ impl<'a> Builder<'a> {
         }
     }
 
+    /// Optional caption lines for a clip, on a translucent band at the top of
+    /// the safe area so the footage stays readable underneath.
+    fn clip_caption(&mut self, scene: &Scene, t: &SceneTiming) {
+        if scene.lines.is_empty() {
+            return;
+        }
+        let size = scene
+            .lines
+            .iter()
+            .map(|l| text::fit_size(SAFE_WIDTH, l.chars().count(), PROP_EM, 64, 40))
+            .min()
+            .unwrap_or(64);
+        let lh = (f64::from(size) * 1.3) as i64;
+        let band = format!("{}@0.82", self.colors.bg);
+        self.rect(0, 268, i64::from(self.style.width), scene.lines.len() as i64 * lh + 44, &band, t.start_ms, t.end_ms);
+        self.centered_block(&scene.lines, size, 290, true, t.start_ms, t.end_ms);
+    }
+
     fn chrome(&mut self, spec: &Spec, timings: &[SceneTiming], total: u64) {
         // Progress dots near the top, one per scene.
         let n = timings.len() as i64;
@@ -261,17 +279,108 @@ pub fn build_with_audio(spec: &Spec, timings: &[SceneTiming], audio_post: Option
     assert_eq!(spec.scenes.len(), timings.len(), "one timing per scene");
     let total = timeline::total_ms(timings);
     let mut b = Builder::new(&spec.style);
+    // Clips go under everything else, so captions and chrome draw on top.
+    for (scene, t) in spec.scenes.iter().zip(timings) {
+        if scene.kind == SceneKind::Clip {
+            b.clip_caption(scene, t);
+        }
+    }
     b.chrome(spec, timings, total);
     for (scene, t) in spec.scenes.iter().zip(timings) {
         match scene.kind {
             SceneKind::Title | SceneKind::Cloning | SceneKind::Endcard => b.title_like(scene, t),
             SceneKind::Terminal => b.terminal(scene, t),
             SceneKind::Verdict => b.verdict(scene, t),
+            SceneKind::Clip => {}
         }
     }
-    let video = format!("[0:v]{}[v]", b.filters.join(","));
-    let filter_complex = format!("{};{video}", audio_graph_then(timings, 1, audio_post));
+    let first_clip = 1 + timings.len();
+    let (clip_chains, base) = clip_overlays(spec, timings, first_clip, &b.colors.bg);
+    let video = format!("{clip_chains}{base}{}[v]", b.filters.join(","));
+    let filter_complex = format!("{};{video}", audio_mix_graph(spec, timings, 1, first_clip, audio_post));
     FilterPlan { text_files: b.files, filter_complex, total_ms: total }
+}
+
+/// Clip scenes in order with their scene index. The j-th clip is FFmpeg input `first_clip + j`.
+pub fn clip_scenes(spec: &Spec) -> Vec<(usize, &Scene)> {
+    spec.scenes.iter().enumerate().filter(|(_, s)| s.kind == SceneKind::Clip).collect()
+}
+
+/// Video chains that fit each clip to the frame, hold its last frame if it is
+/// shorter than the scene, and overlay it during its scene. Returns the chains
+/// (each ending in `;`) and the label the text filters start from.
+fn clip_overlays(spec: &Spec, timings: &[SceneTiming], first_clip: usize, bg: &str) -> (String, String) {
+    let (w, h, fps) = (spec.style.width, spec.style.height, spec.style.fps);
+    let mut chains = String::new();
+    let mut base = "[0:v]".to_string();
+    for (j, (i, scene)) in clip_scenes(spec).into_iter().enumerate() {
+        let t = &timings[i];
+        let dur = timeline::secs(t.duration_ms());
+        let start = timeline::secs(t.start_ms);
+        let from = scene.video_start.unwrap_or(0.0);
+        chains.push_str(&format!(
+            "[{}:v]trim=start={from:.3},setpts=PTS-STARTPTS,fps={fps},\
+             scale={w}:{h}:force_original_aspect_ratio=decrease,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color={bg},setsar=1,\
+             tpad=stop_mode=clone:stop_duration={dur},trim=duration={dur},setpts=PTS-STARTPTS+{start}/TB[c{j}];\
+             {base}[c{j}]overlay=eof_action=pass:enable='{}'[b{j}];",
+            first_clip + j,
+            window(t.start_ms, t.end_ms)
+        ));
+        base = format!("[b{j}]");
+    }
+    (chains, base)
+}
+
+/// The tick played on each scene change: a bright partial that dies in about
+/// 5 ms over a softer one that rings for about 20 ms. Peak about 1.0 before `amp`.
+fn cut_tick(amp: f64) -> String {
+    format!("aevalsrc=exprs='{amp:.5}*(0.6*sin(2*PI*1760*t)*exp(-t*220)+0.4*sin(2*PI*660*t)*exp(-t*45))':s=48000:d=0.25")
+}
+
+/// The full soundtrack: joined narration, each clip's own sound at its gain
+/// from its scene start, and the cut ticks, mixed without automatic gain and
+/// then passed through `post` (loudness normalization) into `[aout]`.
+/// Narration inputs start at `first_input`, clip inputs at `first_clip`.
+pub fn audio_mix_graph(spec: &Spec, timings: &[SceneTiming], first_input: usize, first_clip: usize, post: Option<&str>) -> String {
+    let total = timeline::secs(timeline::total_ms(timings));
+    let mut extra: Vec<(String, String)> = Vec::new();
+    for (j, (i, scene)) in clip_scenes(spec).into_iter().enumerate() {
+        if let Some(db) = scene.video_volume_db {
+            let t = &timings[i];
+            extra.push((
+                format!(
+                    "[{}:a]atrim=start={:.3}:duration={},asetpts=PTS-STARTPTS,aformat=sample_rates=48000:channel_layouts=mono,\
+                     volume={db:.2}dB,adelay={}:all=1,apad=whole_dur={total}",
+                    first_clip + j,
+                    scene.video_start.unwrap_or(0.0),
+                    timeline::secs(t.duration_ms()),
+                    t.start_ms
+                ),
+                format!("[s{j}]"),
+            ));
+        }
+    }
+    if let Some(sfx) = spec.sfx.as_ref().filter(|s| s.cuts) {
+        let amp = 10f64.powf(sfx.cut_db / 20.0);
+        for t in timings.iter().skip(1) {
+            extra.push((format!("{},adelay={}:all=1,apad=whole_dur={total}", cut_tick(amp), t.start_ms), format!("[k{}]", t.index)));
+        }
+    }
+    if extra.is_empty() {
+        return audio_graph_then(timings, first_input, post);
+    }
+    let joined = audio_join(timings, first_input);
+    let mut out = format!("{}[ajoin]", joined.strip_suffix("[aout]").unwrap_or(&joined));
+    for (chain, label) in &extra {
+        out.push_str(&format!(";{chain}{label}"));
+    }
+    let labels: String = extra.iter().map(|(_, l)| l.as_str()).collect();
+    out.push_str(&format!(";[ajoin]{labels}amix=inputs={}:normalize=0:duration=first", extra.len() + 1));
+    match post {
+        Some(post) => out.push_str(&format!("[amix];[amix]{post}[aout]")),
+        None => out.push_str("[aout]"),
+    }
+    out
 }
 
 /// Filter-graph text that pads each scene's narration to its exact length and
@@ -404,6 +513,54 @@ mod tests {
         s.credits.clear();
         let plan = build(&s, &timings());
         assert!(!plan.text_files.iter().any(|f| f.content.contains("AI-generated")));
+    }
+
+    fn clip_spec(volume: Option<f64>, sfx: bool) -> Spec {
+        let mut s = spec();
+        let mut clip = parse(
+            r##"{"version": 1, "project": "p", "title": "t", "caption": "c", "scenes": [
+              {"kind": "clip", "narration": "x", "video": "board.mp4", "video_start": 2.5, "lines": ["Watch it fall."]}]}"##,
+        )
+        .unwrap()
+        .scenes
+        .remove(0);
+        clip.video_volume_db = volume;
+        s.scenes.insert(1, clip);
+        if sfx {
+            s.sfx = Some(crate::spec::Sfx { cuts: true, cut_db: -20.0 });
+        }
+        s
+    }
+
+    fn five() -> Vec<SceneTiming> {
+        timeline::build(&[3000, 4000, 6000, 5000, 3000], 350)
+    }
+
+    #[test]
+    fn a_clip_is_trimmed_fitted_and_overlaid_during_its_scene_under_the_text() {
+        let plan = build(&clip_spec(None, false), &five());
+        let fc = &plan.filter_complex;
+        // Five narration inputs (1-5), so the clip is input 6.
+        assert!(fc.contains("[6:v]trim=start=2.500,setpts=PTS-STARTPTS,fps=30,"), "{fc}");
+        assert!(fc.contains("tpad=stop_mode=clone:stop_duration=4.350,trim=duration=4.350,setpts=PTS-STARTPTS+3.350/TB[c0]"), "{fc}");
+        assert!(fc.contains("[0:v][c0]overlay=eof_action=pass:enable='gte(t,3.350)*lt(t,7.700)'[b0];[b0]drawbox"), "{fc}");
+        assert!(plan.text_files.iter().any(|f| f.content == "Watch it fall."));
+        // Muted clip, no sfx: the soundtrack is the plain narration join.
+        assert!(!fc.contains("[6:a]") && !fc.contains("amix"));
+    }
+
+    #[test]
+    fn clip_sound_and_cut_ticks_are_mixed_under_the_narration_before_loudness() {
+        let fc = build_with_audio(&clip_spec(Some(-12.0), true), &five(), Some("volume=2")).filter_complex;
+        assert!(fc.contains("[6:a]atrim=start=2.500:duration=4.350,asetpts=PTS-STARTPTS,"), "{fc}");
+        assert!(fc.contains("volume=-12.00dB,adelay=3350:all=1,apad=whole_dur="), "{fc}");
+        // One tick per scene change (4 changes), none at time 0.
+        assert_eq!(fc.matches("aevalsrc=").count(), 4, "{fc}");
+        assert!(fc.contains("adelay=3350:all=1,apad") && !fc.contains("adelay=0:all=1"));
+        assert!(fc.contains("[ajoin][s0][k1][k2][k3][k4]amix=inputs=6:normalize=0:duration=first[amix];[amix]volume=2[aout]"), "{fc}");
+        assert_eq!(fc.matches("[aout]").count(), 1);
+        // -20 dB is a linear amplitude of 0.1.
+        assert!(fc.contains("exprs='0.10000*("), "{fc}");
     }
 
     #[test]

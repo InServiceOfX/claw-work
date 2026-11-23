@@ -294,6 +294,7 @@ fn kind_name(kind: spec::SceneKind) -> &'static str {
         spec::SceneKind::Terminal => "terminal",
         spec::SceneKind::Verdict => "verdict",
         spec::SceneKind::Endcard => "endcard",
+        spec::SceneKind::Clip => "clip",
     }
 }
 
@@ -375,6 +376,9 @@ pub struct CanvasReport {
 /// `scene_data.json` and `timeline.json` into a new directory.
 pub fn prepare(spec: &Spec, opts: &RenderOptions, words_path: Option<&Path>) -> Result<CanvasReport, String> {
     render::blocking_errors(spec)?;
+    if spec.scenes.iter().any(|s| s.kind == spec::SceneKind::Clip) {
+        return Err("clip scenes are rendered by `claw-shorts render`; the canvas path does not play video".into());
+    }
     for tool in ["ffmpeg", "ffprobe"] {
         if !media::have(tool) {
             return Err(format!("{tool} not found on PATH"));

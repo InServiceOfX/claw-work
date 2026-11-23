@@ -1,0 +1,48 @@
+# Shape morph for the 2026-11-22 build-log Short: Rust/claw-motion's example
+# on the claw-shorts background, centered a little lower for the caption band.
+
+[video]
+width = 1080
+height = 1920
+fps = 30
+duration = 9
+background = "#0b0f14"
+
+[morph]
+center = [540, 820]
+scale = 300
+points = 256
+loop = true
+
+[[morph.shapes]]
+shape = "circle"
+color = "#ff5a4e"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "triangle"
+color = "#ffb547"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "star"
+points = 5
+inner = 0.42
+color = "#3ecfb2"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "heart"
+color = "#ff5a4e"
+hold = 0.6
+morph = 0.8
+
+[[morph.shapes]]
+shape = "path"
+d = "M 13 2 L 3 14 H 12 L 11 22 L 21 10 H 12 Z"
+color = "#4ea3ff"
+hold = 0.6
+morph = 0.8
