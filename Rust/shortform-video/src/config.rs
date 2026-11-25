@@ -99,13 +99,16 @@ impl Default for RenderConfig {
     }
 }
 
-/// macOS system fonts probed when render.font_path is not configured.
+/// System fonts (macOS, then Linux) probed when render.font_path is not configured.
 const DEFAULT_FONT_CANDIDATES: &[&str] = &[
     "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
     "/System/Library/Fonts/Supplemental/Arial.ttf",
     "/System/Library/Fonts/Supplemental/Verdana Bold.ttf",
     "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
     "/Library/Fonts/Arial.ttf",
+    "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
 ];
 
 impl Config {
@@ -156,7 +159,7 @@ impl Config {
         env_override(&mut self.render.ffprobe_path, &["SHORTFORM_FFPROBE_PATH"]);
     }
 
-    /// Resolve a usable subtitle font, falling back to known macOS locations.
+    /// Resolve a usable subtitle font, falling back to known system locations.
     pub fn resolve_font_path(&self) -> Result<PathBuf> {
         if !self.render.font_path.trim().is_empty() {
             let path = PathBuf::from(self.render.font_path.trim());

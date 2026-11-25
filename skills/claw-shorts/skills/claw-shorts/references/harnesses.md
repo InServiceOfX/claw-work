@@ -29,6 +29,10 @@ else. Restart clients or reload skills afterwards (Pi: `/reload`).
 Override a location with `CLAUDE_SKILLS_DIR`, `AGENTS_SKILLS_DIR`,
 `GROK_SKILLS_DIR` or `HERMES_SKILLS_DIR`.
 
+The installer appends the checkout's local path to each installed `SKILL.md`, so
+an agent started elsewhere can find the tools. Re-run it if the checkout moves.
+Skip `grok` when `~/.grok/config.toml` lists `~/.agents/skills` in `skills.paths`.
+
 The installed copy holds only the skill text. The tools it drives
 (`Rust/claw-shorts`, `Rust/shortform-video`, `Rust/claw-edit`, the canvas
 renderer and the Python templates) stay in the claw-work checkout.

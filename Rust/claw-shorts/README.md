@@ -24,8 +24,9 @@ This is the Rust successor to the Python launch kit, which was retired on
 ## Build
 
 Requirements: Rust 1.85+, FFmpeg with libx264 and `drawtext` (libfreetype), and
-`ffprobe` on `PATH`. The default fonts are macOS system fonts; set `style.font`
-and `style.mono_font` elsewhere. Narration needs `voxcpm-tts` on `PATH` and a
+`ffprobe` on `PATH`. The default fonts are the first found of Arial/Courier New
+(macOS), Liberation (`fonts-liberation2`) or DejaVu on Linux; set `style.font` and
+`style.mono_font` to override. Narration needs `voxcpm-tts` on `PATH` and a
 reference recording, unless every scene supplies its own `audio` file.
 
 ```bash

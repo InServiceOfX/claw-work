@@ -4,7 +4,9 @@
 # replaced. Touches only those skill names.
 #
 # Usage: skills/install-shortform-skills.sh [--dry-run] [claude] [agents] [grok] [hermes]
-#   No harness names = all four.
+#   No harness names = all four. Run it from the checkout you keep: its path is
+#   written into the installed copies so agents can find the tools.
+#   Skip grok when its config already loads ~/.agents/skills.
 # Locations (override with env):
 #   CLAUDE_SKILLS_DIR  (default ~/.claude/skills)
 #   AGENTS_SKILLS_DIR  (default ~/.agents/skills; Codex, Pi)
@@ -13,6 +15,7 @@
 set -euo pipefail
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo="$(cd "$here/.." && pwd)"
 sources=(
   "short-form-strategy=$here/short-form-strategy"
   "claw-shorts=$here/claw-shorts/skills/claw-shorts"
@@ -68,6 +71,8 @@ for target in "${targets[@]}"; do
     if [ "$dry_run" -eq 0 ]; then
       printf '\n> Installed copy. Canonical source: claw-work `%s` (edit there, then re-run `skills/install-shortform-skills.sh`).\n' \
         "skills/${src#"$here"/}" >>"$dest/SKILL.md"
+      printf '> Local claw-work checkout: `%s`. Run every relative path and command in this skill from there.\n' \
+        "$repo" >>"$dest/SKILL.md"
       find "$dest" -name '__pycache__' -type d -prune -exec rm -rf {} +
     fi
     echo "   installed $name"

@@ -26,6 +26,30 @@ pub struct Style {
     pub body_size: u32,
 }
 
+/// Default fonts, best first. Liberation is metric-compatible with Arial and
+/// Courier New, so text measured on macOS keeps its size on Linux.
+const FONT_CANDIDATES: &[&str] = &[
+    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+    "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+];
+const MONO_FONT_CANDIDATES: &[&str] = &[
+    "/System/Library/Fonts/Supplemental/Courier New Bold.ttf",
+    "/usr/share/fonts/truetype/liberation2/LiberationMono-Bold.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf",
+];
+
+/// The first candidate that exists, or the first one so the error names a path.
+fn first_font(candidates: &[&str]) -> String {
+    candidates
+        .iter()
+        .find(|p| std::path::Path::new(p).is_file())
+        .unwrap_or(&candidates[0])
+        .to_string()
+}
+
 impl Default for Style {
     fn default() -> Self {
         Self {
@@ -40,8 +64,8 @@ impl Default for Style {
             pass: "#4ade80".into(),
             warn: "#fbbf24".into(),
             fail: "#f87171".into(),
-            font: "/System/Library/Fonts/Supplemental/Arial Bold.ttf".into(),
-            mono_font: "/System/Library/Fonts/Supplemental/Courier New Bold.ttf".into(),
+            font: first_font(FONT_CANDIDATES),
+            mono_font: first_font(MONO_FONT_CANDIDATES),
             pad_ms: 350,
             title_size: 96,
             body_size: 54,
@@ -113,6 +137,18 @@ impl Style {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn default_fonts_fall_back_in_order() {
+        let dir = std::env::temp_dir().join(format!("claw-shorts-fonts-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let present = dir.join("present.ttf");
+        std::fs::write(&present, b"x").unwrap();
+        let present = present.to_str().unwrap();
+        assert_eq!(first_font(&["/no/such/font.ttf", present]), present);
+        assert_eq!(first_font(&["/no/such/a.ttf", "/no/such/b.ttf"]), "/no/such/a.ttf");
+        std::fs::remove_dir_all(&dir).unwrap();
+    }
 
     #[test]
     fn default_style_is_valid() {

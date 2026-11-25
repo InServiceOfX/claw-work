@@ -22,6 +22,8 @@ pinned and used as is. Files: `skills/claw-shorts/manim/`.
 - macOS: Homebrew `cairo` and `pkgconf`. pycairo 1.29 has no macOS wheel for
   this setup and is compiled on first install against Homebrew cairo.
   ManimPango ships a self-contained wheel.
+- Debian/Ubuntu: `sudo apt install libcairo2-dev libpango1.0-dev` (pycairo and
+  ManimPango are compiled on first install).
 - The first `scripts/render.sh` creates `skills/claw-shorts/manim/.venv` from
   `uv.lock` (about 280 MB, a few seconds when cairo is present). Nothing is
   installed globally.
@@ -105,7 +107,8 @@ fonts, cairo and FFmpeg versions all change the pixels.
 - `MathTex` substrings are split by the strings you pass
   (`MathTex(r"\sin x", r"=", r"x", r"-\frac{x^3}{6}")`); index them to color
   or box one term.
-- `Text` fonts come from the system through Pango (`FONT = "Arial"`). A missing
+- `Text` fonts come from the system through Pango (`FONT`: Arial, else
+  Liberation Sans, else DejaVu Sans). Any other missing
   font silently falls back, so check frames on a new machine.
 - LaTeX output is cached under `OUT_DIR/manim-media/Tex`; delete it to force re-typesetting.
 - Manim logs before it reads the config; `render.sh` passes `-v WARNING`.

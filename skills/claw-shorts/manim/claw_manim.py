@@ -23,6 +23,7 @@ import os
 import re
 import sys
 
+import manimpango
 from manim import MathTex, MarkupText, Scene, SingleStringMathTex, Tex, Text, config
 
 PX = 120.0  # pixels per unit (1080 px / 9 units)
@@ -58,7 +59,9 @@ MUTED = "#9aa4b2"
 PANEL = "#18202b"
 WARN = "#fbbf24"
 FAIL = "#f87171"
-FONT = "Arial"
+# Liberation Sans is metric-compatible with Arial, so layouts match on Linux.
+_INSTALLED_FONTS = set(manimpango.list_fonts())
+FONT = next((f for f in ("Arial", "Liberation Sans", "DejaVu Sans") if f in _INSTALLED_FONTS), "Arial")
 
 
 def fit(mob, max_width: float):

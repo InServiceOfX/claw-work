@@ -68,7 +68,7 @@ voice = "en-US-JennyNeural" # `shortform-video voices` lists Edge voices
 rate = 1.0
 
 [render]
-font_path = ""              # default: probes macOS system fonts (Arial Bold)
+font_path = ""              # default: probes Arial Bold (macOS), then Liberation/DejaVu (Linux)
 font_size = 64
 fps = 30
 crf = 20

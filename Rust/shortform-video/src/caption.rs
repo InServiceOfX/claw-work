@@ -300,6 +300,7 @@ mod tests {
         for candidate in [
             "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
             "/System/Library/Fonts/Supplemental/Arial.ttf",
+            "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
         ] {
             let path = Path::new(candidate);
             if path.is_file() {
