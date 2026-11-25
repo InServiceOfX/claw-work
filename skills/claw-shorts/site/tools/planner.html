@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Launch Shorts Planner | claw-shorts</title>
+  <meta name="description" content="Generate a 5-Short launch plan from your README. Get hooks, shot lists, captions, and render commands for claw_shorts.py.">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Launch Shorts Planner",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Generate a 5-Short launch video plan from a README or product description. Outputs hooks, shot list, captions, and claw_shorts.py render commands.",
+    "url": "https://PLACEHOLDER_BASE_URL/tools/planner.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-brand">claw-shorts</a>
+      <ul class="nav-links">
+        <li><a href="planner.html">Planner</a></li>
+        <li><a href="safe-zones.html">Safe Zones</a></li>
+        <li><a href="command-builder.html">Command Builder</a></li>
+        <li><a href="../pages/launch-video.html">Guides</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>Launch Shorts Planner</h1>
+    <p class="text-muted">
+      Paste your README or product blurb below to generate a 5-Short launch video plan.
+      No data leaves your browser.
+    </p>
+
+    <form id="planner-form" class="card">
+      <div class="form-group">
+        <label for="readme-input">README or Product Description</label>
+        <textarea 
+          id="readme-input" 
+          name="readme" 
+          placeholder="# My Project
+
+A tool that does X for Y developers.
+
+## Features
+
+- Feature one
+- Feature two
+- Feature three
+
+## Installation
+
+```
+npm install my-project
+```
+
+## Usage
+
+```
+my-project --help
+```"
+          rows="12"
+        ></textarea>
+        <p class="form-hint">Include headings, features, and install commands for best results.</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Generate Plan</button>
+    </form>
+
+    <section id="results" style="display: none;">
+      <h2>Your Launch Plan</h2>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Hook Options</h3>
+        </div>
+        <p class="text-sm text-muted">Click to select your hook for the shot list:</p>
+        <div id="hooks-container"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">5-Short Shot List</h3>
+        </div>
+        <div id="shot-list-container"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Caption Text</h3>
+        </div>
+        <div id="captions-container"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Render Commands</h3>
+        </div>
+        <p class="text-sm text-muted">
+          Run these with <code>claw_shorts.py</code> after recording your source clips.
+          <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts" target="_blank" rel="noopener">View claw-shorts on GitHub</a>
+        </p>
+        <div id="commands-container"></div>
+      </div>
+
+      <button id="download-json" class="btn btn-primary">Download Plan JSON</button>
+    </section>
+  </main>
+
+  <footer class="site-footer container">
+    <p>
+      <a href="https://github.com/InServiceOfX/claw-work/tree/master/skills/claw-shorts">claw-shorts</a> · 
+      MIT License · 
+      No tracking · Works offline
+    </p>
+  </footer>
+
+  <script src="../js/planner.js"></script>
+</body>
+</html>
